@@ -1,0 +1,211 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+/*--------------------------
+    PERSONAJES
+---------------------------*/
+
+#listPersonajes {
+    background: rgba(0, 0, 0, 0.50);
+    padding: 5px 15px;
+    height: 80%;
+    border-bottom-left-radius: 5px;
+    /*position: absolute;*/
+    top: 0;
+    right: 0;
+}
+
+.personaje {
+    padding: 10px;
+}
+
+#DataCharacter {
+    background: rgba(0, 0, 0, 0.50);
+    padding: 5px 15px;
+    /*height: 80%;*/
+    border-bottom-left-radius: 5px;
+    /*position: absolute;*/
+    top: 0;
+    left: 0;
+}
+
+/*--------------------------
+    CHARCTER
+---------------------------*/
+
+    #draggable_contenedorPersonaje {
+        background: rgba(0, 0, 0, 0.50);
+        padding: 10px;
+        width: 300px;
+        border-radius: 10px;
+        /*position: relative;
+        z-index: 100;*/
+        /*position: absolute;*/
+    }
+    #draggable_contenedorAtributos{
+        background: rgba(0, 0, 0, 0.50);
+        padding: 10px;
+        width: 300px;
+        border-radius: 10px;
+        /*position: relative;
+        z-index: 100;
+        top: -300px;*/
+        /*position: absolute;*/
+    }
+
+    .cuadroLeft {
+        background-color: rgba(3, 3, 3, 0.74);
+        width: 40px;
+        height: 40px;
+        padding: 2px;
+        margin: 5px 0px 5px 5px;
+    }
+    .cuadroRight {
+        background-color: rgba(3, 3, 3, 0.74);
+        width: 40px;
+        height: 40px;
+        padding: 2px;
+        margin: 5px 5px 5px 0px;
+    }
+    .cuadro{
+        background-color: rgba(3, 3, 3, 0.74);
+        width: 80px;
+        height: 40px;
+        padding: 2px;
+        margin: 5px 5px 5px 5px;
+    }
+
+/*--------------------------
+    GAME
+---------------------------*/
+
+#CChat {
+    background: rgba(0, 0, 0, 0.50);
+    /* margin: 427px 15px 0 0; */
+    margin-top: 427px;
+    padding: 5px 3px;
+    width: 265px;
+    border-top-right-radius: 5px;
+    position: absolute;
+    bottom: 0;
+}
+
+#Chat {
+    background: rgba(0, 0, 0, 0.50);
+	text-align:justify;
+	width: 265px;
+	height: 145px;
+	max-width: 265px;
+	max-height: 145px;
+    margin-bottom: 5px;
+    color: white;
+}
+
+#Mensaje {
+    background: rgba(0, 0, 0, 0.50);
+    color: white;
+    width: 265px;
+}
+
+#chatlog {
+	/*align: bottom;*/
+	/*position: absolute;*/
+	bottom: 10px;
+	left: 15px;
+	/*font-family: "Minecraftia";*/
+	font-size: 10px;
+	overflow:auto;
+	border: 1px solid black;
+	border-radius:3px;
+	width: 250px;
+	height: 100px;
+	background-color: rgba(0, 0, 0, 0.7);
+	/*background-image: url(../sprites/chatlog.png);*/
+}
+
+#message {
+	/*position: absolute;*/
+	right: 10px;
+	autocomplete: off;
+	top: 10px;
+	color: #c96;
+	/*font-family: "Minecraftia";*/
+	width: 210px;
+	height: 20px;
+	line-height: 25px;
+	font-size: 12px;
+	background-color: rgba(0, 0, 0, 0.8);
+	float: left;
+	border: 1px solid #EEEEEE;
+	-webkit-border-radius:3px;
+	-moz-border-radius:3px;
+	border-radius:3px;
+}
+
+/*--------------------------
+    Estadisticas
+---------------------------*/
+
+#CEstadisticas {
+    background-image: url(../img/Bpj.png);
+    padding: 10px 15px;
+    width: 250px;
+    height: 98px;
+    position: absolute;
+    top: 0;
+}
+
+
+#CAyudajutsus {
+    background: rgba(0, 0, 0, 0.50);
+    padding: 5px 15px;
+    width: 250px;
+    border-top-left-radius: 5px;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
+#Cconcentracion {
+    background: rgba(0, 0, 0, 0.50);
+    padding: 5px 15px;
+    width: 150px;
+    border-radius: 5px;
+    position: absolute;
+    bottom: 20px;
+    left: 45%;
+}
+
+#COpciones {
+    background: rgba(0, 0, 0, 0.50);
+    padding: 5px 15px;
+    /* width: 150px; */
+    border-bottom-left-radius: 5px;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+#CBuff {
+    padding: 5px 15px;
+    border-bottom-left-radius: 5px;
+    position: absolute;
+    top: 0;
+    left: 250px;
+}
+
+#imgBuff {
+    background: rgba(0, 0, 0, 0.50);
+    padding: 5px 15px;
+    width: 32px;
+    border-radius: 5px;
+    top: 0;
+    height: 32px;
+}
+
+.Invisible {
+	visibility: hidden;
+    position: absolute;
+}

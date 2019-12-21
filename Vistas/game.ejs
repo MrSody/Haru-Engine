@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <title>P - MS: Juego</title>
+        <link rel="stylesheet" type="text/css" href="../css/Style_Juego.css">
+        <!--
+        <link rel="stylesheet" href="../css/jquery.mCustomScrollbar.css"/>
+        -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+        <style>
+            body {
+                /*overflow-x:scroll;*/
+                overflow-y:hidden;
+            }
+        </style>
+    </head>
+<body>
+    <!-- Area Juego -->
+    <div id="Contenedor">
+
+        <!--<canvas id="game" class="Invisible" style="height: 120px; width: 200px; position: absolute;"></canvas>
+        <canvas id="bgGame" class="Invisible" style="height: 120px; width: 200px;"></canvas>-->
+        <!-- Canvas de ayuda -->
+        <canvas id="capasMapaAbajo" style="height: 120px; width: 200px; position: absolute;"></canvas>
+        <canvas id="capaPersonaje" style="height: 120px; width: 200px; position: absolute;"></canvas>
+        <canvas id="capasMapaArriba" style="height: 120px; width: 200px; position: absolute;"></canvas>
+        
+        <!-- Canvas Principal -->
+
+        <canvas id="game" style="height: 120px; width: 200px; position: absolute;"></canvas>
+
+        <!--<canvas id="game" style="height: 120px; width: 200px;"></canvas>-->
+
+        <!------------------------------ *
+            LOADING
+        * ------------------------------>
+        <% include game/Loading.ejs %>
+
+        <!------------------------------ *
+            PERSONAJES
+        * ------------------------------>
+        <% include game/personajes.ejs %>
+
+        <!------------------------------ *
+            HUB Principal
+        * ------------------------------>
+        <% include game/hubPrincipal.ejs %>
+
+        <!------------------------------ *
+            FRAME
+        * ------------------------------>
+
+    </div>
+
+    <!--
+	<script src="js/SoundManager.js"></script>
+    <script src="js/jquery-1.9.1.min.js"></script>
+    <script src="Server/Nucleo/node_modules/socket.io/node_modules/socket.io-client/dist/socket.io.min.js"></script>
+	<script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
+    -->
+   
+    <!-- DROP -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+
+    <!--<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>-->
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/highcharts-more.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+
+    
+    <script src="../Js/Pathfinder.js"></script>
+    <!--<script src="public/js/DropMove.js"></script>-->
+    <!-- MODULOS -->
+    <!-- INTERFACE -->
+    <script src="../js/Interface.js"></script>
+    <!-- PLAYER -->
+    <!--
+    <script src="../js/Player-new.js"></script>
+    <script src="../js/LocalPlayer.js"></script>
+    -->
+    <script src="../Js/Player.js"></script>
+    <script src="../Js/LocalPlayer.js"></script>
+    <script src="../Js/RemotePlayer.js"></script>
+    <!--
+    <script src="../js/InvocationPlayer.js"></script>
+    -->
+    <!-- NPC -->
+    <!--
+    <script src="../js/Npc.js"></script>
+    -->
+    <!-- JUTSU -->
+    <!--
+    <script src="../js/Jutsu.js"></script>
+     -->
+    <!-- MAP -->
+    <!--
+    <script src="../js/Map.js"></script>
+    -->
+    <script src="../Js/Map.js"></script>
+    <!-- ATTACK DISTANCE -->
+    <!--
+    <script src="../js/AttackDistance.js"></script>
+    -->
+    <!--<script type="application/javascript" src="../js/game.js"></script>-->
+    <script type="application/javascript" src="../Js/Game.js"></script>
+    <!--<script src="../js/jquery-1.9.1.min.js"></script>-->
+    <script src="../js/jquery.mCustomScrollbar.concat.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+
+	<script>
+		(function($){
+			$(window).load(function(){
+				$(".text").mCustomScrollbar({
+					autoHideScrollbar: true,
+				});
+			});
+		})(jQuery);
+
+        $(function() {
+            $("[id^=draggable]").draggable({
+                //snap: true,
+                opacity: 0.35,
+                iframeFix: true,
+                //handle: "label",
+                distance: 10,
+                cursor: "crosshair",
+                containment: "window"
+                //containment: [10, 20, 30, 10]
+            });
+        });
+
+		// Initialise the game
+		//init();
+
+	</script>
+
+	<script>
+        let atributos = Highcharts.chart('attribute', {
+
+          chart: {
+            polar: true,
+            type: 'area'
+          },
+
+          title: {
+            text: ''
+          },
+
+          pane: {
+            size: '100%'
+          },
+
+          legend: {
+                enabled: false
+            },
+
+          xAxis: {
+            categories: ['Fuerza', 'Agilidad', 'Inteligencia', 'Sellos', 'Resistencia', 'Vitalidad', 'Destreza', 'Percepcion'],
+            tickmarkPlacement: 'on',
+            gridLineWidth: 2,
+            lineWidth: 0,
+            max: 8,
+            labels: {
+                enabled: false
+            }
+          },
+
+          yAxis: {
+            gridLineInterpolation: 'polygon',
+            lineWidth: 1,
+            min: 0,
+            max: 5,
+            minorGridLineColor: '#E0E0E0',
+            minorGridLineWidth: 2,
+            minorTickLength: 1,
+            minorTickInterval: 1
+          },
+
+          exporting: { enabled: false },
+
+          credits: {enabled: false},
+
+          tooltip: {
+            shared: true,
+            pointFormat: '<span style="color:{series.color}">{point.y:,.0f} / 5</b><br/>'
+          },
+
+          plotOptions: {
+                series: {
+                    dataLabels: {
+                        enabled: true,
+                        crop: true,
+                        format: '{y} / 5',
+                  }
+                },
+                area: {
+                  fillOpacity: 0.7
+                },
+            },
+
+          series: [{
+            data: [4, 1, 5, 3, 2, 1, 0, 5],
+            pointPlacement: 'on'
+            //color: '#FF0000'
+          }]
+
+        });
+    </script>
+
+
+    <script>
+        let atributos1 = Highcharts.chart('attribute1', {
+
+          chart: {
+            polar: true,
+            type: 'area'
+          },
+
+          title: {
+            text: ''
+          },
+
+          pane: {
+            size: '90%'
+          },
+
+          legend: {
+                enabled: false
+            },
+
+          xAxis: {
+            categories: ['Fuerza', 'Agilidad', 'Inteligencia', 'Sellos', 'Resistencia', 'Vitalidad', 'Destreza', 'Percepcion'],
+            tickmarkPlacement: 'on',
+            gridLineWidth: 2,
+            lineWidth: 0,
+            max: 8,
+            labels: {
+                enabled: false
+            }
+          },
+
+          yAxis: {
+            gridLineInterpolation: 'polygon',
+            lineWidth: 1,
+            min: 0,
+            max: 5,
+            minorGridLineColor: '#E0E0E0',
+            minorGridLineWidth: 2,
+            minorTickLength: 1,
+            minorTickInterval: 1
+          },
+
+          exporting: { enabled: false },
+
+          credits: {enabled: false},
+
+          tooltip: {
+            shared: true,
+            pointFormat: '<span style="color:{series.color}">{point.y:,.0f} / 5</b><br/>'
+          },
+
+          plotOptions: {
+                series: {
+                    dataLabels: {
+                        enabled: true,
+                        crop: true,
+                        format: '{y} / 5',
+                  }
+                },
+                area: {
+                  fillOpacity: 0.7
+                },
+            },
+
+          series: [{
+            data: [4, 1, 5, 3, 2, 1, 0, 5],
+            pointPlacement: 'on'
+            //color: '#FF0000'
+          }]
+
+        });
+    </script>
+
+
+</body>
+</html>
