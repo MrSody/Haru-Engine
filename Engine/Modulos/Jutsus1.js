@@ -1,9 +1,13 @@
 /*
 Formato:[
     Sello1, Sello2, Sello3, Sello4, Sello5,
-    Nombre [0=Original, 1=Español, 2=Ingles], Sprite
+    Nombre [0=Original, 1=Español, 2=Ingles],
+    Sprite
     Efecto [0=Buff, 1=DeBuff, 2=Teletrasporte, 3=Invocacion, 4=InvocacionCambio, 5=Area, 6=Disparo],
-    Tipo [0=nada, 1=Fisico, 2=Chakra, 3=Cura ], Base, BaseSeg, tiempo
+    Tipo [0=nada, 1=Fisico, 2=Cura ],
+    Base,
+    BaseSeg,
+    tiempo
 ]
 
 Q = 1

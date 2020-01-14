@@ -38,7 +38,6 @@ class Npc {
         
         this.visionDistance = 2;
 
-
         /*
         this.move = false;
         this.phrases = data.phrases;
@@ -54,7 +53,6 @@ class Npc {
 		this.movingDir;
 		this.path = [[]];
         this.stepCount = 0;
-        
         
         this.posAttack = {x: 0, y: 0};
         

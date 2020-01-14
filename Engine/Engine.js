@@ -1,5 +1,6 @@
 const Player = require('./Modules/Player.js').Player; // Player class
 const World = require('./Modules/World.js').World;
+const Npc = require('./Modules/Npc.js').Npc;
 
 var fs = require('fs');
 
@@ -10,7 +11,6 @@ var	towers,
     spriteMap,
 	enemies,	// Array de los enemigos
 	items,		// Array de los items
-	npcList,
     jutsusList, // Array de los jutsus
 	world,		// Array de el mapa
 	collisionMap,
@@ -37,6 +37,9 @@ class Engine {
     
         // spriteMap
         spriteMap = fs.readFileSync('./Engine/Sprite/Mapa.txt', 'utf-8');
+
+        // Cargado el mundo
+        console.log("Completado: Se han cargado el mundo...");
     }
 
 /* ------------------------------ *
@@ -64,7 +67,6 @@ class Engine {
         return false;
     }
 
-
     // Actualiza la posicion
     updatePos (posX, posY, posMap) {
         console.log("updatePos X:"+ posX +"-"+ posY +"posMap"+ posMap.x +"-"+ posMap.y);
@@ -90,9 +92,50 @@ class Engine {
     }
 
 /* ------------------------------ *
-    FUNCIONES
+    FUNCIONES - NPC
 * ------------------------------ */
+    createNPC (dataNPC) {
+        let posMap = this.buscarIDMap(dataNPC.IDMap);
 
+        let posX = Math.floor((posMap.x * tileSize) + dataNPC.PosX);
+        let posY = Math.floor((posMap.y * tileSize) + dataNPC.PosY);
+
+        // Sprite Npc
+        let skinNpc = fs.readFileSync(`./Engine/Sprite/Npc/${dataNPC.Skin}`, 'utf-8');
+
+        let npc = new Npc(dataNPC, posX, posY, skinNpc);
+
+        return npc;
+    }
+
+    NPCCercanos (player, NPCs) {
+
+        let posWorld = player.getPosWorld();
+        let NPCCercanos = [];
+
+        console.log("3: "+ player.getPosWorld().x +" -- "+ player.getPosWorld().y);
+
+        let initPosWorld = {x: posWorld.x - ((32 * 3) / 2), y: posWorld.y - ((32 * 3) / 2)};
+        let endPosWorld = {x: posWorld.x + ((32 * 3) / 2), y: posWorld.y + ((32 * 3) / 2)};
+
+        for (let y = initPosWorld.y; y < endPosWorld.y; y++) {
+            for (let x = initPosWorld.x; x < endPosWorld.x; x++) {
+                NPCs.forEach((npc) => {
+                    let NPCPos = npc.getPos();
+                    
+                    if (NPCPos.x == x && NPCPos.y == y) {
+                        NPCCercanos.push(npc);
+                    }
+                });
+            }
+        }
+
+        return NPCCercanos;
+    }
+
+/* ------------------------------ *
+    FUNCIONES - PLAYER
+* ------------------------------ */
     createPlayer (idClient, results) {
         // Search position the player in the map
         let posMap = this.buscarIDMap(results[0].Nmap);
@@ -115,6 +158,8 @@ class Engine {
             posMap = this.buscarIDMap(player.getIDmap()),
             newPos = this.updatePos((pos.x + data.x), (pos.y + data.y), posMap);
 
+        console.log("1: "+ player.getPosWorld().x +" -- "+ player.getPosWorld().y);
+
         console.log("Player X: "+ Math.floor(pos.x + data.x) +" - "+ Math.floor(pos.y + data.y) +" idMap: "+ newPos.idMap +" dir: "+ data.dir);
 
         player.setPos(newPos.x, newPos.y);
@@ -122,7 +167,31 @@ class Engine {
         player.setIDMap(newPos.idMap);
         player.setPosWorld((posWorld.x + data.x), (posWorld.y + data.y));
 
-        //console.log(player.getPosWorld());
+        console.log("2: "+ player.getPosWorld().x +" -- "+ player.getPosWorld().y);
+    }
+
+    playersCercanos (player, players) {
+
+        let posWorld = player.getPosWorld();
+        let remotePlayers = [];
+
+        let initPosWorld = {x: posWorld.x - ((32 * 3) / 2), y: posWorld.y - ((32 * 3) / 2)};
+        let endPosWorld = {x: posWorld.x + ((32 * 3) / 2), y: posWorld.y + ((32 * 3) / 2)};
+
+        for (let y = initPosWorld.y; y < endPosWorld.y; y++) {
+            for (let x = initPosWorld.x; x < endPosWorld.x; x++) {
+                players.forEach((remotePlayer) => {
+                    if (player.getID() != remotePlayer.getID()) {
+                        let posNow = remotePlayer.posWorld;
+                        if (posNow.x == x && posNow.y == y) {
+                            remotePlayers.push(remotePlayer);
+                        }
+                    }
+                });
+            }
+        }
+
+        return remotePlayers;
     }
 
 /* ------------------------------ *

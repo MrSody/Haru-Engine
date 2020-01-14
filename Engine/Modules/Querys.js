@@ -42,9 +42,15 @@ const SQLSearchNinja =
 
         "from Ninja JOIN Ninja_Stats ON Ninja.ID_Pj = Ninja_Stats.ID_PJ JOIN Ninja_Jutsu ON Ninja.ID_Pj = Ninja_Jutsu.ID_Pj where Ninja.ID_Pj =?";
 
+const SQLSearchNpc =
+        "Select ID, Name, Health, Skin, Level, IDMap, PosX, PosY, Reaction, Events FROM Npc";
+
 const getSearchAccount = () => SQLSearchAccount;
 
 const getSearchNinja = () => SQLSearchNinja;
 
+const getSearchNpc = () => SQLSearchNpc;
+
 module.exports.getSearchAccount = getSearchAccount;
 module.exports.getSearchNinja = getSearchNinja;
+module.exports.getSearchNpc = getSearchNpc;

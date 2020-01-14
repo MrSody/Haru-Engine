@@ -93,6 +93,9 @@ let setEventHandlers = function() {
 
     // Carga la coliciones
     socket.on('map:collision', onInitCollisionMap);
+
+    // Carga los Npc's en el mapa
+    socket.on('npcs:newNpc', onNewNpc);
 }
 
 /*-------------------------------
@@ -178,62 +181,58 @@ function onNewRemotePlayer (data) {
 }
 
 function onCreateLocalPlayer (data) {
-    // Ocualta la pantalla de carga
-    $('#loading').addClass('Invisible');
-
-    // Muestra la interfaz principal
-    $('#hubPrincial').removeClass('Invisible');
-
     // Inicia un nuevo jugador en la clase jugador
     localPlayer = new LocalPlayer(data);
     console.log("Localplayer created");
 
-    // Declara el canvas y renderiza off
-    // Mapa Abajo
-    canvasCapaMapaAbajo = document.getElementById('capasMapaAbajo');
-    ctxCapaMapaAbajo = canvasCapaMapaAbajo.getContext('2d');
-    ctxCapaMapaAbajo.globalAlpha = 0.1;
-
-    // Personaje
-    canvasPersonaje = document.getElementById('capaPersonaje');
-    ctxPersonaje = canvasPersonaje.getContext('2d');
-    ctxPersonaje.globalAlpha = 0.1;
-
-    // Mapa Arriba
-    canvasCapaMapaArriba = document.getElementById('capasMapaArriba');
-    ctxCapaMapaArriba = canvasCapaMapaArriba.getContext('2d');
-    ctxCapaMapaArriba.globalAlpha = 0.1;
-
-    // Declare the canvas main and rendering context
-	canvas = document.getElementById("game");
-	ctx = canvas.getContext("2d");
-	ctx.globalAlpha = 0.1;
-
-	// Maximise the canvas
-	canvas.width = 1184;
-    canvas.height = 1184;
-
-    // REDIMENCIONA EL CANVAS
-    onResize();
+    renderingGame();
 }
 
 function onInitMap (data) {
-    // CARGA LAS CAPAS
-    clsMap.setCapas(data);
+    console.log("onInitMap");
+    clsMap = new Map(data);
 
     clsMap.getSpritesheet().onload = function() {
+
+        // Ocualta la pantalla de carga
+        if (!$('#loading').hasClass('Invisible')) {
+            $('#loading').addClass('Invisible');
+        }
+
+        // REDIMENCIONA EL CANVAS
+        onResize();
+
         // INICIA ANIMACION
         animate();
     };
 }
 
 function onMapData (data) {
-    clsMap = new Map(data);
+    console.log("onMapData");
+    // CARGA LAS CAPAS
+    clsMap.setCapas(data);
 }
 
 // Inicia las coliciones del map - 100%
 function onInitCollisionMap (data) {
     collisionMap = data.collisionMap;
+}
+
+// Npc's
+function onNewNpc (data) {
+
+    if (npcs.length == 0) {
+        npcs.push(new Npc(data));
+    } else {
+        npcs.forEach((npc) => {
+            if (data.id != npc.getID()) {
+                npcs.push(new Npc(data));
+            } else {
+                npcs.splice(0, npcs.length);
+                npcs.push(new Npc(data));
+            }
+        });
+    }
 }
 
 /*-------------------------------
@@ -266,11 +265,42 @@ function findPlayer (id) {
 /*-------------------------------
     Videojuego cargado
 *-------------------------------*/
+function renderingGame () {
+    // Muestra la interfaz principal
+    $('#hubPrincial').removeClass('Invisible');
+
+    // Declara el canvas y renderiza off
+    // Mapa Abajo
+    canvasCapaMapaAbajo = document.getElementById('capasMapaAbajo');
+    ctxCapaMapaAbajo = canvasCapaMapaAbajo.getContext('2d');
+    ctxCapaMapaAbajo.globalAlpha = 0.1;
+
+    // Personaje
+    canvasPersonaje = document.getElementById('capaPersonaje');
+    ctxPersonaje = canvasPersonaje.getContext('2d');
+    ctxPersonaje.globalAlpha = 0.1;
+
+    // Mapa Arriba
+    canvasCapaMapaArriba = document.getElementById('capasMapaArriba');
+    ctxCapaMapaArriba = canvasCapaMapaArriba.getContext('2d');
+    ctxCapaMapaArriba.globalAlpha = 0.1;
+
+    // Declare the canvas main and rendering context
+	canvas = document.getElementById("game");
+	ctx = canvas.getContext("2d");
+	ctx.globalAlpha = 0.1;
+
+	// Maximise the canvas
+	canvas.width = 1184;
+    canvas.height = 1184;
+}
+
+
 // Move player
 function onMovePlayer (data) {
     let player = findPlayer(data.id);
 
-    if (player) {        
+    if (player) {
         player.setPos(data.posWorld.x, data.posWorld.y);
         player.setDir(data.dir);
         player.setAbsPos(0, 0);
@@ -632,6 +662,16 @@ function draw () {
                 if (posNow.x == w && posNow.y == h) {
                     remotePlayer.draw(ctxPersonaje, posNow.x, posNow.y);
                     dañoJugador = remotePlayer;
+                }
+            }
+
+            // Dijbujar NPCs - new
+            for (let i = npcs.length; i-- > 0;) {
+                let npc = npcs[i],
+                    posNow = npc.posNow(middleTileX, middleTileY, posWorld);
+
+                if (posNow.x == w && posNow.y == h) {
+                    npc.draw(ctxPersonaje, posNow.x, posNow.y);
                 }
             }
             

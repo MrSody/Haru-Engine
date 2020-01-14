@@ -21,14 +21,12 @@ class Npc {
         this.frame = 0;
         this.dir = 2;
         
-        
 		this.finalDir;
 		this.moving = false;
 		this.movingDir;
 		this.path = [[]];
         this.stepCount = 0;
         this.absPos = {absX: 0, absY: 0};
-        
         
         this.posAttack = {x: 0, y: 0};
     }
@@ -230,7 +228,7 @@ class Npc {
         return false;
     }
 
-    Draw (ctx, posX, posY) {
+    draw (ctx, posX, posY) {
 
         const tileSize = 32;
         posX *= tileSize;

@@ -11,7 +11,6 @@ const app = express();
 const socketIO = require('socket.io');
 
 // CONNECTION TO DB
-
 const DBAdapter = require("./Engine/Modules/DBAdapters/MySQLDBAdapter");
 
 const conexion = DBAdapter();
@@ -51,7 +50,8 @@ const server = app.listen(app.get('port'), () => {
 * ------------------------------ */
 // CONSTANTES
 const io = socketIO(server);
-const Account = require('./Engine/Modules/Accounts/Account.js');
+//const Account = require('./Engine/Modules/Accounts/Account.js');
+const Querys = require('./Engine/Modules/Querys.js');
 const engineApi = require("./Engine/Engine").Engine;
 
 const engine = new engineApi(conexion);
@@ -75,6 +75,8 @@ function init () {
     });
 
     engine.init();
+    // Carga los NPCs
+    loadNPCs();
     setEventHandlers();
 }
 
@@ -86,7 +88,7 @@ function setEventHandlers () {
     // Connection
     io.sockets.on('connection', onSocketConnection);
 
-    io.sockets.on('disconnect',function(){ console.log('user disconnected'); });
+    //io.sockets.on('disconnect',function(){ console.log('user disconnected'); });
 };
 
 // New socket connection
@@ -116,12 +118,36 @@ function onSocketConnection (client) {
 	//client.on("logout", onLogout);
 }
 
+function loadNPCs () {
+
+    const { getSearchNpc } = Querys;
+
+    // Trae los NPCs de db
+    conexion.query(getSearchNpc(), (err, results) => {
+
+        if (!err) {
+
+            results.forEach((dataNPC) => {
+
+                npc = engine.createNPC(dataNPC);                
+
+                // Add new npc to the NPCs array
+                Npcs.push(npc);
+            });
+            console.log("Completado: Se han cargado todos los NPCs...");
+
+        } else {
+            console.log("Error: No se pudo cargar los NPCs - "+ err);
+        }
+    });
+}
+
 /* ------------------------------ *
     CONNECTIONS TO SERVER
 * ------------------------------ */
 function onAccountConnect (data) {
 
-    const { getSearchAccount } = Account;
+    const { getSearchAccount } = Querys;
     let toClient = this;
 
     console.log("Conectado al server "+ data.idAccount);
@@ -146,14 +172,14 @@ function onClientDisconnect () {
     let playerDisconnect = engine.playerById(this.id, players);
     let toClient = this;
 
-        console.log("se desconecto "+ playerDisconnect.getName());
+    console.log("se desconecto "+ playerDisconnect.getName());
 
-	    players.splice(players.indexOf(playerDisconnect), 1);
-        toClient.broadcast.emit('players:playerDisconnect', {id: playerDisconnect.getID()});
+	players.splice(players.indexOf(playerDisconnect), 1);
+    toClient.broadcast.emit('players:playerDisconnect', {id: playerDisconnect.getID()});
 }
 
 // PRUEBA
-
+/*
 function onLogout(data) {
 	var removePlayer = playerById(data.id);
 	this.broadcast.emit("new message", {player: removePlayer.getName(), text: "left the game", mode: "s"});
@@ -161,14 +187,14 @@ function onLogout(data) {
 	this.broadcast.emit("remove player", {id: data.id});
 	console.log("Player "+data.id+" logged out");
 };
-
+*/
 
 /* ------------------------------ *
     PLAYER
 * ------------------------------ */
 function onPlayerConnect (data) {
 
-    const { getSearchNinja } = Account;
+    const { getSearchNinja } = Querys;
     let toClient = this;
 
     conexion.query(getSearchNinja(), [data.idPlayer], (err, results) => {
@@ -185,13 +211,25 @@ function onPlayerConnect (data) {
                 toClient.emit('players:localPlayer', player);
 
                 // Send world-data to client
-                toClient.emit('map:data', {spritesheet: engine.getSpriteMap(), tileSize: engine.getTileSize()});
+                toClient.emit('map:init', {spritesheet: engine.getSpriteMap(), tileSize: engine.getTileSize()});
 
                 // Message the welcome to client
                 toClient.emit('chat:newMessage', {name: 'Server', mode: '', text: 'Bienvenido a P-MS'});
 
                 // Broadcast new player to connected socket clients
                 toClient.broadcast.emit('players:remotePlayer', player);
+                /*
+                players.forEach((remotePlayer) => {
+                    if (remotePlayer.getID() != toClient.id) {
+                        
+                        let playersRemote = engine.playersCercanos(remotePlayer, players);
+                        
+                        playersRemote.forEach((playerRemote) => {
+                            io.to(`${remotePlayer.getID()}`).emit('players:remotePlayer', playerRemote);
+                        });
+                    }
+                });
+                */
 
                 // Send players connected to new player
                 for (let playerRemote of players) {
@@ -199,6 +237,20 @@ function onPlayerConnect (data) {
                         toClient.emit('players:remotePlayer', playerRemote);
                     }
                 }
+                /*
+                let playerRemote = engine.playersCercanos(player, players);
+
+                playerRemote.forEach((remotePlayer) => {
+                    toClient.emit('players:remotePlayer', remotePlayer);
+                });
+                */
+
+                // Envia los Npc's del mapa al cliente
+                let NPCCercanos = engine.NPCCercanos(player, Npcs);
+
+                NPCCercanos.forEach((Npc) => {
+                    toClient.emit('npcs:newNpc', Npc);
+                });
 
             } else {
                 console.log("Error: No tiene datos el player: "+ data.idPlayer);
@@ -219,7 +271,15 @@ function onMovePlayer (data) {
         engine.movePlayer(player, data);
 
         // Broadcast updated position to connected socket clients
-        io.sockets.emit('player:move', {id: player.getID(), posWorld: player.getPosWorld(), dir: player.getDir()});
+        //io.sockets.emit('player:move', {id: player.getID(), posWorld: player.getPosWorld(), dir: player.getDir()});
+        io.emit('player:move', {id: player.getID(), posWorld: player.getPosWorld(), dir: player.getDir()});
+
+        // Envia los Npc's del mapa al cliente
+        let NPCCercanos = engine.NPCCercanos(player, Npcs);
+
+        NPCCercanos.forEach((Npc) => {
+            toClient.emit('npcs:newNpc', Npc);
+        });
 
     } else {
 		util.log("Player not found: "+ this.id);
@@ -262,10 +322,7 @@ function onNewMessage(data) {
     MAPA
 * ------------------------------ */
 function onMoveMap(data) {
-    let toClient = this;
-
-    // Find player in array
-	const player = engine.playerById(toClient.id, players);
+    let toClient = this, player = engine.playerById(toClient.id, players);
 
 	// Player found
 	if (player) {
@@ -277,7 +334,7 @@ function onMoveMap(data) {
         player.setSizeScreen(data.width, data.height);
 
         //Envia al cliente el mapa
-        toClient.emit('map:init', {capa1: map.capa1, capa2: map.capa2, capa3: map.capa3, capa4: map.capa4, capa5: map.capa5});
+        toClient.emit('map:data', {capa1: map.capa1, capa2: map.capa2, capa3: map.capa3, capa4: map.capa4, capa5: map.capa5});
 
         // Envia las colisiones
         toClient.emit('map:collision', {collisionMap: map.collision});
