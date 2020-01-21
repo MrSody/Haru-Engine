@@ -7,7 +7,7 @@ var fs = require('fs');
 /* ------------------------------ *
     VARIABLES
 * ------------------------------ */
-var	towers,
+let	towers,
     spriteMap,
 	enemies,	// Array de los enemigos
 	items,		// Array de los items
@@ -15,7 +15,7 @@ var	towers,
 	world,		// Array de el mapa
 	collisionMap,
 	worldSize,
-    tileSize; // Clase Jutsus
+    tileSize;
     
 const clsWorld = new World();
 
@@ -50,6 +50,15 @@ class Engine {
         for (let player of players) {
             if (player.getID() == ID) {
                 return player;
+            }
+        }
+        return false;
+    }
+
+    npcById (ID, NPCs) {
+        for (let npc of NPCs) {
+            if (npc.getID() == ID) {
+                return npc;
             }
         }
         return false;
@@ -96,7 +105,6 @@ class Engine {
 * ------------------------------ */
     createNPC (dataNPC) {
         let posMap = this.buscarIDMap(dataNPC.IDMap);
-
         let posX = Math.floor((posMap.x * tileSize) + dataNPC.PosX);
         let posY = Math.floor((posMap.y * tileSize) + dataNPC.PosY);
 
@@ -109,7 +117,6 @@ class Engine {
     }
 
     NPCCercanos (player, NPCs) {
-
         let posWorld = player.getPosWorld();
         let NPCCercanos = [];
 
@@ -170,30 +177,6 @@ class Engine {
         console.log("2: "+ player.getPosWorld().x +" -- "+ player.getPosWorld().y);
     }
 
-    playersCercanos (player, players) {
-
-        let posWorld = player.getPosWorld();
-        let remotePlayers = [];
-
-        let initPosWorld = {x: posWorld.x - ((32 * 3) / 2), y: posWorld.y - ((32 * 3) / 2)};
-        let endPosWorld = {x: posWorld.x + ((32 * 3) / 2), y: posWorld.y + ((32 * 3) / 2)};
-
-        for (let y = initPosWorld.y; y < endPosWorld.y; y++) {
-            for (let x = initPosWorld.x; x < endPosWorld.x; x++) {
-                players.forEach((remotePlayer) => {
-                    if (player.getID() != remotePlayer.getID()) {
-                        let posNow = remotePlayer.posWorld;
-                        if (posNow.x == x && posNow.y == y) {
-                            remotePlayers.push(remotePlayer);
-                        }
-                    }
-                });
-            }
-        }
-
-        return remotePlayers;
-    }
-
 /* ------------------------------ *
     GETTERS
 * ------------------------------ */
@@ -206,7 +189,7 @@ class Engine {
         return spriteMap;
     }
 
-    getMap (width, height) {
+    getMap (player, width, height) {
         const   pos = player.getPos(),
                 posMap = this.buscarIDMap(player.getIDmap());
 

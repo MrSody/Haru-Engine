@@ -46,25 +46,8 @@ class LocalPlayer extends Player {
 /* ------------------------------ *
     FUNCIONES
 * ------------------------------ */
-    /*
-    nextFrame () {
-        if (this.fightFrame == 2) {
-            this.fightFrame = 2;
-        } else {
-            this.fightFrame++;
-        }
-    }
-    */
 
-    nextFrame () {
-		if(this.frame < 3) {
-			this.frame++;
-		} else {
-			this.frame = 0;
-		}
-	}
-
-    playerMove (tileSize, dt) {
+    playerMove () {
         /*
         if(this.stepSnd.paused) {
             this.stepSnd.currentTime = 0;
@@ -109,26 +92,21 @@ class LocalPlayer extends Player {
                 this.absPos.absX = 0;
                 this.absPos.absY = 0;
             }
-            
-            this.setLastFrame(Math.round(this.speed * dt));
 
-            if (this.getLastFrame() >= tileSize) {
-                if (this.stepCount < this.path.length - 1 && !this.moveInterrupt) {
-                    this.stepCount++;
-                } else { // End of path
-                    if(this.goFight != null) {
-                        this.fighting = this.goFight;
-                        this.mode = 1;
-                    } else if(this.goToNpc != null) {
-                        this.talkingTo = this.goToNpc;
-                    }
-                    this.moving = false;
-                    this.path.splice(0, this.stepCount);
-                    //this.stepSnd.pause();
-                    this.stepCount = 0;
-                    //this.dir = this.finalDir;
-                    this.setLastFrame(0);
+            if (this.stepCount < this.path.length - 1 && !this.moveInterrupt) {
+                this.stepCount++;
+            } else { // End of path
+                if(this.goFight != null) {
+                    this.fighting = this.goFight;
+                    this.mode = 1;
+                } else if(this.goToNpc != null) {
+                    this.talkingTo = this.goToNpc;
                 }
+                this.moving = false;
+                this.path.splice(0, this.stepCount);
+                //this.stepSnd.pause();
+                this.stepCount = 0;
+                //this.dir = this.finalDir;
             }
         }
     }
@@ -137,7 +115,7 @@ class LocalPlayer extends Player {
     DRAW
 * ------------------------------ */
 
-    draw (ctx, cXnull, cYnull) {
+    draw (ctx, HUB, cXnull, cYnull) {
         const tileSize = 32;
         cXnull *= tileSize;
         cYnull *= tileSize;
@@ -149,14 +127,14 @@ class LocalPlayer extends Player {
             this.frame = 0;
         }
 
-        ctx.fillStyle = "#FFF";
-        ctx.font = "9pt Minecraftia";
-        //ctx.fillText(this.playerName, this.absPos["absX"] + cXnull, this.absPos["absY"] + cYnull-10);
-        //nuevo
-        ctx.fillText(this.name, cXnull, (cYnull - 16));
+        HUB.fillStyle = "#FFF";
+        HUB.font = "9pt Minecraftia";
+        // Muestra el nombre del player
+        HUB.fillText(this.name, cXnull, (cYnull - 20));
+
         if (this.mode == 0) {
             // Nuevo
-            ctx.drawImage(this.skinBase, this.frame * 64, this.dir * 48, 64, 48, (cXnull - 16), cYnull, 64, 48);
+            ctx.drawImage(this.skinBase, this.frame * 64, this.dir * 55, 64, 55, (cXnull - 16), (cYnull - 16), 64, 55);
             
         } else if (this.mode == 1) {
             //ctx.drawImage(this.skinBase, this.fightFrame*44, this.mode*44, 44, 44, this.absPos["absX"] + cXnull-5, this.absPos["absY"] + cYnull-5, 32, 32);

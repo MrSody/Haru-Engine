@@ -18,10 +18,9 @@
 - Eventos [
         0 = Ninguno =>
         1 = Guardia => Se pasea por una ruta definida
-        2 = Vendedor =>
-        3 = Mision =>
-        4 = Batalla =>
-        5 = Criatura =>
+        2 = Vendedor => Le vende articulos al jugador
+        3 = Mision => Le entrega misiones al jugador
+        4 = Boss => Tiene eventos predefinidos para el combate
     ]
 - Drop []
 */
@@ -36,7 +35,7 @@ class Npc {
         this.reaction = data.Reaction;
         this.events = data.events;
         
-        this.visionDistance = 2;
+        this.visionDistance = data.VisionDistance;
 
         /*
         this.move = false;

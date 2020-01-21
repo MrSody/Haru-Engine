@@ -1,13 +1,13 @@
 /*-------------------------------
-        Mundo Shinoby
+        ProjectMMO
     VERSION:    alpha
 *-------------------------------*/
 "use strict";
 /*-------------------------------
     Variables
 *-------------------------------*/
-let canvas,		// Canvas DOM elemento
-    ctx,		// Canvas contexto de representación
+let canvasHUB,		// Canvas DOM elemento
+    ctxHUB,		// Canvas contexto de representación
     // Capas
     canvasCapaMapaAbajo,
     ctxCapaMapaAbajo,
@@ -96,6 +96,9 @@ let setEventHandlers = function() {
 
     // Carga los Npc's en el mapa
     socket.on('npcs:newNpc', onNewNpc);
+
+    // Movimiento del Npc
+    socket.on('npc:move', onMoveNpc);
 }
 
 /*-------------------------------
@@ -111,7 +114,7 @@ function onSocketConnected () {
 }
 
 /*-------------------------------
-    Personajes
+    Personajes - HUB - Principal
 *-------------------------------*/
 // Muestra los personajes en la interface
 function onAccountCharacters (data) {
@@ -154,7 +157,7 @@ function selCharacter (...data) {
 }
 
 /*-------------------------------
-    Crear Personaje
+    Crear Personaje - HUB - Principal
 *-------------------------------*/
 function createCharacter (data) {
     // Oculta los personajes
@@ -189,7 +192,6 @@ function onCreateLocalPlayer (data) {
 }
 
 function onInitMap (data) {
-    console.log("onInitMap");
     clsMap = new Map(data);
 
     clsMap.getSpritesheet().onload = function() {
@@ -208,7 +210,6 @@ function onInitMap (data) {
 }
 
 function onMapData (data) {
-    console.log("onMapData");
     // CARGA LAS CAPAS
     clsMap.setCapas(data);
 }
@@ -262,6 +263,16 @@ function findPlayer (id) {
     return player;
 }
 
+function findNpc (id) {
+    for (let npc of npcs) {
+        if (npc.getID() == id) {
+            return npc;
+        }
+    }
+
+	return false;
+}
+
 /*-------------------------------
     Videojuego cargado
 *-------------------------------*/
@@ -285,16 +296,11 @@ function renderingGame () {
     ctxCapaMapaArriba = canvasCapaMapaArriba.getContext('2d');
     ctxCapaMapaArriba.globalAlpha = 0.1;
 
-    // Declare the canvas main and rendering context
-	canvas = document.getElementById("game");
-	ctx = canvas.getContext("2d");
-	ctx.globalAlpha = 0.1;
-
-	// Maximise the canvas
-	canvas.width = 1184;
-    canvas.height = 1184;
+    // Declare the canvas HUB and rendering context
+	canvasHUB = document.getElementById("game");
+	ctxHUB = canvasHUB.getContext("2d");
+	ctxHUB.globalAlpha = 0.1;
 }
-
 
 // Move player
 function onMovePlayer (data) {
@@ -303,7 +309,12 @@ function onMovePlayer (data) {
     if (player) {
         player.setPos(data.posWorld.x, data.posWorld.y);
         player.setDir(data.dir);
-        player.setAbsPos(0, 0);
+
+        if (localPlayer.getID() != player.getID()) {
+            player.setMoving(data.isMoving);
+        } else {
+            player.setAbsPos(0, 0);
+        }
     } else {
         console.log("MovePlayer - Player not found: "+ data.id);
     }
@@ -321,6 +332,18 @@ function onRemovePlayer (data) {
 
 	// Remove player from array
 	remotePlayers.splice(remotePlayers.indexOf(player), 1);
+}
+
+function onMoveNpc (data) {
+    let npc = findNpc(data.id);
+
+    if (npc) {        
+        npc.setPos(data.pos.x, data.pos.y);
+        npc.setDir(data.dir);
+        npc.setAbsPos(0, 0);
+    } else {
+        console.log("MoveNpc - Npc not found: "+ data.id);
+    }
 }
 
 function logout() {
@@ -409,8 +432,8 @@ function getClickedTile (e) {
 
 game.onclick = function (e) {
 	let tile = getClickedTile(e),
-        playerPosX = Math.round((canvas.width / 2) / 32),
-        playerPosY = Math.round((canvas.height / 2) / 32);
+        playerPosX = Math.round((canvasHUB.width / 2) / 32),
+        playerPosY = Math.round((canvasHUB.height / 2) / 32);
 
     console.log(tile);
     
@@ -489,6 +512,9 @@ document.onmousemove = function (e) {
     }
 }
 
+/*-------------------------------
+    Interface Game - HUB
+*-------------------------------*/
 function changeCharacter (mode) {
     clsInteface.changeCharacter(mode);
 }
@@ -496,7 +522,6 @@ function changeCharacter (mode) {
 /*-------------------------------
     GAME ANIMATION LOOP
 *-------------------------------*/
-
 let lastRender = Date.now(), lastFpsCycle = Date.now();
 function animate () {
 
@@ -507,60 +532,40 @@ function animate () {
         
         
         let dateNow = Date.now(),
-            delta = (dateNow - lastRender) / 1000;
-        
-        /*
-        update(delta);
-        draw();
-        event();
-        */
-        /*
-        update(delta);
-        draw();
-        event();
-        //update(delta);
-        */
+            delta = (dateNow - lastRender) / 1000;        
 
-        update(delta);
-        lastRender = dateNow;
         draw();
+        lastRender = dateNow;
+        update();
+        event();
 
         if(dateNow - lastFpsCycle > 1000){
             lastFpsCycle = dateNow;
             var fps = Math.round(1 / delta);
-            $(".text").html("FPS: "+ fps +" DELTA: "+ delta);
+            //$(".text").html("FPS: "+ fps +" DELTA: "+ delta);
         }
 
         // Request a new animation frame
         //window.requestAnimFrame(animate);
-    }, 100);
+    }, 200);
 }
 
 /*-------------------------------
     GAME UPDATE
 *-------------------------------*/
-function update (delta) {
+function update () {
     // Mover el player
 	if (localPlayer.isMoving()) {
 		let absPos = localPlayer.getAbsPos(),
             width = $(window).width(),
-            height = $(window).height(),
-            tileSize = clsMap.getTileSize();
+            height = $(window).height();
 
-        localPlayer.playerMove(tileSize, delta);
+        localPlayer.playerMove();
 
-        /*
-        if (localPlayer.getLastFrame() > tileSize) {
-            console.log("Dentro update");
-        */
-            socket.emit('player:move', {id: localPlayer.getID(), x: absPos.absX, y: absPos.absY, dir: localPlayer.getDir()});
+        socket.emit('player:move', {id: localPlayer.getID(), x: absPos.absX, y: absPos.absY, dir: localPlayer.getDir(), isMoving: localPlayer.isMoving()});
     
-            // Mover el MAPA
-            socket.emit('map:move', {width: width, height: height});
-        /*
-            localPlayer.setLastFrame(0);
-        }
-        */
+        // Mover el MAPA
+        socket.emit('map:move', {width: width, height: height});
 	}
     
     // Npc movimiento
@@ -582,7 +587,7 @@ function update (delta) {
     }
 }
 
-function event (delta) {
+function event () {
     let width = $('#game').outerWidth(),
         height = $('#game').outerHeight(),
         middleTileX = Math.round((width / 2) / 32),
@@ -593,29 +598,32 @@ function event (delta) {
     
     // Radio ataque Npc
     for (let i = npcs.length; i-- > 0;) {
-        let npc = npcs[i],
-            posNow = npc.posNow(middleTileX, middleTileY, posWorld);
-        
-        if (posNow && npc.isAggressive() && !npc.isMoving()) {
-            
-            let visionDistance = npc.getVisionDistance(),
-                initVisionX = posNow.x - visionDistance,
-                initVisionY = posNow.y - visionDistance,
-                endVisionX = initVisionX + (visionDistance * 2),
-                endVisionY = initVisionY + (visionDistance * 2);
-            
-            for (let y = initVisionY; y <= endVisionY; y++) {
-                let x = posNow.x - visionDistance;
-                for (; x <= endVisionX; x++) {
-                    if (x >= middleTileX && x <= middleTileX && y >= middleTileY && y <= middleTileY) {
+        let npc = npcs[i];
 
-                        let pathFinder = new Pathfinder(collisionMap, posNow, {x: middleTileX, y: middleTileY}),
-                            Mover = pathFinder.attack();
-                            
-                        console.log("El npc "+ npc.getName() +" Ataca a "+ localPlayer.getName() +"---"+ Mover);
+        if (!npc.isMoving()) {
+            let posNow = npc.posNow(middleTileX, middleTileY, posWorld);
+            
+            if (posNow && npc.isAggressive()) {
+                
+                let visionDistance = npc.getVisionDistance(),
+                    initVisionX = posNow.x - visionDistance,
+                    initVisionY = posNow.y - visionDistance,
+                    endVisionX = initVisionX + (visionDistance * 2),
+                    endVisionY = initVisionY + (visionDistance * 2);
+                
+                for (let y = initVisionY; y <= endVisionY; y++) {
+                    let x = posNow.x - visionDistance;
+                    for (; x <= endVisionX; x++) {
+                        if (x >= middleTileX && x <= middleTileX && y >= middleTileY && y <= middleTileY) {
 
-                        if (Mover.length > 0) {
-                            npc.setPath(Mover);
+                            let pathFinder = new Pathfinder(collisionMap, posNow, {x: middleTileX, y: middleTileY}),
+                                Mover = pathFinder.attack();
+                                
+                            console.log("El npc "+ npc.getName() +" Ataca a "+ localPlayer.getName() +"---"+ Mover);
+
+                            if (Mover.length > 0) {
+                                npc.setPath(Mover);
+                            }
                         }
                     }
                 }
@@ -628,8 +636,8 @@ function event (delta) {
     GAME DRAW
 *-------------------------------*/
 function draw () {
-    let width = canvas.width,
-        height = canvas.height,
+    let width = $('#game').outerWidth(),
+        height = $('#game').outerHeight(),
         middleTileX = Math.round((width / 2) / 32),
         middleTileY = Math.round((height / 2) / 32),
         posWorld = localPlayer.getPos(),
@@ -638,7 +646,7 @@ function draw () {
         absPos = localPlayer.getAbsPos();
 
     // Wipe the canvas clean
-    //ctx.clearRect(0, 0, width, height);
+    ctxHUB.clearRect(0, 0, width, height);
     ctxCapaMapaAbajo.clearRect(0, 0, width, height);
     ctxPersonaje.clearRect(0, 0, width, height);
     ctxCapaMapaArriba.clearRect(0, 0, width, height);
@@ -647,12 +655,9 @@ function draw () {
         for (let w = 0; w < maxTilesX; w++) {
             
             let dañoJugador;
-            
-            //if (localPlayer.isMoving()) {
-                // Dibuja capas inferiores
-                clsMap.drawMapDown(ctxCapaMapaAbajo, w, h);
-
-            //}
+                
+            // Dibuja capas inferiores
+            clsMap.drawMapDown(ctxCapaMapaAbajo, w, h);
 
             // Dibujar remote players
             for (let i = remotePlayers.length; i-- > 0;) {
@@ -660,7 +665,7 @@ function draw () {
                     posNow = remotePlayer.posNow(middleTileX, middleTileY, posWorld);
                 
                 if (posNow.x == w && posNow.y == h) {
-                    remotePlayer.draw(ctxPersonaje, posNow.x, posNow.y);
+                    remotePlayer.draw(ctxPersonaje, ctxHUB, posNow.x, posNow.y);
                     dañoJugador = remotePlayer;
                 }
             }
@@ -671,22 +676,17 @@ function draw () {
                     posNow = npc.posNow(middleTileX, middleTileY, posWorld);
 
                 if (posNow.x == w && posNow.y == h) {
-                    npc.draw(ctxPersonaje, posNow.x, posNow.y);
+                    npc.draw(ctxPersonaje, ctxHUB, posNow.x, posNow.y);
                 }
             }
-            
-            //if (localPlayer.isMoving()) {
-                // Draw local playeyer
-                if (middleTileX == w && middleTileY == h) {
-                    localPlayer.draw(ctxPersonaje, middleTileX, middleTileY);
-                }
-            //}
+                
+            // Draw local playeyer
+            if (middleTileX == w && middleTileY == h) {
+                localPlayer.draw(ctxPersonaje, ctxHUB, middleTileX, middleTileY);
+            }
 
-            //if (localPlayer.isMoving()) {
-                // Dibuja las capas superiores
-                //clsMap.drawMapUp(ctx, w, h);
-                clsMap.drawMapUp(ctxCapaMapaArriba, w, h);
-            //}
+            // Dibuja las capas superiores
+            clsMap.drawMapUp(ctxCapaMapaArriba, w, h);
         }
     }
 
@@ -694,7 +694,7 @@ function draw () {
 }
 
 // Browser window resize
-function onResize (e) {
+function onResize () {
     // REDIMENZIONAR MAPA
     let width = $(window).width(),
         height = $(window).height();
@@ -702,8 +702,8 @@ function onResize (e) {
     socket.emit('map:move', {width: width, height: height});
 
 	// Maximise the canvas
-	canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+	canvasHUB.width = window.innerWidth;
+    canvasHUB.height = window.innerHeight;
 
     canvasCapaMapaAbajo.width = window.innerWidth;
     canvasCapaMapaAbajo.height = window.innerHeight;
@@ -714,25 +714,10 @@ function onResize (e) {
     canvasCapaMapaArriba.width = window.innerWidth;
     canvasCapaMapaArriba.height = window.innerHeight;
 
-    $('#game').css({
-        width: $(window).width(),
-        height: $(window).height()
-    });
-
-    $('#capasMapaAbajo').css({
-        width: $(window).width(),
-        height: $(window).height()
-    });
-
-    $('#capaPersonaje').css({
-        width: $(window).width(),
-        height: $(window).height()
-    });
-
-    $('#capasMapaArriba').css({
-        width: $(window).width(),
-        height: $(window).height()
-    });
+    $('#game').css({ width: $(window).width(), height: $(window).height() });
+    $('#capasMapaAbajo').css({ width: $(window).width(), height: $(window).height() });
+    $('#capaPersonaje').css({ width: $(window).width(), height: $(window).height() });
+    $('#capasMapaArriba').css({ width: $(window).width(), height: $(window).height() });
 
     if (showMap) {
         //drawMap();

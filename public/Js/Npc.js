@@ -93,16 +93,16 @@ class Npc {
 		this.moving = true;
 
         // Check if on the way to attack
-		if ((this.goAttack || this.goToNpc) && this.stepCount==0) {
+		if ((this.goAttack || this.goToNpc) && this.stepCount == 0) {
 			// Face player towards enemy
 			if (this.path[this.path.length-1][0] > this.path[this.path.length-2][0]) {
-				this.finalDir=1;
+				this.finalDir = 1;
 			} else if (this.path[this.path.length-1][0] < this.path[this.path.length-2][0]) {
-				this.finalDir=3;
+				this.finalDir = 3;
 			} else if (this.path[this.path.length-1][1] > this.path[this.path.length-2][1]) {
-				this.finalDir=2;
+				this.finalDir = 2;
 			} else if (this.path[this.path.length-1][1] < this.path[this.path.length-2][1]) {
-				this.finalDir=0;
+				this.finalDir = 0;
 			}
 
 			// Remove last path element so player doesn't step on enemy
@@ -118,21 +118,7 @@ class Npc {
         let pathValue;
 
         // Check if on the way to attack
-		if ((this.goAttack || this.goToNpc) && this.stepCount==0) {
-			// Face player towards enemy
-			if (this.path[this.path.length-1][0] > this.path[this.path.length-2][0]) {
-				this.finalDir=1;
-			} else if (this.path[this.path.length-1][0] < this.path[this.path.length-2][0]) {
-				this.finalDir=3;
-			} else if (this.path[this.path.length-1][1] > this.path[this.path.length-2][1]) {
-				this.finalDir=2;
-			} else if (this.path[this.path.length-1][1] < this.path[this.path.length-2][1]) {
-				this.finalDir=0;
-			}
-
-			// Remove last path element so player doesn't step on enemy
-			this.path.pop();
-		}
+        this.setPath(this.path);
 
         // Path length is 1 i.e. when clicked on player position
 		if (this.path.length >= 1) {
@@ -228,19 +214,18 @@ class Npc {
         return false;
     }
 
-    draw (ctx, posX, posY) {
+    draw (ctx, HUB, cXnull, cYnull) {
 
         const tileSize = 32;
-        posX *= tileSize;
-        posY *= tileSize;
-        //ctx.fillStyle = "#001dff";
+        cXnull *= tileSize;
+        cYnull *= tileSize;
+
+        HUB.fillStyle = "#001dff";
+        HUB.font = "9pt Minecraftia";
+        // Muestra el nombre
+        HUB.fillText(this.name, cXnull, (cYnull - 32));
 
         // Posicion nueva
-        //ctx.fillRect((posX * 32), (posY * 32), 32, 32);
-
-        ctx.drawImage(this.skin, this.frame * 64, this.dir * 48, 64, 48, (posX - 16), (posY - 16), 64, 48);
-
-        //ctx.drawImage(this.skin, );
-		//ctx.drawImage(skin, 44, 0, 44, 44, x+cXnull, y+cYnull, 32, 32);
+        ctx.drawImage(this.skin, this.frame * 64, this.dir * 48, 64, 48, (cXnull - 16), (cYnull - 16), 64, 48);
 	}
 }

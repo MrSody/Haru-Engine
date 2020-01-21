@@ -45,7 +45,6 @@ class Player {
 		this.inventoryRow = 0;
 		this.inventoryBox = 0;
 		this.itemSlotsTaken = 0;
-		this.conversation = [];
 		this.lastHitPointUpdate = Date.now();
 		this.lastHitUpdate = Date.now();
 		this.lastFrameUpdate = Date.now();
@@ -85,15 +84,6 @@ class Player {
 		return this.fighting;
 	}
 
-	/////
-	getFrame () {
-		return this.frame;
-	}
-
-	getLastFrame () {
-		return this.lastFrame;
-	}
-
 /* ------------------------------ *
     SETTERS
 * ------------------------------ */
@@ -107,12 +97,16 @@ class Player {
 		this.dir = dir;
 	}
 
-	////////////////
-	setLastFrame (lastFrame) {
-		this.lastFrame = lastFrame? this.lastFrame + lastFrame : 0;
-	}
-
 /* ------------------------------ *
     FUNCIONES
 * ------------------------------ */
+
+	nextFrame () {
+		if(this.frame < 3) {
+			this.frame++;
+		} else {
+			this.frame = 0;
+		}
+	}
+
 }
