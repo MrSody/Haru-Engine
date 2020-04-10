@@ -4,7 +4,7 @@ const dataConnection = {
     host     : 'localhost',
     user     : 'root',
     password : '',
-    database : 'MundoShinobi1'
+    database : 'projectMMO'
 }
 
 const getConnection = function () {

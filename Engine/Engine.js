@@ -165,7 +165,7 @@ class Engine {
             posMap = this.buscarIDMap(player.getIDmap()),
             newPos = this.updatePos((pos.x + data.x), (pos.y + data.y), posMap);
 
-        console.log("1: "+ player.getPosWorld().x +" -- "+ player.getPosWorld().y);
+        console.log("antes: "+ player.getPosWorld().x +" -- "+ player.getPosWorld().y);
 
         console.log("Player X: "+ Math.floor(pos.x + data.x) +" - "+ Math.floor(pos.y + data.y) +" idMap: "+ newPos.idMap +" dir: "+ data.dir);
 
@@ -174,7 +174,7 @@ class Engine {
         player.setIDMap(newPos.idMap);
         player.setPosWorld((posWorld.x + data.x), (posWorld.y + data.y));
 
-        console.log("2: "+ player.getPosWorld().x +" -- "+ player.getPosWorld().y);
+        console.log("ahora: "+ player.getPosWorld().x +" -- "+ player.getPosWorld().y);
     }
 
 /* ------------------------------ *

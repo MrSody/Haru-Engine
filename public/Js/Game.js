@@ -311,7 +311,7 @@ function onMovePlayer (data) {
         player.setDir(data.dir);
 
         if (localPlayer.getID() != player.getID()) {
-            player.setMoving(data.isMoving);
+            player.setMode(data.mode);
         } else {
             player.setAbsPos(0, 0);
         }
@@ -512,6 +512,39 @@ document.onmousemove = function (e) {
     }
 }
 
+
+document.onkeydown = function (e) {
+    if (!$('#hubPrincial').hasClass('Invisible')) {
+        //alert("tecla "+ e.keyCode);
+
+        if (!$("#Mensaje").is(":focus")) {
+
+            let keyCode = e.keyCode;
+
+            // Shift - Correr
+            if (keyCode == 16) {
+                localPlayer.setRun(true);
+            }
+        }
+    }
+}
+
+document.onkeyup = function (e) {
+    if (!$('#hubPrincial').hasClass('Invisible')) {
+        //alert("tecla "+ e.keyCode);
+
+        if (!$("#Mensaje").is(":focus")) {
+
+            let keyCode = e.keyCode;
+
+            // Shift - Deja de correr
+            if (keyCode == 16) {
+                localPlayer.setRun(false);
+            }
+        }
+    }
+}
+
 /*-------------------------------
     Interface Game - HUB
 *-------------------------------*/
@@ -562,7 +595,7 @@ function update () {
 
         localPlayer.playerMove();
 
-        socket.emit('player:move', {id: localPlayer.getID(), x: absPos.absX, y: absPos.absY, dir: localPlayer.getDir(), isMoving: localPlayer.isMoving()});
+        socket.emit('player:move', {id: localPlayer.getID(), x: absPos.absX, y: absPos.absY, dir: localPlayer.getDir(), mode: localPlayer.getMode()});
     
         // Mover el MAPA
         socket.emit('map:move', {width: width, height: height});
@@ -599,6 +632,8 @@ function event () {
     // Radio ataque Npc
     for (let i = npcs.length; i-- > 0;) {
         let npc = npcs[i];
+
+        console.log("El npc se mueve "+ npc.isMoving());
 
         if (!npc.isMoving()) {
             let posNow = npc.posNow(middleTileX, middleTileY, posWorld);
@@ -689,8 +724,6 @@ function draw () {
             clsMap.drawMapUp(ctxCapaMapaArriba, w, h);
         }
     }
-
-    //ctx.drawImage(canvasOffCapaMapaAbajo, 0, 0);
 }
 
 // Browser window resize

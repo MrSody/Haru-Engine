@@ -8,13 +8,14 @@ class Player {
         
 		this.pos = {x: datos.posWorld.x, y: datos.posWorld.y};
 		
-		this.lastFrame = 0;
-
-		////////////////////////
-
 		this.dir = 2;
 		this.frame = 0;
 		this.path = [[]];
+		this.moving = false;
+		this.mode = 0, // 0 = parado, 1 = caminando, 2 = corriendo, 3 = fighting;
+
+		////////////////////////
+
 		this.speed = 480;
 
 		//this.sound = new SoundManager();
@@ -23,9 +24,7 @@ class Player {
 		this.finalDir;
 		this.fightFrame = 0;
 		this.convPos = 0;
-		this.moving = false;
 		this.movingDir;
-		this.mode = 0, // 0 = normal, 1 = fighting;
 		this.hitSpeed = 960;
 		this.lastStrike = 0;
 		this.moveInterrupt = false;
@@ -76,6 +75,10 @@ class Player {
 		return this.dir;
 	}
 
+	getMode () {
+		return this.mode;
+	}
+
     isMoving () {
 		return this.moving;
 	}
@@ -109,4 +112,32 @@ class Player {
 		}
 	}
 
+	updateFrame () {
+		if (this.mode == 0 && (Date.now() - this.lastFrameUpdate > 300)) {
+			this.lastFrameUpdate = Date.now();
+			this.nextFrame();
+		} else if (this.mode > 0 && (Date.now() - this.lastFrameUpdate > 150)) {
+			this.lastFrameUpdate = Date.now();
+			this.nextFrame();
+		}
+	}
+
+	drawMode (ctx, cXnull, cYnull) {
+		const spriteWidth = 64, spriteHeight = 55;
+
+		switch (this.mode) {
+            case 0: //Parado
+                ctx.drawImage(this.skinBase, this.frame * spriteWidth, ((this.dir * spriteHeight) + ((spriteHeight * 4) * this.mode)), spriteWidth, spriteHeight, (cXnull - 16), (cYnull - 16), spriteWidth, spriteHeight);
+                break;
+			case 1: //Caminado
+                ctx.drawImage(this.skinBase, this.frame * spriteWidth, ((this.dir * spriteHeight) + ((spriteHeight * 4) * this.mode)), spriteWidth, spriteHeight, (cXnull - 16), (cYnull - 16), spriteWidth, spriteHeight);
+                break;
+            case 2: //Corriendo
+                ctx.drawImage(this.skinBase, this.frame * spriteWidth, ((this.dir * spriteHeight) + ((spriteHeight * 4) * this.mode)), spriteWidth, spriteHeight, (cXnull - 16), (cYnull - 16), spriteWidth, spriteHeight);
+                break;
+            default:
+                console.log("Error: No hay mode del personaje");
+                break;
+        }
+	}
 }

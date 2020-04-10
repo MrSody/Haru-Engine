@@ -2,6 +2,7 @@ class LocalPlayer extends Player {
     constructor (datos) {
         super(datos);
         this.absPos = {absX: 0, absY: 0};
+        this.goRun = false;
     }
 
 /* ------------------------------ *
@@ -10,6 +11,10 @@ class LocalPlayer extends Player {
 
     getAbsPos () {
         return this.absPos;
+    }
+
+    isRunning () {
+        return this.goRun;
     }
 
 /* ------------------------------ *
@@ -21,9 +26,19 @@ class LocalPlayer extends Player {
         this.absPos.absY = absY;
     }
 
+    setRun (running) {
+        this.goRun = running;
+    }
+
     setPath (path) {
 		this.path = path;
-		this.moving = true;
+        this.moving = true;
+        
+        if (this.goRun) {
+            this.mode = 2;
+        } else {
+            this.mode = 1;
+        }
 
         // Check if on the way to attack
 		if ((this.goAttack || this.goToNpc) && this.stepCount == 0) {
@@ -47,22 +62,12 @@ class LocalPlayer extends Player {
     FUNCIONES
 * ------------------------------ */
 
-    playerMove () {
-        /*
-        if(this.stepSnd.paused) {
-            this.stepSnd.currentTime = 0;
-            this.stepSnd.play();
-        }
-        */
-
-        // Check if on the way to attack
-        this.setPath(this.path);
-
+    playerWalking () {
         // Path length is 1 i.e. when clicked on player position
         if (this.path.length >= 1) {
             if (this.stepCount != 0) {
 
-                var posX = this.path[this.stepCount][0],
+                let posX = this.path[this.stepCount][0],
                     posY = this.path[this.stepCount][1],
                     lastPosX = this.path[this.stepCount - 1][0],
                     lastPosY = this.path[this.stepCount - 1][1];
@@ -98,17 +103,139 @@ class LocalPlayer extends Player {
             } else { // End of path
                 if(this.goFight != null) {
                     this.fighting = this.goFight;
-                    this.mode = 1;
+                    this.mode = 3;
                 } else if(this.goToNpc != null) {
                     this.talkingTo = this.goToNpc;
                 }
                 this.moving = false;
+                this.mode = 0;
                 this.path.splice(0, this.stepCount);
                 //this.stepSnd.pause();
                 this.stepCount = 0;
                 //this.dir = this.finalDir;
             }
         }
+    }
+
+    playerRunning () {
+        // Path length is 1 i.e. when clicked on player position
+        if (this.path.length >= 1) {
+            if (this.stepCount != 0) {
+
+                let lastCount;
+
+                if (this.stepCount - 1 == 0) {
+                    lastCount = this.stepCount - 1;
+                } else {
+                    lastCount = this.stepCount - 2;
+                }
+
+                let posX = this.path[this.stepCount][0],
+                    posY = this.path[this.stepCount][1],
+                    lastPosX = this.path[lastCount][0],
+                    lastPosY = this.path[lastCount][1];
+
+                if (posX < lastPosX) { // Left
+                    if (posY < lastPosY) {
+                        this.dir = 3;
+                        this.absPos.absX = -1;
+                        this.absPos.absY = -1;
+                    } else if (posY > lastPosY) {
+                        this.dir = 3;
+                        this.absPos.absX = -1;
+                        this.absPos.absY = 1;
+                    } else {
+                        this.dir = 3;
+                        this.absPos.absX = -2;
+                        this.absPos.absY = 0;
+                    }
+
+                } else if(posX > lastPosX) { // Right
+                    if (posY < lastPosY) {
+                        this.dir = 1;
+                        this.absPos.absX = 1;
+                        this.absPos.absY = -1;
+                    } else if (posY > lastPosY) {
+                        this.dir = 1;
+                        this.absPos.absX = 1;
+                        this.absPos.absY = 1;
+                    } else {
+                        this.dir = 1;
+                        this.absPos.absX = 2;
+                        this.absPos.absY = 0;
+                    }
+
+                } else if(posY < lastPosY) { // Up
+                    if (posY < lastPosY) {
+                        this.dir = 0;
+                        this.absPos.absX = 1;
+                        this.absPos.absY = -1;
+                    } else if (posY > lastPosY) {
+                        this.dir = 0;
+                        this.absPos.absX = -1;
+                        this.absPos.absY = -1;
+                    } else {
+                        this.dir = 0;
+                        this.absPos.absX = 0;
+                        this.absPos.absY = -2;
+                    }
+
+                } else if(posY > lastPosY) { // Down
+                    if (posY < lastPosY) {
+                        this.dir = 2;
+                        this.absPos.absX = 1;
+                        this.absPos.absY = 1;
+                    } else if (posY > lastPosY) {
+                        this.dir = 2;
+                        this.absPos.absX = -1;
+                        this.absPos.absY = 1;
+                    } else {
+                        this.dir = 2;
+                        this.absPos.absX = 0;
+                        this.absPos.absY = 2;
+                    }
+                }
+            } else {
+                this.absPos.absX = 0;
+                this.absPos.absY = 0;
+            }
+
+            if (this.stepCount < this.path.length - 1 && !this.moveInterrupt) {
+                this.stepCount += 2;
+            }
+        }
+    }
+
+    playerMove () {
+        /*
+        if(this.stepSnd.paused) {
+            this.stepSnd.currentTime = 0;
+            this.stepSnd.play();
+        }
+        */
+
+        // Check if on the way to attack
+        this.setPath(this.path);
+
+        switch (this.mode) {
+            case 1:
+                this.playerWalking();
+                break;
+            case 2:
+                if (((this.path.length - 1) - this.stepCount) > 0) {
+                    this.playerRunning();
+                } else {
+                    if (this.stepCount == this.path.length) {
+                        this.path.splice(0, this.stepCount - 2);
+                        this.stepCount = 0;
+                        this.setRun(false);
+                        this.playerWalking();
+                    } else {
+                        this.setRun(true);
+                    }
+                }
+                break;
+        }  
     }
 
 /* ------------------------------ *
@@ -120,26 +247,14 @@ class LocalPlayer extends Player {
         cXnull *= tileSize;
         cYnull *= tileSize;
 
-        if (this.moving && (Date.now() - this.lastFrameUpdate > 150)) {
-            this.lastFrameUpdate = Date.now();
-            this.nextFrame();
-        } else if (!this.moving) {
-            this.frame = 0;
-        }
+        this.updateFrame();
 
         HUB.fillStyle = "#FFF";
         HUB.font = "9pt Minecraftia";
         // Muestra el nombre del player
         HUB.fillText(this.name, cXnull, (cYnull - 20));
 
-        if (this.mode == 0) {
-            // Nuevo
-            ctx.drawImage(this.skinBase, this.frame * 64, this.dir * 55, 64, 55, (cXnull - 16), (cYnull - 16), 64, 55);
-            
-        } else if (this.mode == 1) {
-            //ctx.drawImage(this.skinBase, this.fightFrame*44, this.mode*44, 44, 44, this.absPos["absX"] + cXnull-5, this.absPos["absY"] + cYnull-5, 32, 32);
-        }
-        //ctx.drawImage(this.playersprite, this.frame*42, this.dir*43, 42, 43, this.absPos["absX"] + cXnull, this.absPos["absY"] + cYnull, 32, 32);
+        this.drawMode(ctx, cXnull, cYnull);
 
         let hitDelta = Date.now() - this.lastHitPointUpdate;
 

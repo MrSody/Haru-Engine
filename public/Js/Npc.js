@@ -205,6 +205,7 @@ class Npc {
                 for(var x = 0, intX = posIntX; intX <= posEndX; intX++, x++) {
 
                     if (posNpc.x == intX && posNpc.y == intY) {
+                        console.log("dentro posNow");
                         return {x: x, y: y};
                     }
                 }

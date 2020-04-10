@@ -11,8 +11,8 @@ class RemotePlayer extends Player {
 SETTERS
 * ------------------------------ */
 
-    setMoving (moving) {
-        this.moving = moving;
+    setMode (mode) {
+        this.mode = mode;
     }
 
 /* ------------------------------ *
@@ -50,12 +50,7 @@ SETTERS
         cXnull *= tileSize;
         cYnull *= tileSize;
 
-        if (this.moving && (Date.now() - this.lastFrameUpdate > 150)) {
-            this.lastFrameUpdate = Date.now();
-            this.nextFrame();
-        } else if (!this.moving) {
-            this.frame = 0;
-        }
+        this.updateFrame();
 
         HUB.fillStyle = "#FFF";
         HUB.font = "9pt Minecraftia";
@@ -67,14 +62,7 @@ SETTERS
         HUB.fillStyle="#FF0000";
         HUB.fillRect(cXnull, cYnull - 30, 40, 2);
 
-        if (this.mode == 0) {
-            //nuevo
-            ctx.drawImage(this.skinBase, this.frame * 64, this.dir * 55, 64, 55, (cXnull - 16), (cYnull - 16), 64, 55);
-
-        } else if (this.mode == 1) {
-            ctx.drawImage(this.skinBase, this.fightFrame*44, this.mode*44, 44, 44, this.absPos["absX"] + cXnull-5, this.absPos["absY"] + cYnull-5, 32, 32);
-        }
-        //ctx.drawImage(this.playersprite, this.frame*42, this.dir*43, 42, 43, this.absPos["absX"] + cXnull, this.absPos["absY"] + cYnull, 32, 32);
+        this.drawMode(ctx, cXnull, cYnull);
 
         let hitDelta = Date.now() - this.lastHitPointUpdate;
 

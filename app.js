@@ -242,12 +242,12 @@ function onMovePlayer (data) {
 
 	// Player not found
 	if (player) {
+        console.log("Dentro MovePlayer "+ data.x +" -- "+ data.y);
         // Update player position
         engine.movePlayer(player, data);
 
         // Broadcast updated position to connected socket clients
-        //io.sockets.emit('player:move', {id: player.getID(), posWorld: player.getPosWorld(), dir: player.getDir()});
-        io.emit('player:move', {id: player.getID(), posWorld: player.getPosWorld(), dir: player.getDir(), isMoving: data.isMoving});
+        io.emit('player:move', {id: player.getID(), posWorld: player.getPosWorld(), dir: player.getDir(), mode: data.mode});
 
         // Envia los Npc's del mapa al cliente
         let NPCCercanos = engine.NPCCercanos(player, Npcs);
@@ -302,7 +302,6 @@ function onMoveMap(data) {
 
 	// Player found
 	if (player) {
-        console.log("Actualizo mapa");
         // Actualiza la posicion del jugador en la pantalla
         player.setSizeScreen(data.width, data.height);
 
