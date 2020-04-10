@@ -1,0 +1,79 @@
+<!-- Estilos -->
+<link rel="stylesheet" href="css/login-prueba.scss">
+
+   <!-- Formularios -->
+    <div class="contenedor-formularios">
+        <!-- Links de los formularios -->
+        <ul class="contenedor-tabs">
+            <li class="tab tab-segunda active"><a href="#iniciar-sesion">Iniciar Sesión</a></li>
+            <li class="tab tab-primera"><a href="#registrarse">Registrarse</a></li>
+        </ul>
+
+        <!-- Contenido de los Formularios -->
+        <div class="contenido-tab">
+            <!-- Iniciar Sesion -->
+            <div id="iniciar-sesion">
+                <h1>Iniciar Sesión</h1>
+                <form action="/login" method="post">
+                    <div class="contenedor-input">
+                        <label>
+                            Usuario <span class="req">*</span>
+                        </label>
+                        <input id="usLogin" name="usLogin" type="text" required>
+                    </div>
+
+                    <div class="contenedor-input">
+                        <label>
+                            Contraseña <span class="req">*</span>
+                        </label>
+                        <input id="clave" name="claveLogin" type="password" required>
+                    </div>
+                    <p class="forgot"><a href="#">Se te olvidó la contraseña?</a></p>
+                    <input type="submit" class="button button-block" value="Iniciar Sesión">
+                    <!-- <input type="submit" class="button button-block" value="Iniciar Sesión" onclick="loginsesion()"> -->
+                </form>
+            </div>
+
+            <!-- Registrarse -->
+            <div id="registrarse">
+                <h1>Registrarse</h1>
+                <form action="/registro" method="post">
+                    <div class="fila-arriba">
+                        <div class="contenedor-input">
+                            <label>
+                                NickName <span class="req">*</span>
+                            </label>
+                            <input type="text" name="nickName" required >
+                        </div>
+                    </div>
+                    <div class="contenedor-input">
+                        <label>
+                            Usuario <span class="req">*</span>
+                        </label>
+                        <input type="text" name="us" required>
+                    </div>
+                    <div class="contenedor-input">
+                            <label>
+                                Email <span class="req">*</span>
+                            </label>
+                        <input type="email" name="correo" required>
+                    </div>
+                    <div class="contenedor-input">
+                        <label>
+                            Contraseña <span class="req">*</span>
+                        </label>
+                        <input type="password" name="clave" required>
+                    </div>
+
+                    <div class="contenedor-input">
+                        <label>
+                            Repetir Contraseña <span class="req">*</span>
+                        </label>
+                        <input type="password" name="clave2" required>
+                    </div>
+
+                    <input type="submit" class="button button-block" value="Registrarse">
+                </form>
+            </div>
+        </div>
+    </div>

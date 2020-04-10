@@ -22,6 +22,7 @@ let canvasHUB,		// Canvas DOM elemento
     clsJutsus, // Clase jutsus
     clsInteface = new Interface(),
     clsMap,
+
 	quests,
 	items,
 	npcs = [],
@@ -49,7 +50,7 @@ window.onload = function() {
 	$("#chat").mCustomScrollbar({ autoHideScrollbar: true, });
 
     // Fialize chatlog scrollbar
-	//simpleScroll.init("chat");
+    //simpleScroll.init("chat");
 }
 
 // GAME EVENT HANDLERS
@@ -109,51 +110,22 @@ function onSocketConnected () {
     clsInteface.loadScreen();
 
     // Tell game server client connected
-    var idAccount = prompt("id del pj");
-	socket.emit('account:connected', {idAccount: idAccount});
+    var idAccount = document.querySelector('#ID');
+    socket.emit('account:connected', {idAccount: idAccount.value});
 }
 
 /*-------------------------------
-    Personajes - HUB - Principal
+    HUB - Personajes
 *-------------------------------*/
-// Muestra los personajes en la interface
 function onAccountCharacters (data) {
-    // Ocualta la pantalla de carga
-    $('#loading').addClass('Invisible');
-
-    // Muestra la pantalla de los personajes
-    $('#personajes').removeClass('Invisible');
-
-    let maxPj = 5, html;
-
-    selCharacter(data[0].id, data[0].skinBase, data[0].nombre, data[0].statFuerza, data[0].statAgilidad, data[0].statInteligencia, data[0].statSellos, data[0].statResistencia, data[0].statVitalidad, data[0].statDestreza, data[0].statPercepcion);
-
-    data.forEach((Pj) => {
-
-        let dataPJ = [Pj.id, Pj.skinBase, Pj.nombre, Pj.statFuerza, Pj.statAgilidad, Pj.statInteligencia, Pj.statSellos, Pj.statResistencia, Pj.statVitalidad, Pj.statDestreza, Pj.statPercepcion];
-
-        html += clsInteface.accountCharacters(dataPJ);
-    });
-
-    for (let count = (data.length + 1); count <= maxPj; count++) {
-        html += clsInteface.accountNewCharacter(count, data[0].id);
-    }
-
-    $('#listPersonajes').append(html);
+    clsInteface.onAccountCharacters(data);
 }
+
 
 function selCharacter (...data) {
     let [id, skinBase, nombre, statFuerza, statAgilidad, statInteligencia, statSellos, statResistencia, statVitalidad, statDestreza, statPercepcion] = data;
-
-    $('#characters_Skin').replaceWith(`<div id="characters_Skin" style="margin-top: 15%; margin-left: 40%;"><img src="../sprites/Player/Base/${skinBase}.png" style="width: 150px;"></div>`);
-    $('#characters_BtnGetInGame').replaceWith(`<div id="characters_BtnGetInGame" class="mx-auto" style="width: 50%; margin-top: 10%;"><button onclick="getInGame(${id});" style="width: 100%;">Entrar al mundo</button></div>`);
-
-    $('#characters_Name').replaceWith(`<div id="characters_Name"><b>Nombre: ${nombre}</b></div>`);
-    $('#characters_Rank').replaceWith(`<div id="characters_Rank"><b>Rango: rango</b></div>`);
-
-    atributos.series[0].update({
-        data: [statFuerza, statAgilidad, statInteligencia, statSellos, statResistencia, statVitalidad, statDestreza, statPercepcion]
-    });
+    
+    clsInteface.selCharacter(id, skinBase, nombre, statFuerza, statAgilidad, statInteligencia, statSellos, statResistencia, statVitalidad, statDestreza, statPercepcion);
 }
 
 /*-------------------------------
@@ -161,7 +133,7 @@ function selCharacter (...data) {
 *-------------------------------*/
 function createCharacter (data) {
     // Oculta los personajes
-    $('#personajes').addClass('Invisible');
+    clsInteface.addClass('#personajes', 'Invisible');
 
     alert("crear pj "+ data);
 }
@@ -170,23 +142,20 @@ function createCharacter (data) {
     Iniciar videojuego
 *-------------------------------*/
 function getInGame (data) {
-    // Oculta los personajes
-    $('#personajes').addClass('Invisible');
-
-    clsInteface.loadScreen();
+    // Oculta los personajes y muestra la pantalla de carga
+    clsInteface.loadScreen('#personajes', 'Invisible');
 
     socket.emit('player:connected', {idPlayer: data});
 }
 
+// Initialise new remote player
 function onNewRemotePlayer (data) {
-	// Initialise new remote player
 	remotePlayers.push(new RemotePlayer(data));
 }
 
+// Initialise new local player
 function onCreateLocalPlayer (data) {
-    // Inicia un nuevo jugador en la clase jugador
     localPlayer = new LocalPlayer(data);
-    console.log("Localplayer created");
 
     renderingGame();
 }
@@ -221,7 +190,6 @@ function onInitCollisionMap (data) {
 
 // Npc's
 function onNewNpc (data) {
-
     if (npcs.length == 0) {
         npcs.push(new Npc(data));
     } else {
@@ -278,7 +246,7 @@ function findNpc (id) {
 *-------------------------------*/
 function renderingGame () {
     // Muestra la interfaz principal
-    $('#hubPrincial').removeClass('Invisible');
+    clsInteface.removeClass('#hubPrincial', 'Invisible');
 
     // Declara el canvas y renderiza off
     // Mapa Abajo
@@ -751,8 +719,4 @@ function onResize () {
     $('#capasMapaAbajo').css({ width: $(window).width(), height: $(window).height() });
     $('#capaPersonaje').css({ width: $(window).width(), height: $(window).height() });
     $('#capasMapaArriba').css({ width: $(window).width(), height: $(window).height() });
-
-    if (showMap) {
-        //drawMap();
-    }
 }

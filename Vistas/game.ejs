@@ -18,7 +18,9 @@
     </head>
 <body>
     <!-- Area Juego -->
-    <div id="Contenedor">        
+    <div id="Contenedor">
+
+      <input type="hidden" id="ID" value="<%= ID %>">
 
         <!--<canvas id="game" class="Invisible" style="height: 120px; width: 200px; position: absolute;"></canvas>
         <canvas id="bgGame" class="Invisible" style="height: 120px; width: 200px;"></canvas>-->
@@ -77,7 +79,8 @@
     <!--<script src="public/js/DropMove.js"></script>-->
     <!-- MODULOS -->
     <!-- INTERFACE -->
-    <script src="../js/Interface.js"></script>
+    <script src="../Js/Interface.js"></script>
+
     <!-- PLAYER -->
     <!--
     <script src="../js/Player-new.js"></script>
@@ -105,7 +108,7 @@
     <script src="../js/AttackDistance.js"></script>
     -->
     <!--<script type="application/javascript" src="../js/game.js"></script>-->
-    <script type="application/javascript" src="../Js/Game.js"></script>
+    <script src="../Js/Game.js"></script>
     <!--<script src="../js/jquery-1.9.1.min.js"></script>-->
     <script src="../js/jquery.mCustomScrollbar.concat.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>

@@ -8,90 +8,17 @@
 
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-
-        <style>
-            body{
-                /*background-image: url('../img/Bg-pagina.png');*/
-                background: url('../img/Bg-pagina.png') 50% 0 no-repeat;
-                -webkit-background-size: auto;
-                position: relative;
-                /*overflow: hidden;*/
-            }
-
-            #cont-logo{
-                padding-top: 26rem!important;
-            }
-
-            header .menu {
-                width: 624px;
-                height: 65px;
-                position: absolute;
-                bottom: -1px;
-                left: 12px;
-                /*background: url(../images/layout/menu-bg.jpg?v=3) no-repeat;*/
-            }
-
-            header .menu {
-                width: 624px;
-                height: 65px;
-                position: absolute;
-                bottom: -1px;
-                left: 12px;
-            }
-
-            ol, ul {
-                list-style-type: none;
-            }
-
-            header .menu li, header .menu li a {
-                display: block;
-                width: 104px;
-                height: 90px;
-                margin: 0;
-                color: #a99877;
-                font: normal 12px "Arial", sans-serif;
-                text-transform: uppercase;
-                text-shadow: 0 1px 0 #000, 0 0 5px #000;
-            }
-
-            header .menu li {
-                float: left;
-            }
-
-            header .menu .crop-img {
-                max-width: 100%;
-                overflow: hidden;
-                margin: 0 auto;
-                padding: 0;
-                position: relative;
-            }
-
-            header .menu .crop-img img {
-                display: block;
-                max-width: none !important;
-            }
-
-            div.crop-img {
-  max-width: 100%;
-  overflow: hidden;
-  margin: 0 auto;
-  padding: 0;
-  position: relative;
-}
-div.crop-img img {
-  display: block;
-  max-width: none !important;
-}
-
-        </style>
-
     </head>
     <body>
-        <div class="container">
+        <% if (ID > 0) { %>
+            <h2><%= ID %></h2>
+            <form action="/game" method="POST">
+                <input type="hidden" name="id" value="<%= ID %>">
+                <input type="submit">
+            </form>
+        <% } %>
 
-            <% include partials/cabezera.ejs %>
-            <h1 style="float: center;">Hola index</h1>
-        </div>
+        <%- include partials/login.ejs %>
 
         <!-- Optional JavaScript -->
         <!-- jQuery first, then Popper.js, then Bootstrap JS -->

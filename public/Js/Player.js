@@ -10,7 +10,6 @@ class Player {
 		
 		this.dir = 2;
 		this.frame = 0;
-		this.path = [[]];
 		this.moving = false;
 		this.mode = 0, // 0 = parado, 1 = caminando, 2 = corriendo, 3 = fighting;
 
@@ -33,7 +32,6 @@ class Player {
 		this.goToNpc = false;
 		this.fighting = false;
 		this.playerAttacksEnemyID = null;
-		this.bgPos = {x: 0, y: 0};
 		this.moveAmount = 2;
 		this.strength = 50;
 		this.gotHit = false;

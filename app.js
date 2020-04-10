@@ -18,14 +18,19 @@ const conexion = DBAdapter();
 const routes = require('./Routes/routes');
 const routesApi = require('./Routes/routes-api');
 
+const bodyParser = require('body-parser');
+
 /* ------------------------------ *
     CONFIGURATIONS
 * ------------------------------ */
 app.set('appName', 'P-MS');
-//app.set('port', process.env.PORT || 3000);
-app.set('port', 3030);
+app.set('port', process.env.PORT || 3000);
+//app.set('port', 3030);
 app.set('views', __dirname + '/Vistas');
 app.set('view engine', 'ejs');
+
+//extended: false significa que parsea solo string (no archivos de imagenes por ejemplo)
+app.use(bodyParser.urlencoded({ extended: false }));
 
 // Bring public files - Trae los archivos publicos
 app.use(express.static(__dirname +'/public'));
@@ -44,9 +49,15 @@ const server = app.listen(app.get('port'), () => {
     console.log('server funcionado en puerto: ', app.get('port'), '\nNombre: ', app.get('appName'));
 });
 
+app.get("/game", (req, res) => {
+    console.log("dentro en game");
+    init();
+});
+
 /* ------------------------------ *
     SERVER GAME
 * ------------------------------ */
+
 // CONSTANTES
 const io = socketIO(server);
 const Querys = require('./Engine/Modules/Querys.js');
@@ -104,7 +115,9 @@ function onSocketConnection (client) {
     client.on('npc:move', onMoveNpc);
 
 	// Listen for logout
-	//client.on("logout", onLogout);
+    //client.on("logout", onLogout);
+    
+    client.on('login', onLogin);
 }
 
 function loadNPCs () {
@@ -134,6 +147,11 @@ function loadNPCs () {
 /* ------------------------------ *
     CONNECTIONS TO SERVER
 * ------------------------------ */
+
+function onLogin (data) {
+    Console.log("onLogin "+ data);
+}
+
 function onAccountConnect (data) {
 
     const { getSearchAccount } = Querys;
@@ -184,6 +202,7 @@ function onLogout(data) {
 /* ------------------------------ *
     PLAYER
 * ------------------------------ */
+
 function onPlayerConnect (data) {
 
     const { getSearchNinja } = Querys;
@@ -292,7 +311,6 @@ function onNewMessage(data) {
 	}
     */
 }
-
 /* ------------------------------ *
     MAPA
 * ------------------------------ */
@@ -318,7 +336,6 @@ function onMoveMap(data) {
 		return;
 	}
 }
-
 /* ------------------------------ *
     NPC
 * ------------------------------ */

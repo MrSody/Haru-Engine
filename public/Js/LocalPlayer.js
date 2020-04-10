@@ -3,6 +3,8 @@ class LocalPlayer extends Player {
         super(datos);
         this.absPos = {absX: 0, absY: 0};
         this.goRun = false;
+
+        this.path = [[]];
     }
 
 /* ------------------------------ *
