@@ -33,7 +33,7 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // Bring public files - Trae los archivos publicos
-app.use(express.static(__dirname +'/public'));
+app.use(express.static(__dirname +'/Public'));
 
 /* ------------------------------ *
     ROUTES
@@ -131,10 +131,8 @@ function loadNPCs () {
 
             results.forEach((dataNPC) => {
 
-                npc = engine.createNPC(dataNPC);                
-
-                // Add new npc to the NPCs array
-                Npcs.push(npc);
+                // Add new npc
+                engine.createNPC(dataNPC);
             });
             console.log("Completado: Se han cargado todos los NPCs...");
 
@@ -177,27 +175,13 @@ function onClientDisconnect () {
     let toClient = this;
 
     try {
-        let playerDisconnect = engine.playerById(this.id, players);
+        let playerDisconnect = engine.playerDisconnect(this.id);
 
-        console.log("se desconecto "+ playerDisconnect.getName());
-
-	    players.splice(players.indexOf(playerDisconnect), 1);
         toClient.broadcast.emit('players:playerDisconnect', {id: playerDisconnect.getID()});
     } catch (error) {
         console.log("ERROR "+ error);
     }
 }
-
-// PRUEBA
-/*
-function onLogout(data) {
-	var removePlayer = playerById(data.id);
-	this.broadcast.emit("new message", {player: removePlayer.getName(), text: "left the game", mode: "s"});
-	players.splice(players.indexOf(removePlayer), 1);
-	this.broadcast.emit("remove player", {id: data.id});
-	console.log("Player "+data.id+" logged out");
-};
-*/
 
 /* ------------------------------ *
     PLAYER
@@ -213,15 +197,16 @@ function onPlayerConnect (data) {
         if (!err) {
             if (results.length > 0) {
 
-                player = engine.createPlayer(toClient.id, results);
+                // Add new player
+                let dataPlayers = engine.createPlayer(toClient.id, results);
 
-                console.log("Conectado al server "+ player.getName());
+                console.log("Conectado al server "+ dataPlayers.player.getName());
 
                 // Add new player to the players array
                 players.push(player);
 
                 // Send information to client
-                toClient.emit('players:localPlayer', player);
+                toClient.emit('players:localPlayer', dataPlayers.player);
 
                 // Send world-data to client
                 toClient.emit('map:init', {spritesheet: engine.getSpriteMap(), tileSize: engine.getTileSize()});
@@ -230,17 +215,17 @@ function onPlayerConnect (data) {
                 toClient.emit('chat:newMessage', {name: 'Server', mode: '', text: 'Bienvenido a P-MS'});
 
                 // Broadcast new player to connected socket clients
-                toClient.broadcast.emit('players:remotePlayer', player);
+                toClient.broadcast.emit('players:remotePlayer', dataPlayers.player);
 
                 // Send players connected to new player
-                for (let playerRemote of players) {
+                for (let playerRemote of dataPlayers.players) {
                     if (playerRemote.getID() != toClient.id) {
                         toClient.emit('players:remotePlayer', playerRemote);
                     }
                 }
 
                 // Envia los Npc's del mapa al cliente
-                let NPCCercanos = engine.NPCCercanos(player, Npcs);
+                let NPCCercanos = engine.NPCCercanos(dataPlayers.player);
 
                 NPCCercanos.forEach((Npc) => {
                     toClient.emit('npcs:newNpc', Npc);
@@ -257,7 +242,8 @@ function onPlayerConnect (data) {
 
 // Player has moved
 function onMovePlayer (data) {
-    let toClient = this, player = engine.playerById(this.id, players);
+    let toClient = this,
+        player = engine.playerById(this.id);
 
 	// Player not found
 	if (player) {
@@ -279,44 +265,20 @@ function onMovePlayer (data) {
 		util.log("Player not found: "+ this.id);
 		return;
 	};
-
-	// Check if player stepped on an item
-	//var item = getItem(movePlayer.getAbsX(), movePlayer.getAbsY());
-    //console.log(item);
-	//if(item) {
-		//io.sockets.emit("item taken", {x: item[0], y: item[1], type: item[2], change: item[3], id: data.id});
-		//movePlayer.takeItem(item[2], item[3]);
-		//removeItem(movePlayer.getAbsX(), movePlayer.getAbsY());
-	//}
 }
 
 function onNewMessage(data) {
     let toClient = this,
-        player = engine.playerById(toClient.id, players);
+        player = engine.playerById(toClient.id);
 
     io.emit('chat:newMessage', {name: data.name, mode: '', text: data.text});
-
-    /*
-	if(data.chatTo){
-		var chatTo = playerByName(data.chatTo);
-		if (data.mode == "w" && chatTo) {
-			io.to(chatTo.id).emit("new message", {player: player.name, text: data.text, mode: data.mode});
-		}
-		else if (!chatTo) {
-			this.emit("new message", {player: data.chatTo, text: "Player " + data.chatTo + " doesn't exist!", mode: "s"});
-		}
-	}
-	else {
-		io.sockets.emit("new message", {player: player.name, text: data.text, mode: data.mode});
-	}
-    */
 }
 /* ------------------------------ *
     MAPA
 * ------------------------------ */
 function onMoveMap(data) {
     let toClient = this,
-        player = engine.playerById(toClient.id, players);
+        player = engine.playerById(toClient.id);
 
 	// Player found
 	if (player) {
@@ -341,7 +303,7 @@ function onMoveMap(data) {
 * ------------------------------ */
 //socket.emit('npc:move', {id: npc.getID(), x: absPos.absX, y: absPos.absY, dir: npc.getDir()});
 function onMoveNpc (data) {
-    let npc = engine.npcById(data.id, Npcs);
+    let npc = engine.npcById(data.id);
 
 	// Player not found
 	if (npc) {

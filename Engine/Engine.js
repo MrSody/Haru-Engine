@@ -19,6 +19,9 @@ let	towers,
     
 const clsWorld = new World();
 
+let players = [],	// Array de los jugadores conectados
+	npcs = [];  // Array de los NPC
+
 class Engine {
 
     // Inizializa
@@ -46,7 +49,7 @@ class Engine {
     FUNCIONES DE AYUDA
 * ------------------------------ */
     // SEARCH THE PLAYER FOR THE ID - 100%
-    playerById (ID, players) {
+    playerById (ID) {
         for (let player of players) {
             if (player.getID() == ID) {
                 return player;
@@ -55,8 +58,8 @@ class Engine {
         return false;
     }
 
-    npcById (ID, NPCs) {
-        for (let npc of NPCs) {
+    npcById (ID) {
+        for (let npc of npcs) {
             if (npc.getID() == ID) {
                 return npc;
             }
@@ -111,12 +114,10 @@ class Engine {
         // Sprite Npc
         let skinNpc = fs.readFileSync(`./Engine/Sprite/Npc/${dataNPC.Skin}`, 'utf-8');
 
-        let npc = new Npc(dataNPC, posX, posY, skinNpc);
-
-        return npc;
+        npcs.push(new Npc(dataNPC, posX, posY, skinNpc));
     }
 
-    NPCCercanos (player, NPCs) {
+    NPCCercanos (player) {
         let posWorld = player.getPosWorld();
         let NPCCercanos = [];
 
@@ -127,7 +128,7 @@ class Engine {
 
         for (let y = initPosWorld.y; y < endPosWorld.y; y++) {
             for (let x = initPosWorld.x; x < endPosWorld.x; x++) {
-                NPCs.forEach((npc) => {
+                npcs.forEach((npc) => {
                     let NPCPos = npc.getPos();
                     
                     if (NPCPos.x == x && NPCPos.y == y) {
@@ -153,9 +154,11 @@ class Engine {
         // Sprite player
         let skinBase = fs.readFileSync(`./Engine/Sprite/Player/Base/${results[0].skinBase}.txt`, 'utf-8');
 
-        let player = new Player(idClient, results[0], posX, posY, "", skinBase, "");
+        let player =  new Player(idClient, results[0], posX, posY, skinBase, "");
 
-        return player;
+        players.push(player);
+
+        return {player: player, players: players};
     }
 
     movePlayer (player, data) {
@@ -177,10 +180,19 @@ class Engine {
         console.log("ahora: "+ player.getPosWorld().x +" -- "+ player.getPosWorld().y);
     }
 
+    playerDisconnect (id) {
+        let player = this.playerById(id);
+
+        console.log("se desconecto "+ player.getName());
+
+        players.splice(players.indexOf(player), 1);
+        
+        return player;
+    }
+
 /* ------------------------------ *
     GETTERS
 * ------------------------------ */
-
     getTileSize () {
         return tileSize;
     }

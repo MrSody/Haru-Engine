@@ -37,7 +37,7 @@ router.post('/registro', (req, res) => {
 });
 
 function getAccount (res, user, password) {
-    conexion.query("select * from Cuenta where Usuario=? and Clave=?", [user, password], (err, results) => {
+    conexion.query("select * from Cuenta where NickName=? and Clave=?", [user, password], (err, results) => {
 
         if (!err) {
             if (results.length > 0) {

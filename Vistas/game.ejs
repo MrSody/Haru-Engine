@@ -3,7 +3,8 @@
     <head>
         <meta charset="UTF-8">
         <title>P - MS: Juego</title>
-        <link rel="stylesheet" type="text/css" href="../css/Style_Juego.css">
+
+        <link rel="stylesheet" type="text/css" href="../Game/Css/Style_Juego.css">
         <!--
         <link rel="stylesheet" href="../css/jquery.mCustomScrollbar.css"/>
         -->
@@ -75,40 +76,28 @@
     <script src="https://code.highcharts.com/modules/export-data.js"></script>
 
     
-    <script src="../Js/Pathfinder.js"></script>
+    <script src="../Game/Js/Modules/IA/Pathfinder.js"></script>
     <!--<script src="public/js/DropMove.js"></script>-->
     <!-- MODULOS -->
     <!-- INTERFACE -->
-    <script src="../Js/Interface.js"></script>
+    <script src="../Game/Js/Modules/HUB/Interface.js"></script>
 
     <!-- PLAYER -->
-    <!--
-    <script src="../js/Player-new.js"></script>
-    <script src="../js/LocalPlayer.js"></script>
-    -->
-    <script src="../Js/Player.js"></script>
-    <script src="../Js/LocalPlayer.js"></script>
-    <script src="../Js/RemotePlayer.js"></script>
-    <!--
-    <script src="../js/InvocationPlayer.js"></script>
-    -->
+    <script src="../Game/Js/Modules/Entities/Player.js"></script>
+    <script src="../Game/Js/Modules/Entities/LocalPlayer.js"></script>
+    <script src="../Game/Js/Modules/Entities/RemotePlayer.js"></script>
+
     <!-- NPC -->
-    <script src="../Js/Npc.js"></script>
-    <!-- JUTSU -->
-    <!--
-    <script src="../js/Jutsu.js"></script>
-     -->
+    <script src="../Game/Js/Modules/World/Npc.js"></script>
+
     <!-- MAP -->
-    <!--
-    <script src="../js/Map.js"></script>
-    -->
-    <script src="../Js/Map.js"></script>
-    <!-- ATTACK DISTANCE -->
-    <!--
-    <script src="../js/AttackDistance.js"></script>
-    -->
-    <!--<script type="application/javascript" src="../js/game.js"></script>-->
-    <script src="../Js/Game.js"></script>
+    <script src="../Game/Js/Modules/Entities/Map.js"></script>
+
+    <script src="../Game/Js/helpFunction.js"></script>
+    <script src="../Game/Js/Modules/HUB/Chat.js"></script>
+    <script src="../Game/Js/Modules/HUB/Keyboard.js"></script>
+    <script src="../Game/Js/Modules/HUB/Mouse.js"></script>
+    <script src="../Game/Js/Game.js"></script>
     <!--<script src="../js/jquery-1.9.1.min.js"></script>-->
     <script src="../js/jquery.mCustomScrollbar.concat.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
@@ -139,154 +128,6 @@
 		//init();
 
 	</script>
-
-	<script>
-        let atributos = Highcharts.chart('attribute', {
-
-          chart: {
-            polar: true,
-            type: 'area'
-          },
-
-          title: {
-            text: ''
-          },
-
-          pane: {
-            size: '100%'
-          },
-
-          legend: {
-                enabled: false
-            },
-
-          xAxis: {
-            categories: ['Fuerza', 'Agilidad', 'Inteligencia', 'Sellos', 'Resistencia', 'Vitalidad', 'Destreza', 'Percepcion'],
-            tickmarkPlacement: 'on',
-            gridLineWidth: 2,
-            lineWidth: 0,
-            max: 8,
-            labels: {
-                enabled: false
-            }
-          },
-
-          yAxis: {
-            gridLineInterpolation: 'polygon',
-            lineWidth: 1,
-            min: 0,
-            max: 5,
-            minorGridLineColor: '#E0E0E0',
-            minorGridLineWidth: 2,
-            minorTickLength: 1,
-            minorTickInterval: 1
-          },
-
-          exporting: { enabled: false },
-
-          credits: {enabled: false},
-
-          tooltip: {
-            shared: true,
-            pointFormat: '<span style="color:{series.color}">{point.y:,.0f} / 5</b><br/>'
-          },
-
-          plotOptions: {
-                series: {
-                    dataLabels: {
-                        enabled: true,
-                        crop: true,
-                        format: '{y} / 5',
-                  }
-                },
-                area: {
-                  fillOpacity: 0.7
-                },
-            },
-
-          series: [{
-            data: [4, 1, 5, 3, 2, 1, 0, 5],
-            pointPlacement: 'on'
-            //color: '#FF0000'
-          }]
-
-        });
-    </script>
-
-
-    <script>
-        let atributos1 = Highcharts.chart('attribute1', {
-
-          chart: {
-            polar: true,
-            type: 'area'
-          },
-
-          title: {
-            text: ''
-          },
-
-          pane: {
-            size: '90%'
-          },
-
-          legend: {
-                enabled: false
-            },
-
-          xAxis: {
-            categories: ['Fuerza', 'Agilidad', 'Inteligencia', 'Sellos', 'Resistencia', 'Vitalidad', 'Destreza', 'Percepcion'],
-            tickmarkPlacement: 'on',
-            gridLineWidth: 2,
-            lineWidth: 0,
-            max: 8,
-            labels: {
-                enabled: false
-            }
-          },
-
-          yAxis: {
-            gridLineInterpolation: 'polygon',
-            lineWidth: 1,
-            min: 0,
-            max: 5,
-            minorGridLineColor: '#E0E0E0',
-            minorGridLineWidth: 2,
-            minorTickLength: 1,
-            minorTickInterval: 1
-          },
-
-          exporting: { enabled: false },
-
-          credits: {enabled: false},
-
-          tooltip: {
-            shared: true,
-            pointFormat: '<span style="color:{series.color}">{point.y:,.0f} / 5</b><br/>'
-          },
-
-          plotOptions: {
-                series: {
-                    dataLabels: {
-                        enabled: true,
-                        crop: true,
-                        format: '{y} / 5',
-                  }
-                },
-                area: {
-                  fillOpacity: 0.7
-                },
-            },
-
-          series: [{
-            data: [4, 1, 5, 3, 2, 1, 0, 5],
-            pointPlacement: 'on'
-            //color: '#FF0000'
-          }]
-
-        });
-    </script>
-
 
 </body>
 </html>
