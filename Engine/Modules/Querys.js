@@ -1,36 +1,35 @@
-const SQLSearchAccount =
-    "Select "+
-    "Ninja.ID_PJ as id, "+
-    "Ninja.Nombre as nombre, "+
-    "Ninja.A_Base as skinBase, "+
-    "Ninja.A_Pelo as skinPelo, "+
-    "from Ninja where ID_Cuenta=?";
+class Querys {
+	constructor () {}
 
-const SQLSearchNinja =
-        "Select " +
-        // Ninja
-        "Ninja.ID_Pj as id, "+
-        "Ninja.Nombre as nombre, "+
-        "Ninja.A_Base as skinBase, "+
-        "Ninja.A_Pelo as skinPelo, "+
-        "Ninja.Salud as salud, "+
-        "Ninja.Nivel as nivel, "+
-        "Ninja.Xp as xp, "+
-        "Ninja.Dinero as dinero, "+
-        "Ninja.N_map as Nmap, "+
-        "Ninja.X as X, "+
-        "Ninja.Y as Y, "+
-        "from Ninja where Ninja.ID_Pj =?";
+    getSearchAccount () {
+        return  "Select "+
+				"Personaje.ID_PJ as id, "+
+				"Personaje.Nombre as nombre, "+
+				"Personaje.A_Base as skinBase, "+
+				"Personaje.A_Pelo as skinPelo, "+
+				"from Personaje where ID_Cuenta=?";
+	}
+	
+	getSearchCharacter () {
+		return	"Select " +
+				// Personaje
+				"Personaje.ID_Pj as id, "+
+				"Personaje.Nombre as nombre, "+
+				"Personaje.A_Base as skinBase, "+
+				"Personaje.A_Pelo as skinPelo, "+
+				"Personaje.Salud as salud, "+
+				"Personaje.Nivel as nivel, "+
+				"Personaje.Xp as xp, "+
+				"Personaje.Dinero as dinero, "+
+				"Personaje.N_map as Nmap, "+
+				"Personaje.X as X, "+
+				"Personaje.Y as Y, "+
+				"from Personaje where Personaje.ID_Pj =?";
+	}
 
-const SQLSearchNpc =
-        "Select ID, Name, Health, Skin, Level, IDMap, PosX, PosY, Reaction, Events, VisionDistance, Phrases FROM Npc";
+	getSearchNpc () {
+		return `Select ID, Name, Health, Skin, Level, IDMap, PosX, PosY, Reaction, Events, VisionDistance, Phrases FROM Npc`;
+	}
+}
 
-const getSearchAccount = () => SQLSearchAccount;
-
-const getSearchNinja = () => SQLSearchNinja;
-
-const getSearchNpc = () => SQLSearchNpc;
-
-module.exports.getSearchAccount = getSearchAccount;
-module.exports.getSearchNinja = getSearchNinja;
-module.exports.getSearchNpc = getSearchNpc;
+module.exports.Querys = Querys;

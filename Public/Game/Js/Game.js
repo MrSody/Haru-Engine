@@ -107,8 +107,7 @@ function onSocketConnected () {
     clsInteface.loadScreen();
 
     // Tell game server client connected
-    var idAccount = document.querySelector('#ID');
-    socket.emit('account:connected', {idAccount: idAccount.value});
+    socket.emit('account:connected', {idAccount: document.querySelector('#ID').value});
 }
 
 /*-------------------------------

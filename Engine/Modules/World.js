@@ -174,7 +174,7 @@ class World {
                 map[mapY][mapX] = capa[y + mapY][x + mapX];
             }
         }
-
+	
         return map;
     }
 

@@ -16,7 +16,6 @@ const conexion = DBAdapter();
 
 // RUTAS
 const routes = require('./Routes/routes');
-const routesApi = require('./Routes/routes-api');
 
 const bodyParser = require('body-parser');
 
@@ -39,7 +38,6 @@ app.use(express.static(__dirname +'/Public'));
     ROUTES
 * ------------------------------ */
 app.use(routes);
-app.use("/api", routesApi);
 
 app.get("*", (req, res) => {
     res.end("Archivo no encontrado")
@@ -60,10 +58,11 @@ app.get("/game", (req, res) => {
 
 // CONSTANTES
 const io = socketIO(server);
-const Querys = require('./Engine/Modules/Querys.js');
+const Querys = require('./Engine/Modules/Querys').Querys;
 const engineApi = require("./Engine/Engine").Engine;
 
 const engine = new engineApi();
+const query = new Querys();
 
 //VARIABLES
 let players = [],	// Array de los jugadores conectados
@@ -121,11 +120,8 @@ function onSocketConnection (client) {
 }
 
 function loadNPCs () {
-
-    const { getSearchNpc } = Querys;
-
     // Trae los NPCs de db
-    conexion.query(getSearchNpc(), (err, results) => {
+    conexion.query(query.getSearchNpc(), (err, results) => {
 
         if (!err) {
 
@@ -137,7 +133,7 @@ function loadNPCs () {
             console.log("Completado: Se han cargado todos los NPCs...");
 
         } else {
-            console.log("Error: No se pudo cargar los NPCs - "+ err);
+            console.log("Error - loadNPCs: No se pudo cargar los NPCs - "+ err);
         }
     });
 }
@@ -151,21 +147,19 @@ function onLogin (data) {
 }
 
 function onAccountConnect (data) {
-
-    const { getSearchAccount } = Querys;
     let toClient = this;
 
     //find account connect
-    conexion.query(getSearchAccount(), [data.idAccount], (err, results) => {
+    conexion.query(query.getSearchAccount(), [data.idAccount], (err, results) => {
 
         if (!err) {
             if (results.length > 0) {
                 toClient.emit('account:characters', results);
             } else {
-                console.log("Error: "+ data.idAccount +" no existe");
+                console.log("Error - onAccountConnect: "+ data.idAccount +" no existe");
             }
         } else {
-            console.log("Error: "+ data.idAccount +" no esta en base de datos");
+            console.log("Error - onAccountConnect: "+ data.idAccount +" no esta en base de datos");
         }
     });
 }
@@ -179,7 +173,7 @@ function onClientDisconnect () {
 
         toClient.broadcast.emit('players:playerDisconnect', {id: playerDisconnect.getID()});
     } catch (error) {
-        console.log("ERROR "+ error);
+        console.log("ERROR - onClientDisconnect: "+ error);
     }
 }
 
@@ -188,11 +182,9 @@ function onClientDisconnect () {
 * ------------------------------ */
 
 function onPlayerConnect (data) {
-
-    const { getSearchNinja } = Querys;
     let toClient = this;
 
-    conexion.query(getSearchNinja(), [data.idPlayer], (err, results) => {
+    conexion.query(query.getSearchNinja(), [data.idPlayer], (err, results) => {
 
         if (!err) {
             if (results.length > 0) {
