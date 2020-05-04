@@ -1,6 +1,5 @@
 class Player {
     constructor (id, datos, posX, posY, skinBase, skinPelo) {
-        console.log(datos);
         this.id = id;
 		// Datos Basicos
         this.IDpj = datos.id;

@@ -123,7 +123,7 @@ function loadNPCs () {
             results.forEach((dataNPC) => {
 
                 // Add new npc
-                engine.createNPC(dataNPC);
+                engine.addNPC(dataNPC);
             });
             console.log("Completado: Se han cargado todos los NPCs...");
 
@@ -185,12 +185,12 @@ function onPlayerConnect (data) {
             if (results.length > 0) {
 
                 // Add new player
-                let dataPlayers = engine.createPlayer(toClient.id, results);
+                let player = engine.addPlayer(toClient.id, results);
 
-                console.log("Conectado al server "+ dataPlayers.player.getName());
+                console.log("Conectado al server "+ player.getName());
 
                 // Send information to client
-                toClient.emit('players:localPlayer', dataPlayers.player);
+                toClient.emit('players:localPlayer', player);
 
                 // Send world-data to client
                 toClient.emit('map:init', {spritesheet: engine.getSpriteMap(), tileSize: engine.getTileSize()});
@@ -199,10 +199,10 @@ function onPlayerConnect (data) {
                 toClient.emit('chat:newMessage', {name: 'Server', mode: '', text: 'Bienvenido a P-MS'});
 
                 // Broadcast new player to connected socket clients
-                toClient.broadcast.emit('players:remotePlayer', dataPlayers.player);
+                toClient.broadcast.emit('players:remotePlayer', player);
 
                 // Send players connected to new player
-                for (let playerRemote of dataPlayers.players) {
+                for (let playerRemote of engine.getPlayers()) {
                     if (playerRemote.getID() != toClient.id) {
                         toClient.emit('players:remotePlayer', playerRemote);
                     }

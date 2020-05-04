@@ -68,12 +68,12 @@ class Engine {
     }
 
     // BUSCAR IDMAPA EN EL MUNDO - 100%
-    buscarIDMap (IDmap) {
-        var x, y;
-        for(y = 0; y < worldSize; y++) {
-            x = world[y].indexOf(IDmap);
-            if(x != -1) {
-                return {x: x, y: y};
+    searchIDMap (IDmap) {
+        let X, Y;
+        for(Y = 0; Y < worldSize; Y++) {
+            X = world[Y].indexOf(IDmap);
+            if(X != -1) {
+                return {x: X, y: Y};
             }
         }
         return false;
@@ -106,8 +106,8 @@ class Engine {
 /* ------------------------------ *
     FUNCIONES - NPC
 * ------------------------------ */
-    createNPC (dataNPC) {
-        let posMap = this.buscarIDMap(dataNPC.IDMap);
+    addNPC (dataNPC) {
+        let posMap = this.searchIDMap(dataNPC.IDMap);
         let posX = Math.floor((posMap.x * tileSize) + dataNPC.PosX);
         let posY = Math.floor((posMap.y * tileSize) + dataNPC.PosY);
 
@@ -144,9 +144,9 @@ class Engine {
 /* ------------------------------ *
     FUNCIONES - PLAYER
 * ------------------------------ */
-    createPlayer (idClient, results) {
+    addPlayer (idClient, results) {
         // Search position the player in the map
-        let posMap = this.buscarIDMap(results[0].Nmap);
+        let posMap = this.searchIDMap(results[0].Nmap);
 
         let posX = Math.floor((posMap.x * tileSize) + results[0].X);
         let posY = Math.floor((posMap.y * tileSize) + results[0].Y);
@@ -158,14 +158,14 @@ class Engine {
 
         players.push(player);
 
-        return {player: player, players: players};
+        return player;
     }
 
     movePlayer (player, data) {
 
         let pos = player.getPos(),
             posWorld = player.getPosWorld(),
-            posMap = this.buscarIDMap(player.getIDmap()),
+            posMap = this.searchIDMap(player.getIDmap()),
             newPos = this.updatePos((pos.x + data.x), (pos.y + data.y), posMap);
 
         console.log("antes: "+ player.getPosWorld().x +" -- "+ player.getPosWorld().y);
@@ -203,10 +203,14 @@ class Engine {
 
     getMap (player, width, height) {
         const   pos = player.getPos(),
-                posMap = this.buscarIDMap(player.getIDmap());
+                posMap = this.searchIDMap(player.getIDmap());
 
         //Carga las capas del mapa y las colisiones
         return clsWorld.getMap(width, height, pos, posMap);
+    }
+
+    getPlayers () {
+        return players;
     }
 
 }
