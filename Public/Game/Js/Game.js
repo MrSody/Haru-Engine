@@ -44,7 +44,7 @@ window.onload = function() {
 	setEventHandlers();
 
 	// Fialize chatlog scrollbar
-	$("#chat").mCustomScrollbar({ autoHideScrollbar: true, });
+	//$("#chat").mCustomScrollbar({ autoHideScrollbar: true, });
 
     // Fialize chatlog scrollbar
     //simpleScroll.init("chat");

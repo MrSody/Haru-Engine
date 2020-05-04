@@ -64,11 +64,6 @@ const engineApi = require("./Engine/Engine").Engine;
 const engine = new engineApi();
 const query = new Querys();
 
-//VARIABLES
-let players = [],	// Array de los jugadores conectados
-	Npcs = [],  // Array de los NPC
-    jutsus = []; // Array de los jutsus
-
 function init () {
     engine.init();
     // Carga los NPCs
@@ -159,7 +154,7 @@ function onAccountConnect (data) {
                 console.log("Error - onAccountConnect: "+ data.idAccount +" no existe");
             }
         } else {
-            console.log("Error - onAccountConnect: "+ data.idAccount +" no esta en base de datos");
+            console.log("Error - onAccountConnect: "+ data.idAccount +" - "+ err);
         }
     });
 }
@@ -184,7 +179,7 @@ function onClientDisconnect () {
 function onPlayerConnect (data) {
     let toClient = this;
 
-    conexion.query(query.getSearchNinja(), [data.idPlayer], (err, results) => {
+    conexion.query(query.getSearchCharacter(), [data.idPlayer], (err, results) => {
 
         if (!err) {
             if (results.length > 0) {
@@ -193,9 +188,6 @@ function onPlayerConnect (data) {
                 let dataPlayers = engine.createPlayer(toClient.id, results);
 
                 console.log("Conectado al server "+ dataPlayers.player.getName());
-
-                // Add new player to the players array
-                players.push(player);
 
                 // Send information to client
                 toClient.emit('players:localPlayer', dataPlayers.player);
@@ -224,10 +216,10 @@ function onPlayerConnect (data) {
                 });
 
             } else {
-                console.log("Error: No tiene datos el player: "+ data.idPlayer);
+                console.log("Error - onPlayerConnect: No tiene datos el player: "+ data.idPlayer);
             }
         } else {
-            console.log("Error: No existe el player: "+ data.idPlayer);
+            console.log("Error - onPlayerConnect: "+ data.idPlayer +" - "+ err);
         }
     });
 }

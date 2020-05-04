@@ -44,7 +44,7 @@
         <!------------------------------ *
             PERSONAJES
         * ------------------------------>
-        <% include game/personajes.ejs %>
+        <% include game/Character.ejs %>
 
         <!------------------------------ *
             HUB Principal
@@ -99,35 +99,8 @@
     <script src="../Game/Js/Modules/HUB/Mouse.js"></script>
     <script src="../Game/Js/Game.js"></script>
     <!--<script src="../js/jquery-1.9.1.min.js"></script>-->
-    <script src="../js/jquery.mCustomScrollbar.concat.min.js"></script>
+    <!-- <script src="../js/jquery.mCustomScrollbar.concat.min.js"></script> -->
     <script src="/socket.io/socket.io.js"></script>
-
-	<script>
-		(function($){
-			$(window).load(function(){
-				$(".text").mCustomScrollbar({
-					autoHideScrollbar: true,
-				});
-			});
-		})(jQuery);
-
-        $(function() {
-            $("[id^=draggable]").draggable({
-                //snap: true,
-                opacity: 0.35,
-                iframeFix: true,
-                //handle: "label",
-                distance: 10,
-                cursor: "crosshair",
-                containment: "window"
-                //containment: [10, 20, 30, 10]
-            });
-        });
-
-		// Initialise the game
-		//init();
-
-	</script>
 
 </body>
 </html>

@@ -15,26 +15,19 @@ class Interface {
         return document.querySelector(element);
     }
 
-    documentSelectClasses (documentSelect) {
-        return documentSelect.classList;
-    }
-
     removeClass (element, style) {
         let documentSelect = this.documentSelect(element);
-        let documentSelectClasses = this.documentSelectClasses(documentSelect);
-        documentSelectClasses.remove(style);
+        documentSelect.classList.remove(style);
     }
 
     addClass (element, style) {
         let documentSelect = this.documentSelect(element);
-        let documentSelectClasses = this.documentSelectClasses(documentSelect);
-        documentSelectClasses.add(style);
+        documentSelect.classList.add(style);
     }
 
-    removeOrAddByID (element, clase) {
-        let documentSelect = document.querySelector(element);
-        var documentSelectClasses = documentSelect.classList;
-        documentSelectClasses.toggle(clase);
+    removeOrAddByID (element, style) {
+        let documentSelect = this.documentSelect(element);
+        documentSelect.classList.toggle(style);
     }
 
     innerHTML (element, html) {
@@ -107,11 +100,11 @@ class Interface {
 
         let html = "";
 
-        this.selCharacter(data[0].id, data[0].skinBase, data[0].nombre);
+        this.selCharacter(data[0].id, data[0].SkinBase, data[0].Nombre);
 
         data.forEach((Pj) => {
 
-            let dataPJ = [Pj.id, Pj.skinBase, Pj.nombre];
+            let dataPJ = [Pj.id, Pj.SkinBase, Pj.Nombre];
 
             html += this.accountCharacters(dataPJ);
         });
