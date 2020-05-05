@@ -121,14 +121,13 @@ function loadNPCs () {
         if (!err) {
 
             results.forEach((dataNPC) => {
-
                 // Add new npc
                 engine.addNPC(dataNPC);
             });
             console.log("Completado: Se han cargado todos los NPCs...");
 
         } else {
-            console.log("Error - loadNPCs: No se pudo cargar los NPCs - "+ err);
+            console.log("Error - loadNPCs : No se pudo cargar los NPCs - "+ err);
         }
     });
 }
@@ -185,7 +184,7 @@ function onPlayerConnect (data) {
             if (results.length > 0) {
 
                 // Add new player
-                let player = engine.addPlayer(toClient.id, results);
+                let player = engine.addPlayer(toClient.id, results[0]);
 
                 console.log("Conectado al server "+ player.getName());
 

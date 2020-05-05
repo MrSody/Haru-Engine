@@ -1,25 +1,20 @@
 const Engine = require('../../Engine/Engine').Engine;
 const Player = require('../../Engine/Modules/Player').Player;
-const DataDB = require('./dataDB').dataDB;
+const Npc = require('../../Engine/Modules/Npc').Npc;
 
 const engine = new Engine();
-const dataDB = new DataDB();
 
 engine.init();
 
-test('searchIDMap', () => {
-    let idMap = 1,
-        response = {x: 1, y: 1};
-
-    expect(engine.searchIDMap(idMap)).toStrictEqual(response);
-});
-
-test('addPlayer', () => {
+/* ------------------------------ *
+    FUNCIONES DE AYUDA
+* ------------------------------ */
+test('playerById', () => {
     let idPlayer = '1',
-        datadb = [{
+        datadb = {
             id: 2,
             nombre: 'prueba',
-            skinBase: 'H-1',
+            skinBase: 'testBase',
             skinPelo: 'H-1',
             salud: 154,
             nivel: 1,
@@ -28,17 +23,61 @@ test('addPlayer', () => {
             Nmap: 1,
             X: 16,
             Y: 15
-        }],
-        response = new Player(idPlayer, datadb, 48, 47, dataDB.playerData().skinBase, '');
+        },
+        response = engine.addPlayer(idPlayer, datadb);
 
-
-    expect(engine.addPlayer(idPlayer, datadb)).toBe(response);
+    expect(engine.playerById(idPlayer)).toStrictEqual(response);
 });
 
-/*
-test(' CAPAS - COLLISION ', () => {
-    
-    expect(world.getTestCapa(1366, 638, {x: 16, y: 15}, {x: 1, y: 1})).toBe(capa3);
-    //expect(world.getTestCapaCollision(1366, 638, {X: 16, Y: 15}, {X: 1, Y: 1})).toBe(capaCollision);
+test('npcById', () => {
+    let dataDB = {
+        ID: 1,
+        Name: 'test',
+        Health: 100,
+        Skin: 'testSkin',
+        Level: 1,
+        IDMap: 1,
+        PosX: 16,
+        PosY: 15,
+        Reaction: '',
+        Events: '',
+        VisionDistance: '',
+        Phrases: ''
+    },
+    response = new Npc(dataDB, {X: 48, Y: 47}, "imagen1\n");
+    engine.addNPC(dataDB);
+
+    expect(engine.npcById(dataDB.ID)).toStrictEqual(response);
 });
-*/
+
+test('searchIDMap', () => {
+    let idMap = 1,
+        response = {x: 1, y: 1};
+
+    expect(engine.searchIDMap(idMap)).toStrictEqual(response);
+});
+
+/* ------------------------------ *
+    FUNCIONES - NPC
+* ------------------------------ */
+
+test('addPlayer', () => {
+    let idPlayer = '1',
+        dataDB = {
+            id: 2,
+            nombre: 'prueba',
+            skinBase: 'testBase',
+            skinPelo: 'H-1',
+            salud: 154,
+            nivel: 1,
+            xp: 0,
+            dinero: 0,
+            Nmap: 1,
+            X: 16,
+            Y: 15
+        },
+        response = new Player(idPlayer, dataDB, {X: 48, Y: 47}, "imagen1\n", "");
+
+
+    expect(engine.addPlayer(idPlayer, dataDB)).toStrictEqual(response);
+});

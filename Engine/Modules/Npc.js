@@ -26,12 +26,12 @@
 */
 
 class Npc {
-    constructor (data, posX, posY, Skin) {
+    constructor (data, pos, Skin) {
         this.id = data.ID;
         this.name = data.Name;
         this.health = {now: data.Health, max: data.Health};
         this.skin = Skin;
-        this.pos = {x: posX, y: posY};
+        this.pos = {x: pos.X, y: pos.Y};
         this.reaction = data.Reaction;
         this.events = data.events;
         

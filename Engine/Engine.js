@@ -2,7 +2,7 @@ const Player = require('./Modules/Player.js').Player; // Player class
 const World = require('./Modules/World.js').World;
 const Npc = require('./Modules/Npc.js').Npc;
 
-var fs = require('fs');
+let fs = require('fs');
 
 /* ------------------------------ *
     VARIABLES
@@ -107,14 +107,15 @@ class Engine {
     FUNCIONES - NPC
 * ------------------------------ */
     addNPC (dataNPC) {
-        let posMap = this.searchIDMap(dataNPC.IDMap);
-        let posX = Math.floor((posMap.x * tileSize) + dataNPC.PosX);
-        let posY = Math.floor((posMap.y * tileSize) + dataNPC.PosY);
+        let posMap = this.searchIDMap(dataNPC.IDMap),
+            posWorld = {
+                X: Math.floor((posMap.x * tileSize) + dataNPC.PosX),
+                Y: Math.floor((posMap.y * tileSize) + dataNPC.PosY)
+            };
 
-        // Sprite Npc
-        let skinNpc = fs.readFileSync(`./Engine/Sprite/Npc/${dataNPC.Skin}`, 'utf-8');
+        let skinNpc = fs.readFileSync(`./Engine/Sprite/Npc/${dataNPC.Skin}.txt`, 'utf-8');
 
-        npcs.push(new Npc(dataNPC, posX, posY, skinNpc));
+        npcs.push(new Npc(dataNPC, posWorld, skinNpc));
     }
 
     NPCCercanos (player) {
@@ -144,17 +145,18 @@ class Engine {
 /* ------------------------------ *
     FUNCIONES - PLAYER
 * ------------------------------ */
-    addPlayer (idClient, results) {
+    addPlayer (idClient, dataPlayer) {
         // Search position the player in the map
-        let posMap = this.searchIDMap(results[0].Nmap);
-
-        let posX = Math.floor((posMap.x * tileSize) + results[0].X);
-        let posY = Math.floor((posMap.y * tileSize) + results[0].Y);
+        let posMap = this.searchIDMap(dataPlayer.Nmap),
+            pos = {
+                X: Math.floor((posMap.x * tileSize) + dataPlayer.X),
+                Y: Math.floor((posMap.y * tileSize) + dataPlayer.Y)
+            };
 
         // Sprite player
-        let skinBase = fs.readFileSync(`./Engine/Sprite/Player/Base/${results[0].skinBase}.txt`, 'utf-8');
+        let skinBase = fs.readFileSync(`./Engine/Sprite/Player/Base/${dataPlayer.skinBase}.txt`, 'utf-8');
 
-        let player =  new Player(idClient, results[0], posX, posY, skinBase, "");
+        let player =  new Player(idClient, dataPlayer, pos, skinBase, "");
 
         players.push(player);
 

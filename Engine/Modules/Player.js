@@ -1,5 +1,5 @@
 class Player {
-    constructor (id, datos, posX, posY, skinBase, skinPelo) {
+    constructor (id, datos, pos, skinBase, skinPelo) {
         this.id = id;
 		// Datos Basicos
         this.IDpj = datos.id;
@@ -14,7 +14,7 @@ class Player {
         // Datos Mapa
         this.IDmap = datos.Nmap;
         this.pos = {x: datos.X, y: datos.Y};
-        this.posWorld = {x: posX, y: posY};
+        this.posWorld = {x: pos.X, y: pos.Y};
         this.sizeScreen = {width: 0, height: 0};
 		this.dir = 2;
 
