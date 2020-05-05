@@ -1,5 +1,5 @@
 class World {
-    constructor () {
+    constructor (orderMaps) {
         this.mapCapaOne = [];
         this.mapCapaTwo = [];
         this.mapCapaThree = [];
@@ -10,11 +10,7 @@ class World {
         this.tileSize = 32;  // Tamaño de los tiles en pixeles
 
         // MUNDO TOTAL
-        this.world = [
-                    [0, 0, 0],
-                    [0, 1, 0],
-                    [0, 0, 0]
-                    ];
+        this.world = orderMaps;
 
         // Carga Capas
         this.CapaOne();

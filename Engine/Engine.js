@@ -1,13 +1,14 @@
 const Player = require('./Modules/Player.js').Player; // Player class
 const World = require('./Modules/World.js').World;
 const Npc = require('./Modules/Npc.js').Npc;
+const orderMaps = require('./Modules/orderMap.js').getOrderMap;
 
 let fs = require('fs');
 
 /* ------------------------------ *
     VARIABLES
 * ------------------------------ */
-const clsWorld = new World();
+const clsWorld = new World(orderMaps);
 
 let	spriteMap,
 	world,		// Array de el mapa

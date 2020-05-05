@@ -112,5 +112,4 @@ class Npc {
     
 }
 
-// Export the Player class so you can use it in other files by using require("Player").Player
 exports.Npc = Npc;
