@@ -7,26 +7,18 @@ let fs = require('fs');
 /* ------------------------------ *
     VARIABLES
 * ------------------------------ */
-let	towers,
-    spriteMap,
-	enemies,	// Array de los enemigos
-	items,		// Array de los items
-    jutsusList, // Array de los jutsus
-	world,		// Array de el mapa
-	collisionMap,
-	worldSize,
-    tileSize;
-    
 const clsWorld = new World();
 
-let players = [],	// Array de los jugadores conectados
+let	spriteMap,
+	world,		// Array de el mapa
+	worldSize,
+    tileSize,
+    players = [],	// Array de los jugadores conectados
 	npcs = [];  // Array de los NPC
 
 class Engine {
-
     // Inizializa
     init () {
-        // Carga el mundo
         this.loadWorld();
     }
 
@@ -38,17 +30,15 @@ class Engine {
         worldSize = clsWorld.getWorldSize();
         tileSize = clsWorld.getTileSize();
     
-        // spriteMap
+        // sprite Map
         spriteMap = fs.readFileSync('./Engine/Sprite/Mapa.txt', 'utf-8');
 
-        // Cargado el mundo
         console.log("Completado: Se han cargado el mundo...");
     }
 
 /* ------------------------------ *
     FUNCIONES DE AYUDA
 * ------------------------------ */
-    // SEARCH THE PLAYER FOR THE ID - 100%
     playerById (ID) {
         for (let player of players) {
             if (player.getID() == ID) {
@@ -67,7 +57,7 @@ class Engine {
         return false;
     }
 
-    // BUSCAR IDMAPA EN EL MUNDO - 100%
+    // BUSCAR IDMAPA EN EL MUNDO
     searchIDMap (IDmap) {
         let X, Y;
         for(Y = 0; Y < worldSize; Y++) {
@@ -81,7 +71,6 @@ class Engine {
 
     // Actualiza la posicion
     updatePos (posX, posY, posMap) {
-        console.log("updatePos X:"+ posX +"-"+ posY +"posMap"+ posMap.x +"-"+ posMap.y);
         let idMap;
 
         if(posX < 0) {
@@ -103,26 +92,29 @@ class Engine {
         return {idMap: idMap, x: posX, y: posY};
     }
 
+    posWorld (IDMap, posX, posY) {
+        let posMap = this.searchIDMap(IDMap);
+
+        return {
+            X: Math.floor((posMap.x * tileSize) + posX),
+            Y: Math.floor((posMap.y * tileSize) + posY)
+        };
+    }
+
 /* ------------------------------ *
     FUNCIONES - NPC
 * ------------------------------ */
     addNPC (dataNPC) {
-        let posMap = this.searchIDMap(dataNPC.IDMap),
-            posWorld = {
-                X: Math.floor((posMap.x * tileSize) + dataNPC.PosX),
-                Y: Math.floor((posMap.y * tileSize) + dataNPC.PosY)
-            };
+        let posWorld = this.posWorld(dataNPC.IDMap, dataNPC.PosX, dataNPC.PosY);
 
         let skinNpc = fs.readFileSync(`./Engine/Sprite/Npc/${dataNPC.Skin}.txt`, 'utf-8');
 
         npcs.push(new Npc(dataNPC, posWorld, skinNpc));
     }
 
-    NPCCercanos (player) {
+    NPCNearby (player) {
         let posWorld = player.getPosWorld();
         let NPCCercanos = [];
-
-        console.log("3: "+ player.getPosWorld().x +" -- "+ player.getPosWorld().y);
 
         let initPosWorld = {x: posWorld.x - ((32 * 3) / 2), y: posWorld.y - ((32 * 3) / 2)};
         let endPosWorld = {x: posWorld.x + ((32 * 3) / 2), y: posWorld.y + ((32 * 3) / 2)};
@@ -146,17 +138,12 @@ class Engine {
     FUNCIONES - PLAYER
 * ------------------------------ */
     addPlayer (idClient, dataPlayer) {
-        // Search position the player in the map
-        let posMap = this.searchIDMap(dataPlayer.Nmap),
-            pos = {
-                X: Math.floor((posMap.x * tileSize) + dataPlayer.X),
-                Y: Math.floor((posMap.y * tileSize) + dataPlayer.Y)
-            };
+        let posWorld = this.posWorld(dataPlayer.Nmap, dataPlayer.X, dataPlayer.Y);
 
         // Sprite player
         let skinBase = fs.readFileSync(`./Engine/Sprite/Player/Base/${dataPlayer.skinBase}.txt`, 'utf-8');
 
-        let player =  new Player(idClient, dataPlayer, pos, skinBase, "");
+        let player =  new Player(idClient, dataPlayer, posWorld, skinBase, "");
 
         players.push(player);
 
@@ -164,7 +151,6 @@ class Engine {
     }
 
     movePlayer (player, data) {
-
         let pos = player.getPos(),
             posWorld = player.getPosWorld(),
             posMap = this.searchIDMap(player.getIDmap()),

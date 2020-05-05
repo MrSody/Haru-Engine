@@ -208,7 +208,7 @@ function onPlayerConnect (data) {
                 }
 
                 // Envia los Npc's del mapa al cliente
-                let NPCCercanos = engine.NPCCercanos(dataPlayers.player);
+                let NPCCercanos = engine.NPCNearby(dataPlayers.player);
 
                 NPCCercanos.forEach((Npc) => {
                     toClient.emit('npcs:newNpc', Npc);
@@ -238,7 +238,7 @@ function onMovePlayer (data) {
         io.emit('player:move', {id: player.getID(), posWorld: player.getPosWorld(), dir: player.getDir(), mode: data.mode});
 
         // Envia los Npc's del mapa al cliente
-        let NPCCercanos = engine.NPCCercanos(player, Npcs);
+        let NPCCercanos = engine.NPCNearby(player, Npcs);
 
         NPCCercanos.forEach((Npc) => {
             toClient.emit('npcs:newNpc', Npc);
