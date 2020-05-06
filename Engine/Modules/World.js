@@ -24,65 +24,66 @@ class World {
     // TRAES LOS DATOS DE LA CAPA
     dataMapCapa (ruta) {
         // Defining the JSON File
-        const files = require('fs'), conts = files.readFileSync(ruta);
+        let files = require('fs'),
+            conts = files.readFileSync(ruta);
 
         return JSON.parse(conts);
     }
 
     listToMatrix (vector) {
-        let matrix = [], i, k;
-        for (i = 0, k = -1; i < vector.length; i++) {
-            if (i % 32 === 0) {
-                k++;
-                matrix[k] = [];
+        let matrix = [], count, column;
+        for (count = 0, column = -1; count < vector.length; count++) {
+            if (count % this.tileSize === 0) {
+                column++;
+                matrix[column] = [];
             }
 
-            matrix[k].push(vector[i]);
+            matrix[column].push(vector[count]);
         }
         return matrix;
     }
 
-    vectorX (capa, x, y) {
+    vectorX (capa, X, Y) {
         let dataCapa, jsonCapa, matrix;
 
         switch (capa) {
             case 1:
-                dataCapa = this.dataMapCapa('./Engine/Modules/Maps/'+ this.world[Math.floor(y / this.tileSize)][x] +'.json');
+                dataCapa = this.dataMapCapa('./Engine/Modules/Maps/'+ this.world[Math.floor(Y / this.tileSize)][X] +'.json');
                 jsonCapa = dataCapa.layers[0].data;
                 break;
 
             case 2:
-                dataCapa = this.dataMapCapa('./Engine/Modules/Maps/'+ this.world[Math.floor(y / this.tileSize)][x] +'.json');
+                dataCapa = this.dataMapCapa('./Engine/Modules/Maps/'+ this.world[Math.floor(Y / this.tileSize)][X] +'.json');
                 jsonCapa = dataCapa.layers[1].data;
                 break;
 
             case 3:
-                dataCapa = this.dataMapCapa('./Engine/Modules/Maps/'+ this.world[Math.floor(y / this.tileSize)][x] +'.json');
+                dataCapa = this.dataMapCapa('./Engine/Modules/Maps/'+ this.world[Math.floor(Y / this.tileSize)][X] +'.json');
                 jsonCapa = dataCapa.layers[2].data;
                 break;
 
             case 4:
-                dataCapa = this.dataMapCapa('./Engine/Modules/Maps/'+ this.world[Math.floor(y / this.tileSize)][x] +'.json');
+                dataCapa = this.dataMapCapa('./Engine/Modules/Maps/'+ this.world[Math.floor(Y / this.tileSize)][X] +'.json');
                 jsonCapa = dataCapa.layers[3].data;
                 break;
 
             case 5:
-                dataCapa = this.dataMapCapa('./Engine/Modules/Maps/'+ this.world[Math.floor(y / this.tileSize)][x] +'.json');
+                dataCapa = this.dataMapCapa('./Engine/Modules/Maps/'+ this.world[Math.floor(Y / this.tileSize)][X] +'.json');
                 jsonCapa = dataCapa.layers[4].data;
                 break;
 
             case 6:
-                dataCapa = this.dataMapCapa('./Engine/Modules/Maps/'+ this.world[Math.floor(y / this.tileSize)][x] +'.json');
+                dataCapa = this.dataMapCapa('./Engine/Modules/Maps/'+ this.world[Math.floor(Y / this.tileSize)][X] +'.json');
                 jsonCapa = dataCapa.layers[5].data;
                 break;
         }
 
         matrix = this.listToMatrix(jsonCapa);
 
-        if (y < this.tileSize) {
-            return matrix[y];
+        if (Y < this.tileSize) {
+            return matrix[Y];
         } else {
-            return matrix[Math.floor(y - (this.tileSize * Math.floor(y / this.tileSize)))];
+            return matrix[Math.floor(Y - (this.tileSize * Math.floor(Y / this.tileSize)))];
         }
     }
 
@@ -242,13 +243,13 @@ class World {
 
     getMap (width, height, posPlayer, posMap) {
         return {
-                    capa1: this.desingMapCapa(width, height, this.mapCapaOne, posPlayer, posMap),
-                    capa2: this.desingMapCapa(width, height, this.mapCapaTwo, posPlayer, posMap),
-                    capa3: this.desingMapCapa(width, height, this.mapCapaThree, posPlayer, posMap),
-                    capa4: this.desingMapCapa(width, height, this.mapCapaFour, posPlayer, posMap),
-                    capa5: this.desingMapCapa(width, height, this.mapCapaFive, posPlayer, posMap),
-                    collision: this.desingMapCollision(width, height, this.mapCapaCollision, posPlayer, posMap)
-                };
+            capa1: this.desingMapCapa(width, height, this.mapCapaOne, posPlayer, posMap),
+            capa2: this.desingMapCapa(width, height, this.mapCapaTwo, posPlayer, posMap),
+            capa3: this.desingMapCapa(width, height, this.mapCapaThree, posPlayer, posMap),
+            capa4: this.desingMapCapa(width, height, this.mapCapaFour, posPlayer, posMap),
+            capa5: this.desingMapCapa(width, height, this.mapCapaFive, posPlayer, posMap),
+            collision: this.desingMapCollision(width, height, this.mapCapaCollision, posPlayer, posMap)
+        };
     }
 
 	getWorldSize () {
@@ -257,7 +258,11 @@ class World {
 
     getTileSize () {
 		return this.tileSize;
-	}
+    }
+    
+    getCapaOne () {
+        return this.mapCapaOne;
+    }
 }
 
 // Export the Player class so you can use it in other files by using require("Player").Player
