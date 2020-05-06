@@ -259,10 +259,6 @@ class World {
     getTileSize () {
 		return this.tileSize;
     }
-    
-    getCapaOne () {
-        return this.mapCapaOne;
-    }
 }
 
 // Export the Player class so you can use it in other files by using require("Player").Player

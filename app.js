@@ -208,7 +208,7 @@ function onPlayerConnect (data) {
                 }
 
                 // Envia los Npc's del mapa al cliente
-                let NPCCercanos = engine.NPCNearby(dataPlayers.player);
+                let NPCCercanos = engine.NPCNearby(player);
 
                 NPCCercanos.forEach((Npc) => {
                     toClient.emit('npcs:newNpc', Npc);
