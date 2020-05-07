@@ -135,7 +135,6 @@ function loadNPCs () {
 /* ------------------------------ *
     CONNECTIONS TO SERVER
 * ------------------------------ */
-
 function onLogin (data) {
     Console.log("onLogin "+ data);
 }
@@ -174,7 +173,6 @@ function onClientDisconnect () {
 /* ------------------------------ *
     PLAYER
 * ------------------------------ */
-
 function onPlayerConnect (data) {
     let toClient = this;
 
@@ -256,6 +254,7 @@ function onNewMessage(data) {
 
     io.emit('chat:newMessage', {name: data.name, mode: '', text: data.text});
 }
+
 /* ------------------------------ *
     MAPA
 * ------------------------------ */
@@ -281,6 +280,7 @@ function onMoveMap(data) {
 		return;
 	}
 }
+
 /* ------------------------------ *
     NPC
 * ------------------------------ */

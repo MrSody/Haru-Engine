@@ -13,12 +13,12 @@ class World {
         this.world = orderMaps;
 
         // Carga Capas
-        this.CapaOne();
-        this.CapaTwo();
-        this.CapaThree();
-        this.CapaFour();
-        this.CapaFive();
-        this.CapaCollision();
+        this.addCapas(1);
+        this.addCapas(2);
+        this.addCapas(3);
+        this.addCapas(4);
+        this.addCapas(5);
+        this.addCapas(6);
     }
 
     // TRAES LOS DATOS DE LA CAPA
@@ -87,124 +87,69 @@ class World {
         }
     }
 
-    CapaOne () {
-        for (let y = 0; y < (this.worldSize * this.tileSize); y++) {
-            let Q = [];
-            for (let x = 0; x <= this.worldSize; x++) {
-                if(x === this.worldSize) {
-                    this.mapCapaOne.push(Q);
-                } else {
-                    Q = Q.concat(this.vectorX(1, x, y));
-                }
-            }
+    addLineCapa (numCapa, lineCapa) {
+        switch (numCapa) {
+            case 1:
+                this.mapCapaOne.push(lineCapa);
+                break;
+
+            case 2:
+                this.mapCapaTwo.push(lineCapa);
+                break;
+
+            case 3:
+                this.mapCapaThree.push(lineCapa);
+                break;
+
+            case 4:
+                this.mapCapaFour.push(lineCapa);
+                break;
+
+            case 5:
+                this.mapCapaFive.push(lineCapa);
+                break;
+
+            case 6:
+                this.mapCapaCollision.push(lineCapa);
+                break;
         }
     }
 
-    CapaTwo () {
-        for (let y = 0; y < (this.worldSize * this.tileSize); y++) {
-            let Q = [];
-            for (let x = 0; x <= this.worldSize; x++) {
-                if(x === this.worldSize) {
-                    this.mapCapaTwo.push(Q);
+    addCapas (numCapa) {
+        for (let Y = 0; Y < (this.worldSize * this.tileSize); Y++) {
+            let lineCapa = [];
+            for (let X = 0; X <= this.worldSize; X++) {
+                if(X === this.worldSize) {
+                    this.addLineCapa(numCapa, lineCapa);
                 } else {
-                    Q = Q.concat(this.vectorX(2, x, y));
-                }
-            }
-        }
-    }
-
-    CapaThree () {
-        for (let y = 0; y < (this.worldSize * this.tileSize); y++) {
-            let Q = [];
-            for (let x = 0; x <= this.worldSize; x++) {
-                if(x === this.worldSize) {
-                    this.mapCapaThree.push(Q);
-                } else {
-                    Q = Q.concat(this.vectorX(3, x, y));
-                }
-            }
-        }
-    }
-
-    CapaFour () {
-        for (let y = 0; y < (this.worldSize * this.tileSize); y++) {
-            let Q = [];
-            for (let x = 0; x <= this.worldSize; x++) {
-                if(x === this.worldSize) {
-                    this.mapCapaFour.push(Q);
-                } else {
-                    Q = Q.concat(this.vectorX(4, x, y));
-                }
-            }
-        }
-    }
-
-    CapaFive () {
-        for (let y = 0; y < (this.worldSize * this.tileSize); y++) {
-            let Q = [];
-            for (let x = 0; x <= this.worldSize; x++) {
-                if(x === this.worldSize) {
-                    this.mapCapaFive.push(Q);
-                } else {
-                    Q = Q.concat(this.vectorX(5, x, y));
+                    lineCapa = lineCapa.concat(this.vectorX(numCapa, X, Y));
                 }
             }
         }
     }
 
     //  DISEÑA EL MAPA CAPAS - 100%
-    desingMapCapa (width, height, capa, posPlayer, posMap) {
-        let widthMap, heightMap, x, y, sizeWith, sizeHeight, map = [[]];
+    desingMapCapa (capa, size, pos) {
+        let map = [[]];
 
-        sizeWith = Math.round(width / 32);
-        sizeHeight = Math.round(height / 32) + 1;
-        widthMap = Math.round((width / 2) / 32);
-        heightMap = Math.round((height / 2) / 32) + 1;
-        x = Math.floor(((posMap.x * this.tileSize) + posPlayer.x) - widthMap);
-        y = Math.floor(((posMap.y * this.tileSize) + posPlayer.y) - heightMap);
-
-        //console.log("x "+ x +" y "+ y +" sizeWith "+ sizeWith +" sizeHeight "+ sizeHeight +" widthMap "+ widthMap +" heightMap "+ heightMap);
-
-        for (let mapY = 0; mapY < (sizeHeight + 1); mapY++) {
+        for (let mapY = 0; mapY < (size.height + 1); mapY++) {
             map[mapY] = [];
-            for (let mapX = 0; mapX < (sizeWith + 1); mapX++) {
-                map[mapY][mapX] = capa[y + mapY][x + mapX];
+            for (let mapX = 0; mapX < (size.width + 1); mapX++) {
+                map[mapY][mapX] = capa[pos.Y + mapY][pos.X + mapX];
             }
         }
 	
         return map;
     }
 
-    // COLISIONES
-    CapaCollision () {
-        for (let y = 0; y < (this.worldSize * this.tileSize); y++) {
-            let Q = [];
-            for (let x = 0; x <= this.worldSize; x++) {
-                if(x === this.worldSize) {
-                    this.mapCapaCollision.push(Q);
-                } else {
-                    Q = Q.concat(this.vectorX(6, x, y));
-                }
-            }
-        }
-    }
-
     // DISEÑA EL MAPA DE COLISIONES - 100%
-    desingMapCollision (width, height, capa, posPlayer, posMap) {
-        let widthMap, heightMap, x, y, sizeWith, sizeHeight, map = [[]];
+    desingMapCollision (capa, size, pos) {
+        let map = [[]];
 
-        sizeWith = Math.round(width / 32);
-        sizeHeight = Math.round(height / 32);
-        widthMap = Math.round((width / 2) / 32);
-        heightMap = Math.round((height / 2) / 32);
-        x = Math.floor(((posMap.x * this.tileSize) + posPlayer.x) - widthMap);
-        y = Math.floor(((posMap.y * this.tileSize) + posPlayer.y) - heightMap);
-
-        for (let mapY = 0; mapY < (sizeHeight + 1); mapY++) {
+        for (let mapY = 0; mapY < (size.height + 1); mapY++) {
             map[mapY] = [];
-            for (let mapX = 0; mapX < (sizeWith + 1); mapX++){
-                let num = capa[y + mapY][x + mapX];
-                if(num != 0) {
+            for (let mapX = 0; mapX < (size.width + 1); mapX++){
+                if(capa[pos.Y + mapY][pos.X + mapX] != 0) {
                     map[mapY][mapX] = 1;
                 } else {
                     map[mapY][mapX] = 0;
@@ -242,13 +187,26 @@ class World {
 	}
 
     getMap (width, height, posPlayer, posMap) {
+        let size = {
+            width: Math.round(width / 32),
+            height: Math.round(height / 32) + 1
+        },
+        mapSize = {
+            width: Math.round((width / 2) / 32),
+            height: Math.round((height / 2) / 32) + 1
+        },
+        pos = {
+            X: Math.floor(((posMap.x * this.tileSize) + posPlayer.x) - mapSize.width),
+            Y: Math.floor(((posMap.y * this.tileSize) + posPlayer.y) - mapSize.height)
+        };
+
         return {
-            capa1: this.desingMapCapa(width, height, this.mapCapaOne, posPlayer, posMap),
-            capa2: this.desingMapCapa(width, height, this.mapCapaTwo, posPlayer, posMap),
-            capa3: this.desingMapCapa(width, height, this.mapCapaThree, posPlayer, posMap),
-            capa4: this.desingMapCapa(width, height, this.mapCapaFour, posPlayer, posMap),
-            capa5: this.desingMapCapa(width, height, this.mapCapaFive, posPlayer, posMap),
-            collision: this.desingMapCollision(width, height, this.mapCapaCollision, posPlayer, posMap)
+            capa1: this.desingMapCapa(this.mapCapaOne, size, pos),
+            capa2: this.desingMapCapa(this.mapCapaTwo, size, pos),
+            capa3: this.desingMapCapa(this.mapCapaThree, size, pos),
+            capa4: this.desingMapCapa(this.mapCapaFour, size, pos),
+            capa5: this.desingMapCapa(this.mapCapaFive, size, pos),
+            collision: this.desingMapCollision(this.mapCapaCollision, size, pos)
         };
     }
 
@@ -259,7 +217,14 @@ class World {
     getTileSize () {
 		return this.tileSize;
     }
+
+    getTest (X, Y) {
+        if ((63 <= X || 24 <= X) && (15 <= Y || 54 <= Y)){
+            return 1;
+        } else {
+            return 0;
+        }
+    }
 }
 
-// Export the Player class so you can use it in other files by using require("Player").Player
 exports.World = World;

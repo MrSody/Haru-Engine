@@ -189,7 +189,11 @@ class Engine {
     getSpriteMap () {
         return spriteMap;
     }
-
+    /*
+    getMap (IDMap, posMap) {
+        return clsWorld.getMap(IDMap, posMap);
+    }
+    */
     getMap (player, width, height) {
         const   pos = player.getPos(),
                 posMap = this.searchIDMap(player.getIDmap());
