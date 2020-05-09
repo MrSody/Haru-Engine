@@ -10,8 +10,7 @@ let fs = require('fs');
 * ------------------------------ */
 const clsWorld = new World(orderMaps);
 
-let	spriteMap,
-	world,		// Array de el mapa
+let	world,		// Array de el mapa
 	worldSize,
     tileSize,
     players = [],	// Array de los jugadores conectados
@@ -30,9 +29,6 @@ class Engine {
         // TAMAÑO DEL MUNDO Y TILESIZE
         worldSize = clsWorld.getWorldSize();
         tileSize = clsWorld.getTileSize();
-    
-        // sprite Map
-        spriteMap = fs.readFileSync('./Engine/Sprite/Mapa.txt', 'utf-8');
 
         console.log("Completado: Se han cargado el mundo...");
     }
@@ -151,22 +147,18 @@ class Engine {
         return player;
     }
 
-    movePlayer (player, data) {
+    movePlayer (player, X, Y, Dir) {
         let pos = player.getPos(),
-            posWorld = player.getPosWorld(),
             posMap = this.searchIDMap(player.getIDmap()),
-            newPos = this.updatePos((pos.x + data.x), (pos.y + data.y), posMap);
-
-        console.log("antes: "+ player.getPosWorld().x +" -- "+ player.getPosWorld().y);
-
-        console.log("Player X: "+ Math.floor(pos.x + data.x) +" - "+ Math.floor(pos.y + data.y) +" idMap: "+ newPos.idMap +" dir: "+ data.dir);
+            newPos = this.updatePos((pos.x + X), (pos.y + Y), posMap);
 
         player.setPos(newPos.x, newPos.y);
-        player.setDirection(data.dir);
+        player.setDirection(Dir);
         player.setIDMap(newPos.idMap);
-        player.setPosWorld((posWorld.x + data.x), (posWorld.y + data.y));
 
-        console.log("ahora: "+ player.getPosWorld().x +" -- "+ player.getPosWorld().y);
+        console.log("ahora: "+ player.getPos().x +" -- "+ player.getPos().y);
+
+        return ((posMap == newPos.idMap) ? false : true);
     }
 
     playerDisconnect (id) {
@@ -189,11 +181,14 @@ class Engine {
     getSpriteMap () {
         return spriteMap;
     }
-    /*
-    getMap (IDMap, posMap) {
-        return clsWorld.getMap(IDMap, posMap);
+    
+    getMap (IDMap) {
+        let posMap = this.searchIDMap(IDMap);
+
+        return clsWorld.getMap(posMap);
     }
-    */
+
+    /*
     getMap (player, width, height) {
         const   pos = player.getPos(),
                 posMap = this.searchIDMap(player.getIDmap());
@@ -201,6 +196,7 @@ class Engine {
         //Carga las capas del mapa y las colisiones
         return clsWorld.getMap(width, height, pos, posMap);
     }
+    */
 
     getPlayers () {
         return players;

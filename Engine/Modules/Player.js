@@ -15,7 +15,6 @@ class Player {
         this.IDmap = datos.Nmap;
         this.pos = {x: datos.X, y: datos.Y};
         this.posWorld = {x: pos.X, y: pos.Y};
-        this.sizeScreen = {width: 0, height: 0};
 		this.dir = 2;
 
         //grupo
@@ -61,11 +60,6 @@ class Player {
 		this.dir = direction;
 	}
 
-    setSizeScreen (width, height) {
-        this.sizeScreen.width = width;
-        this.sizeScreen.height = height;
-    }
-
 /* ------------------------------ *
     GETTERS
 * ------------------------------ */
@@ -96,10 +90,6 @@ class Player {
 	getDir () {
 		return this.dir;
 	}
-
-    getSizeScreen () {
-        return this.sizeScreen;
-    }
 
     getGroup () {
         return this.group;

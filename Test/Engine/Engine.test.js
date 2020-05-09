@@ -139,6 +139,30 @@ test('addPlayer', () => {
     expect(engine.addPlayer(idPlayer, dataDB)).toStrictEqual(response);
 });
 
+//movePlayer (player, X, Y, Dir)
+test('movePlayer', () => {
+    let player,
+        idPlayer = '1',
+        dataDB = {
+            id: 2,
+            nombre: 'prueba',
+            skinBase: 'testBase',
+            skinPelo: 'H-1',
+            salud: 154,
+            nivel: 1,
+            xp: 0,
+            dinero: 0,
+            Nmap: 1,
+            X: 16,
+            Y: 15
+        },
+        response = true;
+
+    player = engine.addPlayer(idPlayer, dataDB);
+
+    expect(engine.movePlayer(player, 16, 17, 2)).toBe(response);
+});
+
 test('playerDisconnect', () => {
     let idPlayer = '1',
         dataDB = {

@@ -1,33 +1,18 @@
 class World {
     constructor (orderMaps) {
-        this.mapCapaOne = [];
-        this.mapCapaTwo = [];
-        this.mapCapaThree = [];
-        this.mapCapaFour = [];
-        this.mapCapaFive = [];
-        this.mapCapaCollision = [];
         this.worldSize = 3;  // El tamaño del mundo en tiles de sprite
         this.tileSize = 32;  // Tamaño de los tiles en pixeles
 
         // MUNDO TOTAL
         this.world = orderMaps;
-
-        // Carga Capas
-        this.addCapas(1);
-        this.addCapas(2);
-        this.addCapas(3);
-        this.addCapas(4);
-        this.addCapas(5);
-        this.addCapas(6);
     }
 
     // TRAES LOS DATOS DE LA CAPA
-    dataMapCapa (ruta) {
+    getFile (ruta) {
         // Defining the JSON File
-        let files = require('fs'),
-            conts = files.readFileSync(ruta);
+        let files = require('fs');
 
-        return JSON.parse(conts);
+        return files.readFileSync(ruta);
     }
 
     listToMatrix (vector) {
@@ -48,32 +33,32 @@ class World {
 
         switch (capa) {
             case 1:
-                dataCapa = this.dataMapCapa('./Engine/Modules/Maps/'+ this.world[Math.floor(Y / this.tileSize)][X] +'.json');
+                dataCapa = JSON.parse(this.getFile('./Engine/Modules/Maps/'+ this.world[Math.floor(Y / this.tileSize)][X] +'.json'));
                 jsonCapa = dataCapa.layers[0].data;
                 break;
 
             case 2:
-                dataCapa = this.dataMapCapa('./Engine/Modules/Maps/'+ this.world[Math.floor(Y / this.tileSize)][X] +'.json');
+                dataCapa = JSON.parse(this.getFile('./Engine/Modules/Maps/'+ this.world[Math.floor(Y / this.tileSize)][X] +'.json'));
                 jsonCapa = dataCapa.layers[1].data;
                 break;
 
             case 3:
-                dataCapa = this.dataMapCapa('./Engine/Modules/Maps/'+ this.world[Math.floor(Y / this.tileSize)][X] +'.json');
+                dataCapa = JSON.parse(this.getFile('./Engine/Modules/Maps/'+ this.world[Math.floor(Y / this.tileSize)][X] +'.json'));
                 jsonCapa = dataCapa.layers[2].data;
                 break;
 
             case 4:
-                dataCapa = this.dataMapCapa('./Engine/Modules/Maps/'+ this.world[Math.floor(Y / this.tileSize)][X] +'.json');
+                dataCapa = JSON.parse(this.getFile('./Engine/Modules/Maps/'+ this.world[Math.floor(Y / this.tileSize)][X] +'.json'));
                 jsonCapa = dataCapa.layers[3].data;
                 break;
 
             case 5:
-                dataCapa = this.dataMapCapa('./Engine/Modules/Maps/'+ this.world[Math.floor(Y / this.tileSize)][X] +'.json');
+                dataCapa = JSON.parse(this.getFile('./Engine/Modules/Maps/'+ this.world[Math.floor(Y / this.tileSize)][X] +'.json'));
                 jsonCapa = dataCapa.layers[4].data;
                 break;
 
             case 6:
-                dataCapa = this.dataMapCapa('./Engine/Modules/Maps/'+ this.world[Math.floor(Y / this.tileSize)][X] +'.json');
+                dataCapa = JSON.parse(this.getFile('./Engine/Modules/Maps/'+ this.world[Math.floor(Y / this.tileSize)][X] +'.json'));
                 jsonCapa = dataCapa.layers[5].data;
                 break;
         }
@@ -184,8 +169,92 @@ class World {
     
 	getWorld () {
 		return this.world;
-	}
+    }
+    
+    getMap (posMap) {
+        return {
+            dataMap: this.desingMap(posMap),
+            spriteMap: this.spriteMap(map)
+        };  
+    }
 
+    desingMap (posMap) {
+        let map = [[]],
+            sizeMap = 3,
+            posWorld = {
+                X: posMap.X - 1,
+                Y: posMap.Y - 1
+            };
+
+        for (let Y = 0; Y < sizeMap; Y++) {
+            map[Y] = [];
+            for (let X = 0; X < sizeMap; X++) {
+                map[Y][X] = this.dataMap(this.world[posWorld.Y + Y][posWorld.X + X]);
+            }
+        }
+
+        return map;
+    }
+
+    dataMap (IDMap) {
+        let dataCapa = JSON.parse(this.getFile(`./Engine/Modules/Maps/${IDMap}.json`)),
+            tilesets = [],
+            count = 0;
+
+        for (let tileset of dataCapa.tilesets) {
+            tilesets[count] = {
+                nameTilesets: tileset.name,
+                imageHeight: tileset.imageheight,
+                imageWidth: tileset.imagewidth,
+                tileCount: tileset.tilecount
+            };
+            count++;
+        }
+
+        return {
+            capa1: dataCapa.layers[0].data,
+            capa2: dataCapa.layers[1].data,
+            capa3: dataCapa.layers[2].data,
+            capa4: dataCapa.layers[3].data,
+            capa5: dataCapa.layers[4].data,
+            collision: dataCapa.layers[5].data,
+            tilesets: tilesets
+        };
+    }
+
+    spriteMap (map) {
+        let sizeMap = 3,
+            spriteMap = [];
+
+        for (let Y = 0; Y < sizeMap; Y++) {
+            for (let X = 0; X < sizeMap; X++) {
+                for (let dataMap of map[Y][X].tilesets) {
+                    if (spriteMap.length == 0) {
+                        spriteMap[0] = {nameTilesets: dataMap.nameTilesets};
+                    } else {
+                        let found = false;
+                        for (let count = 0; count < spriteMap.length; count++) {
+                            if (dataMap.nameTilesets == spriteMap[count].nameTilesets) {
+                                found = true;
+                                break;
+                            }
+                        }
+
+                        if (!found) {
+                            spriteMap[spriteMap.length] = {
+                                nameTilesets: dataMap.nameTilesets,
+                                //file: this.getFile(`./Engine/Sprite/${dataMap.nameTilesets}.txt`)
+                            };
+                        }
+                    }
+                }
+            }
+        }
+
+        return spriteMap;
+    }
+
+    /*
     getMap (width, height, posPlayer, posMap) {
         let size = {
             width: Math.round(width / 32),
@@ -209,6 +278,7 @@ class World {
             collision: this.desingMapCollision(this.mapCapaCollision, size, pos)
         };
     }
+    */
 
 	getWorldSize () {
 		return this.worldSize;

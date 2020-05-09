@@ -230,7 +230,21 @@ function onMovePlayer (data) {
 	if (player) {
         console.log("Dentro MovePlayer "+ data.x +" -- "+ data.y);
         // Update player position
-        engine.movePlayer(player, data);
+        if (engine.movePlayer(player, data)) {
+            
+            //Retorna los datos del mapa
+            let dataMap = engine.getMap(player.getIDMap());
+
+            //TODO: terminar el envio al cliente y cambiar el cliente
+            //Envia al cliente el mapa
+            toClient.emit('map:data', {
+                capa1: dataMap.capa1,
+                capa2: dataMap.capa2,
+                capa3: dataMap.capa3,
+                capa4: dataMap.capa4,
+                capa5: dataMap.capa5
+            });
+        }
 
         // Broadcast updated position to connected socket clients
         io.emit('player:move', {id: player.getID(), posWorld: player.getPosWorld(), dir: player.getDir(), mode: data.mode});
@@ -258,6 +272,28 @@ function onNewMessage(data) {
 /* ------------------------------ *
     MAPA
 * ------------------------------ */
+function onMap (data) {
+    let toClient = this,
+        player = engine.playerById(toClient.id);
+
+	// Player found
+	if (player) {
+
+        //Variables
+        let map = engine.getMap(player);
+
+        //Envia al cliente el mapa
+        toClient.emit('map:data', {capa1: map.capa1, capa2: map.capa2, capa3: map.capa3, capa4: map.capa4, capa5: map.capa5});
+
+        // Envia las colisiones
+        toClient.emit('map:collision', {collisionMap: map.collision});
+    } else {
+        console.log("Player not found: "+ toClient.id);
+		return;
+	}
+}
+
+/*
 function onMoveMap(data) {
     let toClient = this,
         player = engine.playerById(toClient.id);
@@ -280,6 +316,7 @@ function onMoveMap(data) {
 		return;
 	}
 }
+*/
 
 /* ------------------------------ *
     NPC
