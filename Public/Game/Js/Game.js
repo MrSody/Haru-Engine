@@ -1,6 +1,6 @@
 /*-------------------------------
-        ProjectMS
-    VERSION:    alpha
+        ProjectMMO
+    VERSION:    Alpha
 *-------------------------------*/
 "use strict";
 /*-------------------------------
@@ -23,7 +23,7 @@ let canvasHUB,		// Canvas DOM elemento
     clsChat = new Chat(),
     clsKeyboard,
     clsMouse = new Mouse(),
-    clsMap,
+    clsMap = new Map(),
 
 	npcs = [],
 	collisionMap,	// Map containing NPCs and enemies, 0 = walkable, 1 = enemy, 2 = enemy, 3 = not walkable
@@ -161,8 +161,9 @@ function onCreateLocalPlayer (data) {
     renderingGame();
 }
 
+// 'map:data', { tileSize: engine.getTileSize(), dataMap: dataMap.dataMap, spriteMap: dataMap.spriteMap }
 function onInitMap (data) {
-    clsMap = new Map(data);
+    clsMap.setMap(data.dataMap);
 
     clsMap.getSpritesheet().onload = function() {
 

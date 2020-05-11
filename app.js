@@ -190,7 +190,17 @@ function onPlayerConnect (data) {
                 toClient.emit('players:localPlayer', player);
 
                 // Send world-data to client
-                toClient.emit('map:init', {spritesheet: engine.getSpriteMap(), tileSize: engine.getTileSize()});
+                //toClient.emit('map:init', {spritesheet: engine.getSpriteMap(), tileSize: engine.getTileSize()});
+                //Retorna los datos del mapa
+                let dataMap = engine.getMap(player.getIDMap());
+
+                //TODO: terminar el envio al cliente y cambiar el cliente
+                //Envia al cliente el mapa
+                toClient.emit('map:data', {
+                    tileSize: engine.getTileSize(),
+                    dataMap: dataMap.dataMap,
+                    spriteMap: dataMap.spriteMap
+                });
 
                 // Message the welcome to client
                 toClient.emit('chat:newMessage', {name: 'Server', mode: '', text: 'Bienvenido a P-MS'});
@@ -230,7 +240,7 @@ function onMovePlayer (data) {
 	if (player) {
         console.log("Dentro MovePlayer "+ data.x +" -- "+ data.y);
         // Update player position
-        if (engine.movePlayer(player, data)) {
+        if (engine.movePlayer(player, data.x, data.y, data.dir)) {
             
             //Retorna los datos del mapa
             let dataMap = engine.getMap(player.getIDMap());
