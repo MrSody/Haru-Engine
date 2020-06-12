@@ -1,24 +1,55 @@
-<div id="character" class="Invisible" style="position: absolute; width: 100%; height: 100%;">
-    <div class="row" style="background-color: #bad2f7; height: 100%; margin-right: 0px; margin-left: 0px;">
-
-        <div id="DataCharacter" class="col-3">
-            <div id="NameRango">
-                <div id="characters_Name"></div>
-                <div id="characters_Rank"></div>
+<div id="character" class="row Invisible">
+    <div id="dataCharacter" class="col-3">
+        <div id="Name">
+            <b id="characters_Name">Name: Name</b>
+        </div>
+        <div id="attribute"></div>
+    </div>
+    
+    <div id="SkinCharacter" class="col-6">
+        <div id="createCharacter_Error" class="alert alert-danger Invisible" role="alert" style="position: absolute; width: 95%">Error</div>
+        <div id="createCharacter_Success" class="alert alert-success Invisible" role="alert" style="position: absolute; width: 95%">Success</div>
+        <div id="createCharacter_Delete" class="alert alert-secondary Invisible" role="alert" style="position: absolute; width: 95%">
+            <h4 class="alert-heading">¿Quieres eliminar al personaje?</h4>
+            <p id="deleteCharacter_text">Escribir el nombre del personaje a borrar.</p>
+            <div class="mx-auto" style="width: 50%; margin-top: 1%">
+                <p id="deleteCharacter_error" class="text-danger text-center Invisible" style="width: 100%;">Error</p>
+                <input type="text" class="form-control" id="deleteCharacter_name" placeholder="Nombre del personaje" required>
             </div>
+            <div class="mx-auto" style="width: 100%; margin-top: 1%">
+                <button type="button" id="deleteCharacter_confirm" class="button wood float-left" style="width: 30%;">ELIMINAR</button>
+                <button type="button" id="deleteCharacter_cancel" class="button wood float-right" style="width: 30%;">CANCELAR</button>
+            </div>
+            
         </div>
-
-        <div id="SkinCharacter" class="col-6">
-            <div class="mx-auto" style="width: 50%"><img src="" width="100%"></div>
-            <div id="characters_Skin" style="margin-top: 15%; margin-left: 40%;"></div>
-            <div id="characters_BtnGetInGame" class="mx-auto" style="width: 50%; margin-top: 10%;"><button style="width: 100%;">Entrar al mundo</button></div>
+        
+        <div class="mx-auto" style="width: 55%; margin-top: 1%;">
+            <img src="../Game/Img/logo.png" width="100%">
         </div>
-
-        <div class="col-3" style="padding-right: 0px;">
+        
+        <div style="margin-top: 15%; margin-left: 40%; position: sticky;">
+            <img id="characters_Skin" style="width: 150px;">
+        </div>
+        
+        <div class="mx-auto" style="width: 50%; margin-top: 10%">
+            <button type="button" id="characters_BtnGetInGame" class="button wood" style="width: 100%">ENTRAR AL MUNDO</button>
+        </div>
+    </div>
+    
+    <div class="col-3">
+        <div id="rigthCharacter" class="col-12">
+            <h1 style="text-align: center;">Personajes</h1>
+            <div id="Pj_0" class="row"></div>
+            <div id="Pj_1" class="row"></div>
+            <div id="Pj_2" class="row"></div>
+            <div id="Pj_3" class="row"></div>
+            <div id="Pj_4" class="row"></div>
             <div id="listPersonajes"></div>
-
-            <div>Eliminar</div>
         </div>
-
+        
+        <div id="characters_deleteCharacter" class="mx-auto" style="width: 70%;">
+            <button type="button" class="button wood" style="width: 100%">ELIMINAR PERSONAJE</button>
+        </div>
+        
     </div>
 </div>

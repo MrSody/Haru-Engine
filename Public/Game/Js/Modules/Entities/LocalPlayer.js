@@ -1,4 +1,6 @@
-class LocalPlayer extends Player {
+import Player from './Player.js';
+
+export default class LocalPlayer extends Player {
     constructor (datos) {
         super(datos);
         this.money = datos.money;

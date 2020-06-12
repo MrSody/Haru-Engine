@@ -1,49 +1,13 @@
-/*
-// BASICO
-- Nombre
-- Salud
-- Nivel
-- Skin
-- Posicion [X, Y]
-- Reacción [
-        0 = Neutral => Si se ataca, pasa a ser agresivo
-        1 = Amistoso => no se puede atacar
-        2 = Agresivo => Ataca al ver cualquier pj
-        3 = Guardia => Ataca al ver a otro pj con reaccion agresivo
-    ]
-- Frases []
-//
-- Misiones_Empieza []
-- Misiones_Termina []
-- Eventos [
-        0 = Ninguno =>
-        1 = Guardia => Se pasea por una ruta definida
-        2 = Vendedor => Le vende articulos al jugador
-        3 = Mision => Le entrega misiones al jugador
-        4 = Boss => Tiene eventos predefinidos para el combate
-    ]
-- Drop []
-*/
-
 class Npc {
-    constructor (data, pos, Skin) {
+    constructor (data, posWorldX, posWorldY, Skin) {
         this.id = data.ID;
         this.name = data.Name;
         this.health = {now: data.Health, max: data.Health};
         this.skin = Skin;
-        this.pos = {x: pos.X, y: pos.Y};
-        this.reaction = data.Reaction;
-        this.events = data.events;
+        this.IDMap = data.ID_Map;
+        this.posWorld = {x: posWorldX, y: posWorldY};
         
-        this.visionDistance = data.VisionDistance;
-
-        /*
-        this.move = false;
-        this.phrases = data.phrases;
-        this.missionsStart = data.missionsStart;
-        this.missionsFinish = data.missionsFinish;
-        this.drop = data.drop;
-        */
+        this.visionDistance = data.Vision_Distance;
         
 		this.dir = 2;
 		this.frame = 0;
@@ -69,16 +33,12 @@ class Npc {
         return this.name;
     }
 
-    getPos () {
-        return this.pos;
+    getIDMap () {
+        return this.IDMap;
     }
 
-    getReaction () {
-        return this.reaction;
-    }
-    
-    isAggressive () {
-        return (this.reaction == "2" || this.reaction == "3") ? true : false;
+    getPosWorld () {
+        return this.posWorld;
     }
     
     getVisionDistance () {
@@ -97,9 +57,9 @@ class Npc {
     SETTERS
 * ------------------------------ */
     
-    setPos (posX, posY) {
-        this.pos.x += posX;
-        this.pos.y += posY;
+    setPosWorld (X, Y) {
+        this.posWorld.x += X;
+        this.posWorld.y += Y;
     }
     
     setDirection (dir) {
@@ -108,7 +68,7 @@ class Npc {
 
 /* ------------------------------ *
     FUNCIONES
- * ------------------------------ */
+* ------------------------------ */
     
 }
 

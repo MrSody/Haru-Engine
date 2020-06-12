@@ -1,4 +1,6 @@
-class RemotePlayer extends Player {
+import Player from './Player.js';
+
+export default class RemotePlayer extends Player {
     constructor (datos) {
         super(datos);
     }

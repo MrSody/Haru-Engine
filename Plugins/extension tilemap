@@ -1,0 +1,8 @@
+Copiar el archivo de formatMap.js a la respectiva ruta
+
+Windows	
+C:/Users/<USER>/AppData/Local/Tiled/extensions/
+macOS	
+~/Library/Preferences/Tiled/extensions/
+Linux	
+~/.config/tiled/extensions/

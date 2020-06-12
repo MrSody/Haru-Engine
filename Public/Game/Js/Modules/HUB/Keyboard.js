@@ -1,4 +1,4 @@
-class Keyboard {
+export default  class Keyboard {
     constructor (player) {}
 
     keyDown (keyCode) {

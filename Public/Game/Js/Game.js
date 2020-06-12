@@ -3,10 +3,21 @@
     VERSION:    Alpha
 *-------------------------------*/
 "use strict";
+// HUB
+import Interface from './Modules/HUB/Interface.js';
+import Mouse from './Modules/HUB/Mouse.js';
+import Keyboard from './Modules/HUB/Keyboard.js';
+import Chat from './Modules/HUB/Chat.js';
+// MAP
+import Map from './Modules/World/Map.js';
+// ENTIDADES
+import LocalPlayer from './Modules/Entities/LocalPlayer.js';
+import RemotePlayer from './Modules/Entities/RemotePlayer.js';
+import Npc from './Modules/Entities/Npc.js';
 /*-------------------------------
     Variables
 *-------------------------------*/
-let canvasHUB,		// Canvas DOM elemento
+export let canvasHUB,		// Canvas DOM elemento
     ctxHUB,		// Canvas contexto de representación
     // Capas
     canvasCapaMapaAbajo,
@@ -18,17 +29,13 @@ let canvasHUB,		// Canvas DOM elemento
 
 	localPlayer,	// Clase jugador local
 	remotePlayers = [],	// Clase jugador remoto
-    clsInteface = new Interface(),
-    clsHelpFunction = new helpFunction(),
+    clsInterface = new Interface(),
     clsChat = new Chat(),
     clsKeyboard,
-    clsMouse = new Mouse(),
-    clsMap = new Map(),
+    clsMap,
+    clsMouse,
 
 	npcs = [],
-	collisionMap,	// Map containing NPCs and enemies, 0 = walkable, 1 = enemy, 2 = enemy, 3 = not walkable
-	worldSize,
-	adjustedTileSize,
 	lastMapUpdate = Date.now(),
 	socket,		// Socket connection
 	tellCounter = 0;
@@ -42,16 +49,18 @@ window.onload = function() {
 
 	// Start listening for events
 	setEventHandlers();
-
-	// Fialize chatlog scrollbar
-	//$("#chat").mCustomScrollbar({ autoHideScrollbar: true, });
-
-    // Fialize chatlog scrollbar
-    //simpleScroll.init("chat");
 }
 
 // GAME EVENT HANDLERS
 let setEventHandlers = function() {
+    // HUB - PERSONAJES
+    document.querySelector('#characters_BtnGetInGame').addEventListener('click', getInGame);
+    document.querySelector('#Pj_0').addEventListener('click', function(){ selCharacter(this.id); });    
+    document.querySelector('#Pj_1').addEventListener('click', function(){ selCharacter(this.id); });
+    document.querySelector('#Pj_2').addEventListener('click', function(){ selCharacter(this.id); });
+    document.querySelector('#Pj_3').addEventListener('click', function(){ selCharacter(this.id); });
+    document.querySelector('#Pj_4').addEventListener('click', function(){ selCharacter(this.id); });
+    
     // Keyboard
 	document.getElementById("Mensaje").addEventListener("keydown", localMessage, false);
 
@@ -83,14 +92,11 @@ let setEventHandlers = function() {
     // Player move message received
 	socket.on('player:move', onMovePlayer);
 
-    // Carga Mapa
-    socket.on('map:data', onMapData);
-
-    // REDIMENCIONA EL MAPA
+    // INIZIALIZA EL MAPA
     socket.on('map:init', onInitMap);
 
-    // Carga la coliciones
-    socket.on('map:collision', onInitCollisionMap);
+    // DATOS DEL MAPA
+    socket.on('map:data', onMapData);
 
     // Carga los Npc's en el mapa
     socket.on('npcs:newNpc', onNewNpc);
@@ -104,7 +110,7 @@ let setEventHandlers = function() {
 *-------------------------------*/
 function onSocketConnected () {
     // Carga la pantalla de carga
-    clsInteface.loadScreen();
+    clsInterface.loadScreen();
 
     // Tell game server client connected
     socket.emit('account:connected', {idAccount: document.querySelector('#ID').value});
@@ -114,26 +120,40 @@ function onSocketConnected () {
     HUB - PERSONAJES
 *-------------------------------*/
 function onAccountCharacters (data) {
-    clsInteface.onAccountCharacters(data);
+    clsInterface.onAccountCharacters(data);
 }
 
-function selCharacter (...data) {
-    let [id, skinBase, nombre] = data;
+function getInGame () {
+    // Oculta los personajes y muestra la pantalla de carga
+    clsInterface.loadScreen('#character', 'Invisible');
+
+    socket.emit('player:connected', {idPlayer: clsInterface.getIDPJ()});
+}
+
+function selCharacter (IDElement) {
+    let characters = clsInterface.getCharacters();
+    let id = IDElement.split('_');
+    id = id[1];
     
-    clsInteface.selCharacter(id, skinBase, nombre);
+    if (Math.round(id + 1) == characters.length) {
+        let character = characters[id];
+        clsInterface.selCharacter(character.ID, character.skinBase, character.name);
+    } else {
+        createNewCharacter();
+    }
 }
 
 /*-------------------------------
     HUB - CREAR PERSONAJE
 *-------------------------------*/
-function createNewCharacter (data) {
-    clsInteface.addClass('#character', 'Invisible');
+function createNewCharacter () {
+    clsInterface.addClass('#character', 'Invisible');
 
-    clsInteface.removeClass('#createCharacter', 'Invisible');
+    clsInterface.removeClass('#createCharacter', 'Invisible');
 }
 
 function createCharacter (data) {
-    clsInteface.addClass('#character', 'Invisible');
+    clsInterface.addClass('#character', 'Invisible');
 
     alert("crear pj "+ data);
 }
@@ -141,13 +161,6 @@ function createCharacter (data) {
 /*-------------------------------
     Iniciar videojuego
 *-------------------------------*/
-function getInGame (data) {
-    // Oculta los personajes y muestra la pantalla de carga
-    clsInteface.loadScreen('#character', 'Invisible');
-
-    socket.emit('player:connected', {idPlayer: data});
-}
-
 // Initialise new remote player
 function onNewRemotePlayer (data) {
 	remotePlayers.push(new RemotePlayer(data));
@@ -161,31 +174,24 @@ function onCreateLocalPlayer (data) {
     renderingGame();
 }
 
-// 'map:data', { tileSize: engine.getTileSize(), dataMap: dataMap.dataMap, spriteMap: dataMap.spriteMap }
+// INICIALIZA EL MAPA
 function onInitMap (data) {
-    clsMap.setMap(data.dataMap);
-
-    clsMap.getSpritesheet().onload = function() {
-
-        // Oculta la pantalla de carga
-        clsInteface.removeOrAddByID('#loading', 'Invisible');
-
-        // REDIMENCIONA EL CANVAS
-        onResize();
-
-        // INICIA ANIMACION
-        animate();
-    };
+    clsMap = new Map(data);
+    clsMouse = new Mouse(clsMap.getTileSize());
+        
+    // REDIMENCIONA EL CANVAS
+    onResize();
+    
+    // INICIA ANIMACION
+    animate();
+    
+    // Oculta la pantalla de carga
+    clsInterface.removeOrAddByID('#loading', 'Invisible');
 }
 
-// CARGA LAS CAPAS
+// CARGA LAS CAPAS DEL MAPA
 function onMapData (data) {
-    clsMap.setCapas(data);
-}
-
-// Inicia las coliciones del map - 100%
-function onInitCollisionMap (data) {
-    collisionMap = data.collisionMap;
+    clsMap.setMap(data);
 }
 
 // Npc's
@@ -207,13 +213,45 @@ function onNewNpc (data) {
 /*-------------------------------
     Funciones de Ayuda
 *-------------------------------*/
+// Buscar el jugador remoto
+function findRemotePlayer (id) {
+    for (let remotePlayer of remotePlayers) {
+        if (remotePlayer.getID() == id) {
+            return remotePlayer;
+        }
+    }
 
+    return false;
+}
+
+// Retornar player
+function findPlayer (id) {
+    let player;
+
+    if (localPlayer.getID() === id){
+        player = localPlayer;
+    } else {
+        player = findRemotePlayer(id);
+    }
+
+    return player;
+}
+
+function findNpc (id) {
+    for (let npc of npcs) {
+        if (npc.getID() == id) {
+            return npc;
+        }
+    }
+
+    return false;
+}
 /*-------------------------------
     Videojuego cargado
 *-------------------------------*/
 function renderingGame () {
     // Muestra la interfaz principal
-    clsInteface.removeClass('#hubPrincial', 'Invisible');
+    clsInterface.removeClass('#hubPrincial', 'Invisible');
 
     // Canvas Mapa Abajo
     canvasCapaMapaAbajo = document.getElementById('capasMapaAbajo');
@@ -238,10 +276,10 @@ function renderingGame () {
 
 // Move player
 function onMovePlayer (data) {
-    let player = clsHelpFunction.findPlayer(data.id);
+    let player = findPlayer(data.id);
 
     if (player) {
-        player.setPos(data.posWorld.x, data.posWorld.y);
+        player.setPosWorld(data.posWorld.X, data.posWorld.Y);
         player.setDir(data.dir);
 
         if (localPlayer.getID() != player.getID()) {
@@ -256,7 +294,7 @@ function onMovePlayer (data) {
 
 // Remove player Remote -- PRUEBA
 function onRemovePlayer (data) {
-	let player = clsHelpFunction.findPlayer(data.id);
+	let player = findPlayer(data.id);
 
 	// Player not found
 	if (!player) {
@@ -269,7 +307,7 @@ function onRemovePlayer (data) {
 }
 
 function onMoveNpc (data) {
-    let npc = clsHelpFunction.findNpc(data.id);
+    let npc = findNpc(data.id);
 
     if (npc) {        
         npc.setPos(data.pos.x, data.pos.y);
@@ -291,7 +329,7 @@ function logout() {
     Mensajes
 *-------------------------------*/
 function onReceiveMessage (data) {
-    clsChat.receiveMessage (data);
+    clsChat.receiveMessage(data);
 }
 
 function localMessage (e) {
@@ -303,7 +341,7 @@ function localMessage (e) {
                 socket.emit('chat:newMessage', {name: localPlayer.getName(), mode: data.sayMode, text: data.text, chatTo: data.chatTo});
             }
         }
-        clsInteface.blur('#Mensaje');
+        clsInterface.blur('#Mensaje');
 	}
 }
 
@@ -311,29 +349,33 @@ function localMessage (e) {
     Funciones mouse videojuego
 *-------------------------------*/
 game.onclick = function (e) {
-    clsMouse.click(e);
+    if (!$('#hubPrincial').hasClass('Invisible')) {
+        clsMouse.click(e, clsMap.getCollision(), canvasHUB, localPlayer);
+    }
 }
 
-document.onmousemove = function (e) {
-    clsMouse.move(e);
+game.onmousemove = function (e) {
+    if (!$('#hubPrincial').hasClass('Invisible')) {
+        clsMouse.move(e, clsMap.getCollision());
+    }
 }
 
 /*-------------------------------
     Funciones Teclado videojuego
 *-------------------------------*/
-document.onkeydown = function (e) {    
+game.onkeydown = function (e) {    
     clsKeyboard.keyDown(e.keyCode);
 }
 
-document.onkeyup = function (e) {
+game.onkeyup = function (e) {
     clsKeyboard.keyUp(e.keyCode);
 }
 
 /*-------------------------------
-    Interface Game - HUB
+    clsInterface Game - HUB
 *-------------------------------*/
 function changeCharacter (mode) {
-    clsInteface.changeCharacter(mode);
+    clsInterface.changeCharacter(mode);
 }
 
 /*-------------------------------
@@ -353,7 +395,7 @@ function animate () {
         draw();
         lastRender = dateNow;
         update();
-        event();
+        //event();
 
         if(dateNow - lastFpsCycle > 1000){
             lastFpsCycle = dateNow;
@@ -378,7 +420,7 @@ function update () {
         socket.emit('player:move', {id: localPlayer.getID(), x: absPos.absX, y: absPos.absY, dir: localPlayer.getDir(), mode: localPlayer.getMode()});
     
         // Mover el MAPA
-        socket.emit('map:move', {width: width, height: height});
+        socket.emit('map:data', {width: width, height: height});
 	}
     
     // Npc movimiento
@@ -399,7 +441,7 @@ function update () {
         }
     }
 }
-
+/*
 function event () {
     let width = $('#game').outerWidth(),
         height = $('#game').outerHeight(),
@@ -413,7 +455,7 @@ function event () {
     for (let i = npcs.length; i-- > 0;) {
         let npc = npcs[i];
 
-        console.log("El npc se mueve "+ npc.isMoving());
+        //console.log("El npc se mueve "+ npc.isMoving());
 
         if (!npc.isMoving()) {
             let posNow = npc.posNow(middleTileX, middleTileY, posWorld);
@@ -446,6 +488,7 @@ function event () {
         }
     }
 }
+*/
 
 /*-------------------------------
     GAME DRAW
@@ -455,7 +498,7 @@ function draw () {
         height = $('#game').outerHeight(),
         middleTileX = Math.round((width / 2) / 32),
         middleTileY = Math.round((height / 2) / 32),
-        posWorld = localPlayer.getPos(),
+        posWorld = localPlayer.getPosWorld(),
         maxTilesX = Math.floor((width / 32) + 2),
         maxTilesY = Math.floor((height / 32) + 2),
         absPos = localPlayer.getAbsPos();
@@ -468,8 +511,6 @@ function draw () {
 
     for (let h = 0; h < maxTilesY; h++) {
         for (let w = 0; w < maxTilesX; w++) {
-            
-            let dañoJugador;
                 
             // Dibuja capas inferiores
             clsMap.drawMapDown(ctxCapaMapaAbajo, w, h);
@@ -486,15 +527,20 @@ function draw () {
             }
 
             // Dijbujar NPCs - new
+            /*
             for (let i = npcs.length; i-- > 0;) {
                 let npc = npcs[i],
-                    posNow = npc.posNow(middleTileX, middleTileY, posWorld);
+                    posNow = npc.posNow(middleTileX, middleTileY, posWorld.X, posWorld.Y);
 
-                if (posNow.x == w && posNow.y == h) {
-                    npc.draw(ctxPersonaje, ctxHUB, posNow.x, posNow.y);
+                console.log(posWorld);
+                console.log(posNow);
+
+                if (posNow.X == w && posNow.Y == h) {
+                    npc.draw(ctxPersonaje, ctxHUB, posNow.X, posNow.Y);
                 }
             }
-                
+            */
+
             // Draw local playeyer
             if (middleTileX == w && middleTileY == h) {
                 localPlayer.draw(ctxPersonaje, ctxHUB, middleTileX, middleTileY);
@@ -512,7 +558,7 @@ function onResize () {
     let width = $(window).width(),
         height = $(window).height();
 
-    socket.emit('map:move', {width: width, height: height});
+    socket.emit('map:data', {width: width, height: height});
 
 	// Maximise the canvas
 	canvasHUB.width = window.innerWidth;

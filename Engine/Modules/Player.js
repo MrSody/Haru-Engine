@@ -1,63 +1,41 @@
 class Player {
-    constructor (id, datos, pos, skinBase, skinPelo) {
+    constructor (id, datos, posWorldX, posWorldY, skinBase, skinHair) {
         this.id = id;
 		// Datos Basicos
-        this.IDpj = datos.id;
-        this.name = datos.nombre;
+        this.IDPj = datos.ID;
+        this.name = datos.name;
         this.skinBase = skinBase;
-        this.skinPelo = skinPelo;
-        this.health = {now: datos.salud, max: datos.salud};
-        //this.grade = datos.grade;
-        this.level = datos.nivel;
+        this.skinHair = skinHair;
+        this.health = {now: datos.health, max: datos.health};
+        this.level = datos.level;
         this.experience = {now: datos.xp, max: 800 * (this.level + 2)};
-        this.money = datos.dinero;
+        this.money = datos.money;
         // Datos Mapa
-        this.IDmap = datos.Nmap;
+        this.IDMap = datos.IDMap;
         this.pos = {x: datos.X, y: datos.Y};
-        this.posWorld = {x: pos.X, y: pos.Y};
-		this.dir = 2;
-
-        //grupo
-        this.group = [];
-
-
-		this.alive = true;
-		this.currhp = 0;
-		this.goAttack = false;
-		this.fighting = false;
-		this.strength = 50;
-		this.lastStrike = 0;
-		this.hitSpeed = 500;
-		this.playerAttacksEnemyID = null;
+        this.posWorld = {x: posWorldX, y: posWorldY};
+		this.direction = 2;
     }
 
 /* ------------------------------ *
     SETTERS
 * ------------------------------ */
-    setID (id) {
-		this.id = id;
-	}
-
-	setEnemyID (id) {
-		this.playerAttacksEnemyID = id;
-	}
-
     setIDMap (IDMap) {
-        this.IDmap = IDMap;
+        this.IDMap = IDMap;
     }
 
-	setPos (newX, newY) {
-		this.pos.x = newX;
-        this.pos.y = newY;
+	setPos (X, Y) {
+		this.pos.x = X;
+        this.pos.y = Y;
 	}
 
-    setPosWorld (posX, posY) {
-        this.posWorld.x = posX;
-        this.posWorld.y = posY;
+    setPosWorld (X, Y) {
+        this.posWorld.x = X;
+        this.posWorld.y = Y;
     }
 
     setDirection (direction) {
-		this.dir = direction;
+		this.direction = direction;
 	}
 
 /* ------------------------------ *
@@ -68,11 +46,15 @@ class Player {
 	}
 
     getIDPJ () {
-        return this.IDpj;
+        return this.IDPj;
     }
 
-    getIDmap () {
-        return this.IDmap;
+    getName () {
+		return this.name;
+	}
+
+    getIDMap () {
+        return this.IDMap;
     }
 
     getPos () {
@@ -83,17 +65,9 @@ class Player {
         return this.posWorld;
     }
 
-	getName () {
-		return this.name;
-	}
-
 	getDir () {
-		return this.dir;
+		return this.direction;
 	}
-
-    getGroup () {
-        return this.group;
-    }
 }
 
 exports.Player = Player;

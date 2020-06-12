@@ -1,12 +1,12 @@
-class Player {
+export default class Player {
     constructor (datos) {
         console.log("datos pj"+ datos.name);
         this.id = datos.id;
         this.name = datos.name;
         this.skinBase = new Image();
-        this.skinBase.src = datos.skinBase;
-        
-		this.pos = {x: datos.posWorld.x, y: datos.posWorld.y};
+		this.skinBase.src = datos.skinBase;
+		
+		this.posWorld = {X: datos.posWorld.x, Y: datos.posWorld.y};
 		
 		this.dir = 2;
 		this.frame = 0;
@@ -61,13 +61,13 @@ class Player {
         return this.id;
     }
 
-    getPos () {
-        return this.pos;
-    }
-
     getName () {
 		return this.name;
-    }
+	}
+	
+	getPosWorld () {
+		return this.posWorld;
+	}
 
     getDir () {
 		return this.dir;
@@ -88,12 +88,12 @@ class Player {
 /* ------------------------------ *
     SETTERS
 * ------------------------------ */
-
-    setPos (x, y) {
-        this.pos.x = x;
-        this.pos.y = y;
-	}
 	
+	setPosWorld (X, Y) {
+		this.posWorld.X = X;
+		this.posWorld.Y = Y;
+	}
+
 	setDir (dir) {
 		this.dir = dir;
 	}

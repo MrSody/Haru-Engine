@@ -1,44 +1,49 @@
-const Player = require('./Modules/Player.js').Player; // Player class
-const World = require('./Modules/World.js').World;
-const Npc = require('./Modules/Npc.js').Npc;
-const orderMaps = require('./Modules/orderMap.js').getOrderMap;
-
-let fs = require('fs');
+const PLAYER = require('./Modules/Player.js').Player; // Player class
+const WORLD = require('./Modules/World.js').World;
+const NPC = require('./Modules/Npc.js').Npc;
+const ORDER_MAPS = require('./Modules/orderMap.js').getOrderMap;
 
 /* ------------------------------ *
-    VARIABLES
+VARIABLES
 * ------------------------------ */
-const clsWorld = new World(orderMaps);
+let fs = require('fs');
 
-let	world,		// Array de el mapa
-	worldSize,
-    tileSize,
-    players = [],	// Array de los jugadores conectados
-	npcs = [];  // Array de los NPC
+const World = new WORLD(ORDER_MAPS);
 
 class Engine {
+    constructor () {
+        this.world; // Array del world
+        this.worldSize;
+        this.tileSize;
+        this.players = []; // Array de los jugadores conectados
+        this.npcs = []; // Array de los NPC        
+        this.posDefault = {IDMap: 1, x: 15, y: 16} // position for default
+    }
     // Inizializa
     init () {
         this.loadWorld();
     }
 
     loadWorld () {
-        // MUNDO
-        world = clsWorld.getWorld();
-    
-        // TAMAÑO DEL MUNDO Y TILESIZE
-        worldSize = clsWorld.getWorldSize();
-        tileSize = clsWorld.getTileSize();
+        // INIIALIZAR EL WORLD
+        World.initWorld();
 
-        console.log("Completado: Se han cargado el mundo...");
+        // WORLD
+        this.world = World.getWorld();
+    
+        // SIZE OF WORLD AND TILESIZE
+        this.worldSize = World.getWorldSize();
+        this.tileSize = World.getTileSize();
+
+        console.log("Completado: Se han cargado el mundo...");        
     }
 
 /* ------------------------------ *
     FUNCIONES DE AYUDA
 * ------------------------------ */
     playerById (ID) {
-        for (let player of players) {
-            if (player.getID() == ID) {
+        for (let player of this.players) {
+            if (player.getID() === ID) {
                 return player;
             }
         }
@@ -46,8 +51,8 @@ class Engine {
     }
 
     npcById (ID) {
-        for (let npc of npcs) {
-            if (npc.getID() == ID) {
+        for (let npc of this.npcs) {
+            if (npc.getID() === ID) {
                 return npc;
             }
         }
@@ -55,10 +60,12 @@ class Engine {
     }
 
     // BUSCAR IDMAPA EN EL MUNDO
-    searchIDMap (IDmap) {
-        let X, Y;
-        for(Y = 0; Y < worldSize; Y++) {
-            X = world[Y].indexOf(IDmap);
+    searchIDMap (IDMap) {
+        let X;
+        let Y;
+
+        for(Y = 0; Y < this.worldSize.y; Y++) {
+            X = this.world[Y].indexOf(IDMap);
             if(X != -1) {
                 return {x: X, y: Y};
             }
@@ -67,34 +74,46 @@ class Engine {
     }
 
     // Actualiza la posicion
-    updatePos (posX, posY, posMap) {
+    updatePos (IDMap, posX, posY) {
         let idMap;
+        let posMap = this.searchIDMap(IDMap);
 
-        if(posX < 0) {
-            posX = 31;
-            idMap = world[posMap.y][posMap.x - 1];
-        } else if(posX > 32) {
-            posX = 0;
-            idMap = world[posMap.y][posMap.x + 1];
-        } else if(posY < 0) {
-            posY = 31;
-            idMap = world[posMap.y - 1][posMap.x];
-        } else if(posY > 32) {
-            posY = 0;
-            idMap = world[posMap.y + 1][posMap.x];
-        } else {
-            idMap = world[posMap.y][posMap.x];
+        try {
+            if(posX < 0) {
+                posX = 31;
+                idMap = this.world[posMap.y][posMap.x - 1];
+            } else if(posX > 32) {
+                posX = 0;
+                idMap = this.world[posMap.y][posMap.x + 1];
+            } else if(posY < 0) {
+                posY = 31;
+                idMap = this.world[posMap.y - 1][posMap.x];
+            } else if(posY > 32) {
+                posY = 0;
+                idMap = this.world[posMap.y + 1][posMap.x];
+            } else {
+                idMap = this.world[posMap.y][posMap.x];
+            }
+        
+
+        } catch (error) {
+            console.log(`Error - updatePos : No se pudo encontrar el mapa ${IDMap} - ${err}`);
+            // POS DEFAULT
+            idMap = this.posDefault.IDMap;
+            posX = this.posDefault.x;
+            posY = this.posDefault.y;
+            
         }
 
-        return {idMap: idMap, x: posX, y: posY};
+        return {IDMap: idMap, x: posX, y: posY};
     }
 
     posWorld (IDMap, posX, posY) {
         let posMap = this.searchIDMap(IDMap);
 
         return {
-            X: Math.floor((posMap.x * tileSize) + posX),
-            Y: Math.floor((posMap.y * tileSize) + posY)
+            x: Math.floor((posMap.x * this.tileSize) + posX),
+            y: Math.floor((posMap.y * this.tileSize) + posY)
         };
     }
 
@@ -102,63 +121,78 @@ class Engine {
     FUNCIONES - NPC
 * ------------------------------ */
     addNPC (dataNPC) {
-        let posWorld = this.posWorld(dataNPC.IDMap, dataNPC.PosX, dataNPC.PosY);
-
+        let posWorld = this.posWorld(dataNPC.ID_Map, dataNPC.X, dataNPC.Y);
         let skinNpc = fs.readFileSync(`./Engine/Sprite/Npc/${dataNPC.Skin}.txt`, 'utf-8');
 
-        npcs.push(new Npc(dataNPC, posWorld, skinNpc));
+        this.npcs.push(new NPC(dataNPC, posWorld.x, posWorld.y, skinNpc));
     }
 
     NPCNearby (player) {
-        let posWorld = player.getPosWorld();
-        let NPCCercanos = [];
+        let posMap = this.searchIDMap(player.getIDMap());
+        let maps = World.getMaps(posMap.x, posMap.y);
+        let NPCNearby = [];
 
-        let initPosWorld = {x: posWorld.x - ((32 * 3) / 2), y: posWorld.y - ((32 * 3) / 2)};
-        let endPosWorld = {x: posWorld.x + ((32 * 3) / 2), y: posWorld.y + ((32 * 3) / 2)};
-
-        for (let y = initPosWorld.y; y < endPosWorld.y; y++) {
-            for (let x = initPosWorld.x; x < endPosWorld.x; x++) {
-                npcs.forEach((npc) => {
-                    let NPCPos = npc.getPos();
-                    
-                    if (NPCPos.x == x && NPCPos.y == y) {
-                        NPCCercanos.push(npc);
-                    }
-                });
+        for (let npc of this.npcs) {
+            for (let map of maps) {
+                if (npc.getIDMap()  == map) {
+                    NPCNearby.push(npc);
+                }
             }
         }
 
-        return NPCCercanos;
+        return NPCNearby;
     }
 
 /* ------------------------------ *
     FUNCIONES - PLAYER
 * ------------------------------ */
-    addPlayer (idClient, dataPlayer) {
-        let posWorld = this.posWorld(dataPlayer.Nmap, dataPlayer.X, dataPlayer.Y);
+    addPlayer (IDClient, dataPlayer) {
+        let posWorld = this.posWorld(dataPlayer.IDMap, dataPlayer.X, dataPlayer.Y);
 
         // Sprite player
         let skinBase = fs.readFileSync(`./Engine/Sprite/Player/Base/${dataPlayer.skinBase}.txt`, 'utf-8');
 
-        let player =  new Player(idClient, dataPlayer, posWorld, skinBase, "");
+        let player = new PLAYER(IDClient, dataPlayer, posWorld.x, posWorld.y, skinBase, "");
 
-        players.push(player);
+        this.players.push(player);
 
         return player;
     }
 
-    movePlayer (player, X, Y, Dir) {
-        let pos = player.getPos(),
-            posMap = this.searchIDMap(player.getIDmap()),
-            newPos = this.updatePos((pos.x + X), (pos.y + Y), posMap);
+    playersNearby (player) {
+        let posMap = this.searchIDMap(player.getIDMap());
+        let maps = World.getMaps(posMap.x, posMap.y);
+        let IDplayer = player.getID();
+        let playersNearby = [];
+
+        for (let player of this.players) {
+            for (let map of maps) {
+                if (player.getIDMap() == map && player.getID() != IDplayer) {
+                    playersNearby.push(player);
+                }
+            }
+        }
+
+        return playersNearby;
+    }
+
+    movePlayer (player, data) {
+        let posPlayer = player.getPos();
+        let posWorld = player.getPosWorld();
+        let newPos = this.updatePos(player.getIDMap(), (posPlayer.x + data.x), (posPlayer.y + data.y));
+
+        console.log("posPlayer: "+ posPlayer.x +" -- "+ posPlayer.y);
+        console.log("posWorld - antes: "+ posWorld.x +" -- "+ posWorld.y);
+        console.log("NEWPOS: "+ newPos.x +" -- "+ newPos.y);
+
+        console.log("Player X: "+ Math.floor(player.getPos().x + data.x) +" - "+ Math.floor(player.getPos().y + data.y) +" idMap: "+ newPos.IDMap +" dir: "+ data.dir);
 
         player.setPos(newPos.x, newPos.y);
-        player.setDirection(Dir);
-        player.setIDMap(newPos.idMap);
+        player.setDirection(data.dir);
+        player.setIDMap(newPos.IDMap);
+        player.setPosWorld((posWorld.x + data.x), (posWorld.y + data.y));
 
-        console.log("ahora: "+ player.getPos().x +" -- "+ player.getPos().y);
-
-        return ((posMap == newPos.idMap) ? false : true);
+        console.log("ahora: "+ player.getPosWorld().x +" -- "+ player.getPosWorld().y);
     }
 
     playerDisconnect (id) {
@@ -166,7 +200,7 @@ class Engine {
 
         console.log("se desconecto "+ player.getName());
 
-        players.splice(players.indexOf(player), 1);
+        this.players.splice(this.players.indexOf(player), 1);
         
         return player;
     }
@@ -175,33 +209,24 @@ class Engine {
     GETTERS
 * ------------------------------ */
     getTileSize () {
-        return tileSize;
+        return this.tileSize;
     }
 
-    getSpriteMap () {
-        return spriteMap;
-    }
-    
-    getMap (IDMap) {
-        let posMap = this.searchIDMap(IDMap);
-
-        return clsWorld.getMap(posMap);
+    getSpriteWorld () {
+        return World.getDataSpriteSheets();
     }
 
-    /*
     getMap (player, width, height) {
-        const   pos = player.getPos(),
-                posMap = this.searchIDMap(player.getIDmap());
+        let posMap = this.searchIDMap(player.getIDMap());
+        let posPlayer = player.getPos();
 
-        //Carga las capas del mapa y las colisiones
-        return clsWorld.getMap(width, height, pos, posMap);
+        // Retorna las capas del mapa y las colisiones, ademas de el spriteSheets
+        return World.getMap(width, height, posPlayer.x, posPlayer.y, posMap.x, posMap.y);
     }
-    */
 
     getPlayers () {
-        return players;
+        return this.players;
     }
-
 }
 
 exports.Engine = Engine;

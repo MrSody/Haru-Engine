@@ -1,179 +1,127 @@
-class Map {
-    constructor () {
+export default class Map {
+    constructor (data) {
+        this.tileSize = parseInt(data.tileSize); // TAMAÑO DE LOS TILES
+        this.spriteSheets = this.desingSheet(data.spritesheet); // Image() y src de las imagenes
+
         this.capaOne;
         this.capaTwo;
         this.capaThree;
         this.capaFour;
         this.capaFive;
-        this.collision;
-        this.spriteSheetCapa; // Nombre de las imagenes de cada capa
-        this.spriteSheet; // Image() y src de las imagenes
-        /*
-        // sprite map
-        this.spritesheet = new Image();
-        this.spritesheet.src = data.spritesheet;
-        // datos del sprite map
-        this.spriteCol = 8;
-        //spriteCol = parseInt(data.col);
-        // tamaño del map y sprite
-        this.tileSize = parseInt(data.tileSize);
-        this.capaOne;
-        this.capaTwo;
-        this.capaThree;
-        this.capaFour;
-        this.capaFive;
-        */
+        this.capaCollision;
     }
 
 /* ------------------------------ *
     GETTERS
- * ------------------------------ */
-
-    getSpritesheet () {
-        return this.spritesheet;
-    }
-
+* ------------------------------ */
     getTileSize () {
         return this.tileSize;
     }
 
+    getCollision () {
+        return this.capaCollision;
+    }
+
 /* ------------------------------ *
     SETTERS
- * ------------------------------ */
-
-    setCapas (data) {
+* ------------------------------ */
+    // Ingresa los datos del servidor
+    setMap (data) {
         this.capaOne = data.capa1;
         this.capaTwo = data.capa2;
         this.capaThree = data.capa3;
         this.capaFour = data.capa4;
         this.capaFive = data.capa5;
-    }
-/*
-capa1: dataCapa.layers[0].data,
-capa2: dataCapa.layers[1].data,
-capa3: dataCapa.layers[2].data,
-capa4: dataCapa.layers[3].data,
-capa5: dataCapa.layers[4].data,
-collision: dataCapa.layers[5].data,
-tilesets: tilesets
-*/
-    setMap (dataMap) {
-        this.capa1 = this.desingCapa(1, dataMap);
-        this.capa2 = this.desingCapa(2, dataMap);
-        this.capa3 = this.desingCapa(3, dataMap);
-        this.capa4 = this.desingCapa(4, dataMap);
-        this.capa5 = this.desingCapa(5, dataMap);
-        this.collision = this.desingCapa(6, dataMap);
-        
+        this.capaCollision = data.collisionMap;
     }
 
 /* ------------------------------ *
     FUNCIONES
- * ------------------------------ */
+* ------------------------------ */
+    // Diseña el array de los spriteSheet y retorna una array
+    //[{name: nombre, spritesheet: <img>, tileStart: tile inicio, tileEnd: tile fin, tileCount: cantidad Tile, imageHeight: alto, imageWidth: ancho}]
+    desingSheet (dataSpriteSheet) {
+        let arraySheet = [];
 
-    listToMatrix (vector) {
-        let matrix = [], count, column;
-        for (count = 0, column = -1; count < vector.length; count++) {
-            if (count % this.tileSize === 0) {
-                column++;
-                matrix[column] = [];
-            }
-
-            matrix[column].push(vector[count]);
+        for (let spriteSheet of dataSpriteSheet) {
+            let spritesheet = new Image();
+            spritesheet.src = spriteSheet.file;
+            arraySheet.push({
+                name: spriteSheet.nameTilesets,
+                spritesheet: spritesheet,
+                tileStart: spriteSheet.tileStart,
+                tileEnd: spriteSheet.tileEnd,
+                tileCount: spriteSheet.tileCount,
+                imageHeight: spriteSheet.imageHeight,
+                imageWidth: spriteSheet.imageWidth
+            });
         }
-        return matrix;
+
+        return arraySheet;
     }
 
-    addLineCapa (numCapa, capa) {
-        let lineCapa;
-
-        switch (numCapa) {
-            case 1:
-                lineCapa.push(capa.capa1);
-                break;
-
-            case 2:
-                lineCapa.push(capa.capa2);
-                break;
-
-            case 3:
-                lineCapa.push(capa.capa3);
-                break;
-
-            case 4:
-                lineCapa.push(capa.capa4);
-                break;
-
-            case 5:
-                lineCapa.push(capa.capa5);
-                break;
-
-            case 6:
-                lineCapa.push(capa.collision);
-                break;
-        }
-
-        return lineCapa;
+/* ------------------------------ *
+    DRAW
+* ------------------------------ */
+    drawMapDown (ctx, X, Y) {
+        this.drawMap(this.capaOne, ctx, X, Y);
+        this.drawMap(this.capaTwo, ctx, X, Y);
+        this.drawMap(this.capaThree, ctx, X, Y);
     }
 
-    desingCapa (capa, dataMap) {
-        let list = [],
-            size = {
-                width: dataMap[dataMap.length].length,
-                height: dataMap.length
-            };
-
-        for (let mapY = 0; mapY < size.height; mapY++) {
-            for (let mapX = 0; mapX < size.width; mapX++) {
-                list.push(this.addLineCapa(capa, dataMap[mapY][mapX]));
-            }
-        }
-	
-        return this.listToMatrix(list);
+    drawMapUp (ctx, X, Y) {
+        this.drawMap(this.capaFour, ctx, X, Y);
+        this.drawMap(this.capaFive, ctx, X, Y);
     }
 
     // Dibuja Map - 100%
-    drawMap (capa, ctx, w, h) {
-        // Draw World - Dibujando Mundo
-        let spriteNum = 0, x, y;
+    drawMap (capa, ctx, X, Y) {
+        let spriteNum = capa[Y][X];
 
-        spriteNum = capa[h][w];
+        // Valida que el sprite no sea 0 o no este definido
         if (spriteNum != 0 && spriteNum != undefined) {
 
+            // Filtra la lista de sprite la cantidad de tiles sea menor al spriteNum            
+            let spriteSheet = this.spriteSheets.filter(spriteSheet => parseInt(spriteSheet.tileStart) <= parseInt(spriteNum) <= parseInt(spriteSheet.tileEnd));
+            // Trae el primer valor del array
+            spriteSheet = spriteSheet[0];
+
             // Trae la posicion del sprite
-            if (spriteNum < this.spriteCol) {
-                y = 0;
-                x = parseInt((spriteNum - 1) * 32);
-            } else {
+            let posSprite = this.posSprite(spriteNum, spriteSheet.imageWidth, spriteSheet.imageHeight);
 
-                let ind = 0, fila = 0;
-
-                while (!(ind > spriteNum)) {
-                    fila++;
-                    ind = (fila + 1) * 8
-                }
-
-                spriteNum = spriteNum - (fila * 8);
-                y = parseInt(fila * 32);
-                x = parseInt((spriteNum - 1) * 32);
-            }
-            
             // Mejora la posicion del mapa
-            h = h - 0.5;
+            Y = Y - 0.5;
 
-            ctx.drawImage(this.spritesheet, x, y, this.tileSize, this.tileSize, w * this.tileSize, h * this.tileSize, this.tileSize, this.tileSize);
-            //ctx.drawImage(this.spritesheet, x, y, this.tileSize, this.tileSize, w * this.tileSize, h * this.tileSize, this.tileSize, this.tileSize);
+            // Dibuja el sprite en pantalla
+            ctx.drawImage(
+                spriteSheet.spritesheet,
+                (posSprite.X * this.tileSize),
+                (posSprite.Y * this.tileSize),
+                this.tileSize,
+                this.tileSize,
+                X * this.tileSize,
+                Y * this.tileSize,
+                this.tileSize,
+                this.tileSize
+            );
         }
     }
 
-    drawMapDown (ctx, w, h) {
-        this.drawMap(this.capaOne, ctx, w, h);
-        this.drawMap(this.capaTwo, ctx, w, h);
-        this.drawMap(this.capaThree, ctx, w, h);
-    }
+    posSprite (spriteNum, imageWidth, imageHeight) {
+        if (spriteNum < (imageWidth / this.tileSize)) {
+            return { X: parseInt(spriteNum - 1), Y: 0 };
+        } else {
 
-    drawMapUp (ctx, w, h) {
-        this.drawMap(this.capaFour, ctx, w, h);
-        this.drawMap(this.capaFive, ctx, w, h);
+            let ind = 0, fila = 0;
+
+            while (!(ind > spriteNum)) {
+                fila++;
+                ind = (fila + 1) * (imageWidth / this.tileSize);
+            }
+
+            spriteNum = spriteNum - (fila * (imageWidth / this.tileSize));
+            
+            return { X: parseInt(spriteNum - 1), Y: parseInt(fila) };
+        }
     }
 }

@@ -1,11 +1,11 @@
-class Npc {
+export default class Npc {
     constructor (data) {
         this.id = data.id;
         this.name = data.name;
         this.health = {now: data.health.now, max: data.health.max};
         this.skin = new Image();
         this.skin.src = data.skin;
-        this.pos = {x: data.pos.x, y: data.pos.y};
+        this.posWorld = {X: data.posWorld.X, Y: data.posWorld.Y};
         this.reaction = data.reaction;
         this.events = data.events;
         
@@ -192,27 +192,11 @@ class Npc {
 	}
     
     // Actualiza la posicion del Npc
-    posNow (widthMap, heightMap, posWorld) {
-
-        let posIntX = Math.floor(posWorld.x - widthMap),
-            posIntY = Math.floor(posWorld.y - heightMap),
-            posEndX = Math.floor(posWorld.x + widthMap),
-            posEndY = Math.floor(posWorld.y + heightMap),
-            posNpc = this.pos;
-
-        if ((posIntX >= posNpc.x || posNpc.x <= posEndX) && (posIntY >= posNpc.y || posNpc.y <= posEndY)) {
-            for(var y = 0, intY = posIntY; intY <= posEndY; intY++, y++) {
-                for(var x = 0, intX = posIntX; intX <= posEndX; intX++, x++) {
-
-                    if (posNpc.x == intX && posNpc.y == intY) {
-                        //console.log("dentro posNow");
-                        return {x: x, y: y};
-                    }
-                }
-            }
-        }
-
-        return false;
+    posNow (middleTileX, middleTileY, posWorldX, posWorldY) {
+        return {
+            X: Math.floor(middleTileX - (posWorldX - this.posWorld.X)),
+            Y: Math.floor(middleTileY - (posWorldY - this.posWorld.Y)),
+        };
     }
 
     draw (ctx, HUB, cXnull, cYnull) {

@@ -16,7 +16,15 @@ var customMapFormat = {
                 let row = [];
                 for (y = 0; y < layer.height; ++y) {
                     for (x = 0; x < layer.width; ++x){
-                        row.push(layer.cellAt(x, y).tileId);
+                        if (layer.name == "collision") {
+                            if (layer.cellAt(x, y).tileId != 0) {
+                                row.push(1);
+                            } else {
+                                row.push(0);
+                            }
+                        } else {
+                            row.push(layer.cellAt(x, y).tileId);
+                        }
                     }
                 }
                 m.layers[i] = {name: layer.name, data: row};
