@@ -1,7 +1,9 @@
 export default class Map {
     constructor (data) {
         this.tileSize = parseInt(data.tileSize); // TAMAÑO DE LOS TILES
-        this.spriteSheets = this.desingSheet(data.spritesheet); // Image() y src de las imagenes
+        // sprite map
+        this.spritesheet = new Image();
+        this.spritesheet.src = data.spritesheet;
 
         this.capaOne;
         this.capaTwo;
@@ -36,31 +38,6 @@ export default class Map {
     }
 
 /* ------------------------------ *
-    FUNCIONES
-* ------------------------------ */
-    // Diseña el array de los spriteSheet y retorna una array
-    //[{name: nombre, spritesheet: <img>, tileStart: tile inicio, tileEnd: tile fin, tileCount: cantidad Tile, imageHeight: alto, imageWidth: ancho}]
-    desingSheet (dataSpriteSheet) {
-        let arraySheet = [];
-
-        for (let spriteSheet of dataSpriteSheet) {
-            let spritesheet = new Image();
-            spritesheet.src = spriteSheet.file;
-            arraySheet.push({
-                name: spriteSheet.nameTilesets,
-                spritesheet: spritesheet,
-                tileStart: spriteSheet.tileStart,
-                tileEnd: spriteSheet.tileEnd,
-                tileCount: spriteSheet.tileCount,
-                imageHeight: spriteSheet.imageHeight,
-                imageWidth: spriteSheet.imageWidth
-            });
-        }
-
-        return arraySheet;
-    }
-
-/* ------------------------------ *
     DRAW
 * ------------------------------ */
     drawMapDown (ctx, X, Y) {
@@ -80,21 +57,15 @@ export default class Map {
 
         // Valida que el sprite no sea 0 o no este definido
         if (spriteNum != 0 && spriteNum != undefined) {
-
-            // Filtra la lista de sprite la cantidad de tiles sea menor al spriteNum            
-            let spriteSheet = this.spriteSheets.filter(spriteSheet => parseInt(spriteSheet.tileStart) <= parseInt(spriteNum) <= parseInt(spriteSheet.tileEnd));
-            // Trae el primer valor del array
-            spriteSheet = spriteSheet[0];
-
             // Trae la posicion del sprite
-            let posSprite = this.posSprite(spriteNum, spriteSheet.imageWidth, spriteSheet.imageHeight);
+            let posSprite = this.posSprite(spriteNum, this.spritesheet.width);
 
             // Mejora la posicion del mapa
             Y = Y - 0.5;
 
             // Dibuja el sprite en pantalla
             ctx.drawImage(
-                spriteSheet.spritesheet,
+                this.spritesheet,
                 (posSprite.X * this.tileSize),
                 (posSprite.Y * this.tileSize),
                 this.tileSize,
@@ -107,7 +78,7 @@ export default class Map {
         }
     }
 
-    posSprite (spriteNum, imageWidth, imageHeight) {
+    posSprite (spriteNum, imageWidth) {
         if (spriteNum < (imageWidth / this.tileSize)) {
             return { X: parseInt(spriteNum - 1), Y: 0 };
         } else {

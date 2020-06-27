@@ -76,3 +76,13 @@ body {
 	-moz-border-radius:3px;
 	border-radius:3px;
 }
+
+#COpciones {
+    background: rgba(0, 0, 0, 0.50);
+    padding: 5px 15px;
+    /* width: 150px; */
+    border-bottom-left-radius: 5px;
+    position: absolute;
+    top: 0;
+    right: 0;
+}

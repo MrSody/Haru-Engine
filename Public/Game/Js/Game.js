@@ -45,7 +45,7 @@ export let canvasHUB,		// Canvas DOM elemento
 *------------------------------*/
 window.onload = function() {
 	// Inicia la conexion al socket
-	socket = io.connect();
+    socket = io.connect();
 
 	// Start listening for events
 	setEventHandlers();
@@ -132,8 +132,7 @@ function getInGame () {
 
 function selCharacter (IDElement) {
     let characters = clsInterface.getCharacters();
-    let id = IDElement.split('_');
-    id = id[1];
+    let id = Math.round(IDElement.split('_').reverse().shift());
     
     if (Math.round(id + 1) == characters.length) {
         let character = characters[id];
@@ -226,15 +225,11 @@ function findRemotePlayer (id) {
 
 // Retornar player
 function findPlayer (id) {
-    let player;
-
     if (localPlayer.getID() === id){
-        player = localPlayer;
+        return localPlayer;
     } else {
-        player = findRemotePlayer(id);
+        return findRemotePlayer(id);
     }
-
-    return player;
 }
 
 function findNpc (id) {
@@ -274,12 +269,11 @@ function renderingGame () {
 	ctxHUB.globalAlpha = 0.1;
 }
 
-// Move player
 function onMovePlayer (data) {
     let player = findPlayer(data.id);
 
     if (player) {
-        player.setPosWorld(data.posWorld.X, data.posWorld.Y);
+        player.setPosWorld(data.posWorld.x, data.posWorld.y);
         player.setDir(data.dir);
 
         if (localPlayer.getID() != player.getID()) {
@@ -333,7 +327,7 @@ function onReceiveMessage (data) {
 }
 
 function localMessage (e) {
-    if (e.keyCode == 13) {
+    if (e.keyCode === 13) {
         if (this.value) {
             let data = clsChat.message(localPlayer, this.value);    
             
@@ -372,16 +366,11 @@ game.onkeyup = function (e) {
 }
 
 /*-------------------------------
-    clsInterface Game - HUB
-*-------------------------------*/
-function changeCharacter (mode) {
-    clsInterface.changeCharacter(mode);
-}
-
-/*-------------------------------
     GAME ANIMATION LOOP
 *-------------------------------*/
-let lastRender = Date.now(), lastFpsCycle = Date.now();
+let lastRender = Date.now();
+let lastFpsCycle = Date.now();
+
 function animate () {
 
     setTimeout(function () {
@@ -389,8 +378,8 @@ function animate () {
         // Request a new animation frame
         window.requestAnimationFrame(animate);
         
-        let dateNow = Date.now(),
-            delta = (dateNow - lastRender) / 1000;        
+        let dateNow = Date.now();
+        let delta = (dateNow - lastRender) / 1000;
 
         draw();
         lastRender = dateNow;
@@ -411,13 +400,13 @@ function animate () {
 function update () {
     // Mover el player
 	if (localPlayer.isMoving()) {
-		let absPos = localPlayer.getAbsPos(),
-            width = $(window).width(),
-            height = $(window).height();
+		let absPos = localPlayer.getAbsPos();
+        let width = $(window).width();
+        let height = $(window).height();
 
         localPlayer.playerMove();
 
-        socket.emit('player:move', {id: localPlayer.getID(), x: absPos.absX, y: absPos.absY, dir: localPlayer.getDir(), mode: localPlayer.getMode()});
+        socket.emit('player:move', {id: localPlayer.getID(), x: absPos.x, y: absPos.y, dir: localPlayer.getDir(), mode: localPlayer.getMode()});
     
         // Mover el MAPA
         socket.emit('map:data', {width: width, height: height});
@@ -493,21 +482,24 @@ function event () {
 /*-------------------------------
     GAME DRAW
 *-------------------------------*/
-function draw () {
-    let width = $('#game').outerWidth(),
-        height = $('#game').outerHeight(),
-        middleTileX = Math.round((width / 2) / 32),
-        middleTileY = Math.round((height / 2) / 32),
-        posWorld = localPlayer.getPosWorld(),
-        maxTilesX = Math.floor((width / 32) + 2),
-        maxTilesY = Math.floor((height / 32) + 2),
-        absPos = localPlayer.getAbsPos();
-
-    // Wipe the canvas clean
+function cleanScreen (width, height) {
     ctxHUB.clearRect(0, 0, width, height);
     ctxCapaMapaAbajo.clearRect(0, 0, width, height);
     ctxPersonaje.clearRect(0, 0, width, height);
     ctxCapaMapaArriba.clearRect(0, 0, width, height);
+}
+
+function draw () {
+    let width = $('#game').outerWidth();
+    let height = $('#game').outerHeight();
+    let middleTileX = Math.round((width / 2) / 32);
+    let middleTileY = Math.round((height / 2) / 32);
+    let posWorld = localPlayer.getPosWorld();
+    let maxTilesX = Math.round((width / 32) + 2);
+    let maxTilesY = Math.round((height / 32) + 2);    
+
+    // Wipe the canvas clean
+    cleanScreen(width, height);
 
     for (let h = 0; h < maxTilesY; h++) {
         for (let w = 0; w < maxTilesX; w++) {
@@ -517,8 +509,8 @@ function draw () {
 
             // Dibujar remote players
             for (let i = remotePlayers.length; i-- > 0;) {
-                let remotePlayer = remotePlayers[i],
-                    posNow = remotePlayer.posNow(middleTileX, middleTileY, posWorld);
+                let remotePlayer = remotePlayers[i];
+                let posNow = remotePlayer.posNow(middleTileX, middleTileY, posWorld);
                 
                 if (posNow.x == w && posNow.y == h) {
                     remotePlayer.draw(ctxPersonaje, ctxHUB, posNow.x, posNow.y);
@@ -555,8 +547,8 @@ function draw () {
 // Browser window resize
 function onResize () {
     // REDIMENZIONAR MAPA
-    let width = $(window).width(),
-        height = $(window).height();
+    let width = $(window).width();
+    let height = $(window).height();
 
     socket.emit('map:data', {width: width, height: height});
 

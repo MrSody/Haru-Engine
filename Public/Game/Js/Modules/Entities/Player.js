@@ -6,7 +6,7 @@ export default class Player {
         this.skinBase = new Image();
 		this.skinBase.src = datos.skinBase;
 		
-		this.posWorld = {X: datos.posWorld.x, Y: datos.posWorld.y};
+		this.posWorld = {x: datos.posWorld.x, y: datos.posWorld.y};
 		
 		this.dir = 2;
 		this.frame = 0;
@@ -14,8 +14,6 @@ export default class Player {
 		this.mode = 0, // 0 = parado, 1 = caminando, 2 = corriendo, 3 = fighting;
 
 		////////////////////////
-
-		this.speed = 480;
 
 		//this.sound = new SoundManager();
 		this.currhp = 0;
@@ -89,9 +87,9 @@ export default class Player {
     SETTERS
 * ------------------------------ */
 	
-	setPosWorld (X, Y) {
-		this.posWorld.X = X;
-		this.posWorld.Y = Y;
+	setPosWorld (x, y) {
+		this.posWorld.x = x;
+		this.posWorld.y = y;
 	}
 
 	setDir (dir) {

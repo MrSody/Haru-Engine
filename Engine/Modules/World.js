@@ -25,15 +25,7 @@ class World {
     }
 
     getDataSpriteSheets () {
-        return [{
-                nameTilesets: "tileset_konoha_naruto_by_zewiskaaz-d55puro",
-                imageHeight: 3264,
-                imageWidth: 256,
-                tileStart: 1,
-                tileEnd: 816,
-                tileCount: 816,
-                file: this.getFile('./Engine/Sprite/Map/tileset_konoha_naruto_by_zewiskaaz-d55puro.txt')
-            }];
+        return this.getFile('./Engine/Sprite/Map/tileset_konoha_naruto_by_zewiskaaz-d55puro.txt');
     }
 
     // TRAES LOS DATOS DE LA CAPA

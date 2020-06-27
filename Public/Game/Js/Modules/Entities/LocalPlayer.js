@@ -5,7 +5,7 @@ export default class LocalPlayer extends Player {
         super(datos);
         this.money = datos.money;
 
-        this.absPos = {absX: 0, absY: 0};
+        this.absPos = {x: 0, y: 0};
         this.goRun = false;
         this.path = [[]];
     }
@@ -24,9 +24,9 @@ export default class LocalPlayer extends Player {
 /* ------------------------------ *
     SETTERS
 * ------------------------------ */
-    setAbsPos (absX, absY) {
-        this.absPos.absX = absX;
-        this.absPos.absY = absY;
+    setAbsPos (x, y) {
+        this.absPos.x = x;
+        this.absPos.y = y;
     }
 
     setRun (running) {
@@ -76,28 +76,28 @@ export default class LocalPlayer extends Player {
 
                 if (posX < lastPosX) { // Left
                     this.dir = 3;
-                    this.absPos.absX = -1;
-                    this.absPos.absY = 0;
+                    this.absPos.x = -1;
+                    this.absPos.y = 0;
 
                 } else if(posX > lastPosX) { // Right
                     this.dir = 1;
-                    this.absPos.absX = 1;
-                    this.absPos.absY = 0;
+                    this.absPos.x = 1;
+                    this.absPos.y = 0;
 
                 } else if(posY < lastPosY) { // Up
                     this.dir = 0;
-                    this.absPos.absX = 0;
-                    this.absPos.absY = -1;
+                    this.absPos.x = 0;
+                    this.absPos.y = -1;
 
                 } else if(posY > lastPosY) { // Down
                     this.dir = 2;
-                    this.absPos.absX = 0;
-                    this.absPos.absY = 1;
+                    this.absPos.x = 0;
+                    this.absPos.y = 1;
 
                 }
             } else {
-                this.absPos.absX = 0;
-                this.absPos.absY = 0;
+                this.absPos.x = 0;
+                this.absPos.y = 0;
             }
 
             if (this.stepCount < this.path.length - 1 && !this.moveInterrupt) {
@@ -140,66 +140,66 @@ export default class LocalPlayer extends Player {
                 if (posX < lastPosX) { // Left
                     if (posY < lastPosY) {
                         this.dir = 3;
-                        this.absPos.absX = -1;
-                        this.absPos.absY = -1;
+                        this.absPos.x = -1;
+                        this.absPos.y = -1;
                     } else if (posY > lastPosY) {
                         this.dir = 3;
-                        this.absPos.absX = -1;
-                        this.absPos.absY = 1;
+                        this.absPos.x = -1;
+                        this.absPos.y = 1;
                     } else {
                         this.dir = 3;
-                        this.absPos.absX = -2;
-                        this.absPos.absY = 0;
+                        this.absPos.x = -2;
+                        this.absPos.y = 0;
                     }
 
                 } else if(posX > lastPosX) { // Right
                     if (posY < lastPosY) {
                         this.dir = 1;
-                        this.absPos.absX = 1;
-                        this.absPos.absY = -1;
+                        this.absPos.x = 1;
+                        this.absPos.y = -1;
                     } else if (posY > lastPosY) {
                         this.dir = 1;
-                        this.absPos.absX = 1;
-                        this.absPos.absY = 1;
+                        this.absPos.x = 1;
+                        this.absPos.y = 1;
                     } else {
                         this.dir = 1;
-                        this.absPos.absX = 2;
-                        this.absPos.absY = 0;
+                        this.absPos.x = 2;
+                        this.absPos.y = 0;
                     }
 
                 } else if(posY < lastPosY) { // Up
                     if (posY < lastPosY) {
                         this.dir = 0;
-                        this.absPos.absX = 1;
-                        this.absPos.absY = -1;
+                        this.absPos.x = 1;
+                        this.absPos.y = -1;
                     } else if (posY > lastPosY) {
                         this.dir = 0;
-                        this.absPos.absX = -1;
-                        this.absPos.absY = -1;
+                        this.absPos.x = -1;
+                        this.absPos.y = -1;
                     } else {
                         this.dir = 0;
-                        this.absPos.absX = 0;
-                        this.absPos.absY = -2;
+                        this.absPos.x = 0;
+                        this.absPos.y = -2;
                     }
 
                 } else if(posY > lastPosY) { // Down
                     if (posY < lastPosY) {
                         this.dir = 2;
-                        this.absPos.absX = 1;
-                        this.absPos.absY = 1;
+                        this.absPos.x = 1;
+                        this.absPos.y = 1;
                     } else if (posY > lastPosY) {
                         this.dir = 2;
-                        this.absPos.absX = -1;
-                        this.absPos.absY = 1;
+                        this.absPos.x = -1;
+                        this.absPos.y = 1;
                     } else {
                         this.dir = 2;
-                        this.absPos.absX = 0;
-                        this.absPos.absY = 2;
+                        this.absPos.x = 0;
+                        this.absPos.y = 2;
                     }
                 }
             } else {
-                this.absPos.absX = 0;
-                this.absPos.absY = 0;
+                this.absPos.x = 0;
+                this.absPos.y = 0;
             }
 
             if (this.stepCount < this.path.length - 1 && !this.moveInterrupt) {
