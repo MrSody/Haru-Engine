@@ -323,7 +323,7 @@ function logout() {
     Mensajes
 *-------------------------------*/
 function onReceiveMessage (data) {
-    clsChat.receiveMessage(data);
+    clsInterface.showMessage(data);
 }
 
 function localMessage (e) {
@@ -333,6 +333,8 @@ function localMessage (e) {
             
             if (data.sendServer) {
                 socket.emit('chat:newMessage', {name: localPlayer.getName(), mode: data.sayMode, text: data.text, chatTo: data.chatTo});
+            } else {
+                clsInterface.showMessage({mode: data.sayMode, text: data.text, name: localPlayer.getName()});
             }
         }
         clsInterface.blur('#Mensaje');
@@ -495,19 +497,20 @@ function draw () {
     let middleTileX = Math.round((width / 2) / 32);
     let middleTileY = Math.round((height / 2) / 32);
     let posWorld = localPlayer.getPosWorld();
-    let maxTilesX = Math.round((width / 32) + 2);
-    let maxTilesY = Math.round((height / 32) + 2);    
+    let maxTilesX = Math.floor((width / 32) + 2);
+    let maxTilesY = Math.floor((height / 32) + 2);    
 
     // Wipe the canvas clean
     cleanScreen(width, height);
 
     for (let h = 0; h < maxTilesY; h++) {
-        for (let w = 0; w < maxTilesX; w++) {
-                
+        for (let w = 0; w < maxTilesX; w++) {            
+
             // Dibuja capas inferiores
             clsMap.drawMapDown(ctxCapaMapaAbajo, w, h);
 
             // Dibujar remote players
+            /*
             for (let i = remotePlayers.length; i-- > 0;) {
                 let remotePlayer = remotePlayers[i];
                 let posNow = remotePlayer.posNow(middleTileX, middleTileY, posWorld);
@@ -517,21 +520,19 @@ function draw () {
                     dañoJugador = remotePlayer;
                 }
             }
+            */
 
             // Dijbujar NPCs - new
-            /*
-            for (let i = npcs.length; i-- > 0;) {
-                let npc = npcs[i],
-                    posNow = npc.posNow(middleTileX, middleTileY, posWorld.X, posWorld.Y);
+            for(let npc of npcs) {
+                let posNow = npc.posNow(middleTileX, middleTileY, posWorld.x, posWorld.y);
 
-                console.log(posWorld);
-                console.log(posNow);
+                //console.log(posWorld);
+                //console.log(posNow);
 
-                if (posNow.X == w && posNow.Y == h) {
+                if (posNow.x == w && posNow.y == h) {
                     npc.draw(ctxPersonaje, ctxHUB, posNow.X, posNow.Y);
                 }
             }
-            */
 
             // Draw local playeyer
             if (middleTileX == w && middleTileY == h) {
@@ -564,9 +565,4 @@ function onResize () {
 
     canvasCapaMapaArriba.width = window.innerWidth;
     canvasCapaMapaArriba.height = window.innerHeight;
-
-    $('#game').css({ width: $(window).width(), height: $(window).height() });
-    $('#capasMapaAbajo').css({ width: $(window).width(), height: $(window).height() });
-    $('#capaPersonaje').css({ width: $(window).width(), height: $(window).height() });
-    $('#capasMapaArriba').css({ width: $(window).width(), height: $(window).height() });
 }

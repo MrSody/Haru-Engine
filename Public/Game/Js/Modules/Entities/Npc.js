@@ -1,11 +1,12 @@
 export default class Npc {
     constructor (data) {
+        console.log(data);
         this.id = data.id;
         this.name = data.name;
         this.health = {now: data.health.now, max: data.health.max};
         this.skin = new Image();
         this.skin.src = data.skin;
-        this.posWorld = {X: data.posWorld.X, Y: data.posWorld.Y};
+        this.posWorld = {x: data.posWorld.x, y: data.posWorld.y};
         this.reaction = data.reaction;
         this.events = data.events;
         
@@ -43,8 +44,8 @@ export default class Npc {
         return this.name;
     }
 
-    getPos () {
-        return this.pos;
+    getPosWorld () {
+        return this.posWorld;
     }
 
     getReaction () {
@@ -75,8 +76,9 @@ export default class Npc {
     SETTERS
 * ------------------------------ */
     
-    setPos (posX, posY) {
-        this.pos = {x: posX, y: posY};
+    setPosWorld (posX, posY) {
+        this.posWorld.x = posX;
+        this.posWorld.y = posY;
     }
     
     setDir (dir) {
@@ -192,11 +194,11 @@ export default class Npc {
 	}
     
     // Actualiza la posicion del Npc
-    posNow (middleTileX, middleTileY, posWorldX, posWorldY) {
+    posNow (middleTileX, middleTileY, posPlayerWorldX, posPlayerWorldY) {
         return {
-            X: Math.floor(middleTileX - (posWorldX - this.posWorld.X)),
-            Y: Math.floor(middleTileY - (posWorldY - this.posWorld.Y)),
-        };
+            x: Math.floor(middleTileX - (posPlayerWorldX - this.posWorld.x)),
+            y: Math.floor(middleTileY - (posPlayerWorldY - this.posWorld.y)),
+        }
     }
 
     draw (ctx, HUB, cXnull, cYnull) {

@@ -31,33 +31,31 @@ export default class Interface {
     }
 
     removeClass (element, style) {
-        let documentSelect = this.documentSelect(element);
-        documentSelect.classList.remove(style);
+        this.documentSelect(element).classList.remove(style);
     }
 
     addClass (element, style) {
-        let documentSelect = this.documentSelect(element);
-        documentSelect.classList.add(style);
+        this.documentSelect(element).classList.add(style);
     }
 
     removeOrAddByID (element, style) {
-        let documentSelect = this.documentSelect(element);
-        documentSelect.classList.toggle(style);
+        this.documentSelect(element).classList.toggle(style);
     }
 
     innerHTML (element, html) {
-        let documentSelect = this.documentSelect(element);
-        documentSelect.innerHTML = html;
+        this.documentSelect(element).innerHTML = html;
     }
 
     focus (element) {
-        let documentSelect = this.documentSelect(element);
-        documentSelect.focus();
+        this.documentSelect(element).focus();
     }
 
     blur (element) {
-        let documentSelect = this.documentSelect(element);
-        documentSelect.blur();
+        this.documentSelect(element).blur();
+    }
+
+    fullScreen (element, width, height) {
+        this.documentSelect(element).setAttribute("style", `width: ${width}; height: ${height}`);
     }
 
 /*-------------------------------
@@ -128,5 +126,30 @@ export default class Interface {
         
         this.innerHTML('#characters_Skin', `<div id="characters_Skin" style="margin-top: 15%; margin-left: 40%;"><img src="../sprites/Player/Base/${Skin_Base}.png" style="width: 150px;"></div>`);
         this.innerHTML('#characters_Name', `Nombre: ${Name}`);
+    }
+
+/*-------------------------------
+    HUB - GAME
+*-------------------------------*/
+    showMessage (data) {
+        let chatTxtClr;
+
+        switch (data.mode) {
+            case 's':
+                chatTxtClr = "yellow";
+                break;
+            case 'w':
+                chatTxtClr = "red";
+                break;
+            default:
+                chatTxtClr = "white";
+        }
+
+        let spanMessage = document.createElement("span");
+        spanMessage.style = "color: "+ chatTxtClr;
+        divBtnsNw.innerHTML = data.name +": "+ data.text +"<br>";
+        this.documentSelect("#Mensajes").appendChild(divBtnsNw);
+        
+        this.documentSelect("#Mensaje").value = "";
     }
 }

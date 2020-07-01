@@ -1,30 +1,10 @@
 export default class Chat {
-    constructor () {}
-
-    receiveMessage (data) {
-        let chatTxtClr;
-        //var pColor = (data.player == localPlayer.name) ? "#CD96CD" : "#96CDCD";
-        switch (data.mode) {
-            case 's':
-                chatTxtClr = "yellow";
-                break;
-            case 'w':
-                chatTxtClr = "red";
-                break;
-            default:
-                chatTxtClr = "white";
-        }
-    
-        $('.text .mCSB_container').append("<span style='color: "+ chatTxtClr +";'>"+ data.name +": "+ data.text +"</span></br>");
-        $('.text').mCustomScrollbar("update");
-        $('.text').mCustomScrollbar("scrollTo","bottom");
-        $('#Mensaje').val('');
+    constructor () {
+        this.textHelp = `Bienvenido al menu de ayuda. <br>- Usa /loc para saber tu ubicacion actual.`;
     }
 
     message (localPlayer, text) {
         let help = false, opcion, sayMode, chatTo;
-        let textHelp = `Bienvenido al menu de ayuda. <br>
-                    - Usa /loc para saber tu ubicacion actual.`;
 
         if (text.charAt(0) == '/') {
             opcion = text.substring(1);
@@ -46,13 +26,12 @@ export default class Chat {
                 text = `Posicion actual: X: ${localPlayer.getPos().x} - Y: ${localPlayer.getPos().y}`;
             } else {
                 help = true;
-                text = textHelp;
+                text = this.textHelp;
             }
         }
 
         if (help) {
-            this.receiveMessage({mode: sayMode, text: text, name: localPlayer.getName()});
-            return {sendServer: false};
+            return {sendServer: false, mode: sayMode, text: text, chatTo: chatTo};
         } else {
             return {sendServer: true, mode: sayMode, text: text, chatTo: chatTo};
         }

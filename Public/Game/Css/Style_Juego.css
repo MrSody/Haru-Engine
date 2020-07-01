@@ -33,7 +33,13 @@ body {
 	max-width: 265px;
 	max-height: 145px;
     margin-bottom: 5px;
-    color: white;
+	color: white;
+	border: 1px solid #ddd;
+	overflow-y: scroll;
+}
+
+#Mensajes {
+	height: auto;
 }
 
 #Mensaje {
