@@ -147,8 +147,8 @@ export default class Interface {
 
         let spanMessage = document.createElement("span");
         spanMessage.style = "color: "+ chatTxtClr;
-        divBtnsNw.innerHTML = data.name +": "+ data.text +"<br>";
-        this.documentSelect("#Mensajes").appendChild(divBtnsNw);
+        spanMessage.innerHTML = data.name +": "+ data.text +"<br>";
+        this.documentSelect("#Mensajes").appendChild(spanMessage);
         
         this.documentSelect("#Mensaje").value = "";
     }
