@@ -24,23 +24,10 @@ SETTERS
     // Actualiza la posicion del jugador remoto
     posNow (widthMap, heightMap, posWorld) {
 
-        let posIntX = Math.floor(posWorld.x - widthMap),
-            posIntY = Math.floor(posWorld.y - heightMap),
-            posEndX = Math.floor(posWorld.x + widthMap),
-            posEndY = Math.floor(posWorld.y + heightMap);
-
-        if ((posIntX >= this.pos.x || this.pos.x <= posEndX) && (posIntY >= this.pos.y || this.pos.y <= posEndY)) {
-            for(let y = 0, intY = posIntY; intY <= posEndY; intY++, y++) {
-                for(let x = 0, intX = posIntX; intX <= posEndX; intX++, x++) {
-
-                    if (this.pos.x == intX && this.pos.y == intY) {
-                        return {x: x, y: y};
-                    }
-                }
-            }
-        }
-
-        return false;
+        let x = Math.floor(this.posWorld.x - posWorld.x) + widthMap;
+        let y = Math.floor(this.posWorld.y - posWorld.y) + heightMap;
+        
+        return {x: x, y: y};
     }
 
 /* ------------------------------ *

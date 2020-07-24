@@ -510,19 +510,16 @@ function draw () {
             clsMap.drawMapDown(ctxCapaMapaAbajo, w, h);
 
             // Dibujar remote players
-            /*
-            for (let i = remotePlayers.length; i-- > 0;) {
-                let remotePlayer = remotePlayers[i];
+            for (let remotePlayer of remotePlayers) {
                 let posNow = remotePlayer.posNow(middleTileX, middleTileY, posWorld);
                 
                 if (posNow.x == w && posNow.y == h) {
                     remotePlayer.draw(ctxPersonaje, ctxHUB, posNow.x, posNow.y);
-                    dañoJugador = remotePlayer;
                 }
             }
-            */
 
             // Dijbujar NPCs - new
+            /*
             for(let npc of npcs) {
                 let posNow = npc.posNow(middleTileX, middleTileY, posWorld.x, posWorld.y);
 
@@ -533,6 +530,7 @@ function draw () {
                     npc.draw(ctxPersonaje, ctxHUB, posNow.X, posNow.Y);
                 }
             }
+            */
 
             // Draw local playeyer
             if (middleTileX == w && middleTileY == h) {
