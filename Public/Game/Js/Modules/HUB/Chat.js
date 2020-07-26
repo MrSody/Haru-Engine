@@ -1,6 +1,6 @@
 export default class Chat {
     constructor () {
-        this.textHelp = `Bienvenido al menu de ayuda. <br>- Usa /loc para saber tu ubicacion actual.`;
+        this.textHelp = `Bienvenido al menu de ayuda. <br>- Usa /pos para saber tu ubicacion actual.`;
     }
 
     message (localPlayer, text) {
@@ -23,7 +23,7 @@ export default class Chat {
                 text = text.substring(3);
             } else if (opcion == 'pos') {
                 help = true;
-                text = `Posicion actual: X: ${localPlayer.getPos().x} - Y: ${localPlayer.getPos().y}`;
+                text = `Posicion actual: X: ${localPlayer.getPosWorld().x} - Y: ${localPlayer.getPosWorld().y}`;
             } else {
                 help = true;
                 text = this.textHelp;
