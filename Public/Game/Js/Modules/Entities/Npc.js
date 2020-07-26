@@ -194,11 +194,11 @@ export default class Npc {
 	}
     
     // Actualiza la posicion del Npc
-    posNow (middleTileX, middleTileY, posPlayerWorldX, posPlayerWorldY) {
+    posNow (widthMap, heightMap, posWorld) {
         return {
-            x: Math.floor(middleTileX - (posPlayerWorldX - this.posWorld.x)),
-            y: Math.floor(middleTileY - (posPlayerWorldY - this.posWorld.y)),
-        }
+            x: Math.floor(this.posWorld.x - posWorld.x) + widthMap,
+            y: Math.floor(this.posWorld.y - posWorld.y) + heightMap
+        };
     }
 
     draw (ctx, HUB, cXnull, cYnull) {

@@ -518,19 +518,14 @@ function draw () {
                 }
             }
 
-            // Dijbujar NPCs - new
-            /*
+            // Dijbujar NPCs - new            
             for(let npc of npcs) {
-                let posNow = npc.posNow(middleTileX, middleTileY, posWorld.x, posWorld.y);
-
-                //console.log(posWorld);
-                //console.log(posNow);
+                let posNow = npc.posNow(middleTileX, middleTileY, posWorld);
 
                 if (posNow.x == w && posNow.y == h) {
-                    npc.draw(ctxPersonaje, ctxHUB, posNow.X, posNow.Y);
+                    npc.draw(ctxPersonaje, ctxHUB, posNow.x, posNow.y);
                 }
             }
-            */
 
             // Draw local playeyer
             if (middleTileX == w && middleTileY == h) {
