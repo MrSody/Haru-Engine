@@ -54,7 +54,6 @@ export default class Player {
 /* ------------------------------ *
     GETTERS
 * ------------------------------ */
-
     getID () {
         return this.id;
     }
@@ -86,7 +85,6 @@ export default class Player {
 /* ------------------------------ *
     SETTERS
 * ------------------------------ */
-	
 	setPosWorld (x, y) {
 		this.posWorld.x = x;
 		this.posWorld.y = y;
@@ -99,7 +97,6 @@ export default class Player {
 /* ------------------------------ *
     FUNCIONES
 * ------------------------------ */
-
 	nextFrame () {
 		if(this.frame < 3) {
 			this.frame++;

@@ -10,15 +10,17 @@ import Keyboard from './Modules/HUB/Keyboard.js';
 import Chat from './Modules/HUB/Chat.js';
 // MAP
 import Map from './Modules/World/Map.js';
-// ENTIDADES
+// ENTITIES
 import LocalPlayer from './Modules/Entities/LocalPlayer.js';
 import RemotePlayer from './Modules/Entities/RemotePlayer.js';
 import Npc from './Modules/Entities/Npc.js';
+// DEVELOPER
+import Developer from './Developer/Developer.js';
 /*-------------------------------
     Variables
 *-------------------------------*/
-export let canvasHUB,		// Canvas DOM elemento
-    ctxHUB,		// Canvas contexto de representación
+let canvasHUB,		// Canvas DOM elemento
+    ctxHUB,		    // Canvas contexto de representación
     // Capas
     canvasCapaMapaAbajo,
     ctxCapaMapaAbajo,
@@ -26,16 +28,20 @@ export let canvasHUB,		// Canvas DOM elemento
     ctxPersonaje,
     canvasCapaMapaArriba,
     ctxCapaMapaArriba,
-
-	localPlayer,	// Clase jugador local
-	remotePlayers = [],	// Clase jugador remoto
+    // CLASSES
     clsInterface = new Interface(),
     clsChat = new Chat(),
     clsKeyboard,
     clsMap,
     clsMouse,
+    clsDeveloper,
+    // ENTITIES
+    localPlayer,	// Clase jugador local
+    remotePlayers = [],	// Clase jugador remoto
+    npcs = [],
 
-	npcs = [],
+    modeDeveloper = false,
+    
 	lastMapUpdate = Date.now(),
 	socket,		// Socket connection
 	tellCounter = 0;
@@ -177,6 +183,7 @@ function onCreateLocalPlayer (data) {
 function onInitMap (data) {
     clsMap = new Map(data);
     clsMouse = new Mouse(clsMap.getTileSize());
+    clsDeveloper = new Developer(clsMap.getTileSize());
         
     // REDIMENCIONA EL CANVAS
     onResize();
@@ -332,9 +339,14 @@ function localMessage (e) {
             let data = clsChat.message(localPlayer, this.value);    
             
             if (data.sendServer) {
-                socket.emit('chat:newMessage', {name: localPlayer.getName(), mode: data.sayMode, text: data.text, chatTo: data.chatTo});
+                socket.emit('chat:newMessage', {name: localPlayer.getName(), mode: data.mode, text: data.text, chatTo: data.chatTo});
             } else {
-                clsInterface.showMessage({mode: data.sayMode, text: data.text, name: localPlayer.getName()});
+                if (data.mode) {
+                    clsInterface.showMessage({mode: data.mode, text: data.text, name: localPlayer.getName()});
+                    modeDeveloper = !modeDeveloper;
+                } else {
+                    clsInterface.showMessage({mode: data.mode, text: data.text, name: localPlayer.getName()});
+                }
             }
         }
         clsInterface.blur('#Mensaje');
@@ -509,7 +521,7 @@ function draw () {
             // Dibuja capas inferiores
             clsMap.drawMapDown(ctxCapaMapaAbajo, w, h);
 
-            // Dibujar remote players
+            // Draw remote players
             for (let remotePlayer of remotePlayers) {
                 let posNow = remotePlayer.posNow(middleTileX, middleTileY, posWorld);
                 
@@ -518,7 +530,7 @@ function draw () {
                 }
             }
 
-            // Dijbujar NPCs - new            
+            // Draw NPCs            
             for(let npc of npcs) {
                 let posNow = npc.posNow(middleTileX, middleTileY, posWorld);
 
@@ -534,6 +546,10 @@ function draw () {
 
             // Dibuja las capas superiores
             clsMap.drawMapUp(ctxCapaMapaArriba, w, h);
+
+            if (modeDeveloper) {
+                clsDeveloper.drawGrid(ctxHUB, w, h, width, height);
+            }
         }
     }
 }

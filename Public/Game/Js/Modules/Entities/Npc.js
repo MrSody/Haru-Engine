@@ -35,7 +35,6 @@ export default class Npc {
 /* ------------------------------ *
     GETTERS
 * ------------------------------ */
-    
     getID () {
         return this.id;
     }
@@ -75,7 +74,6 @@ export default class Npc {
 /* ------------------------------ *
     SETTERS
 * ------------------------------ */
-    
     setPosWorld (posX, posY) {
         this.posWorld.x = posX;
         this.posWorld.y = posY;
@@ -115,7 +113,6 @@ export default class Npc {
 /* ------------------------------ *
     FUNCIONES
  * ------------------------------ */
-    
     playerMove () {
         let pathValue;
 
