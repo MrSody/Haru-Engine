@@ -548,7 +548,8 @@ function draw () {
             clsMap.drawMapUp(ctxCapaMapaArriba, w, h);
 
             if (modeDeveloper) {
-                clsDeveloper.drawGrid(ctxHUB, w, h, width, height);
+                clsDeveloper.drawGrid(ctxHUB, w, h);
+                clsDeveloper.drawCollision(ctxHUB, w, h, clsMap.getCollision());
             }
         }
     }

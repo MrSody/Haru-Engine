@@ -33,7 +33,10 @@ export default class Mouse {
             playerPosX = Math.round((canvasHUB.width / 2) / this.tileSize),
             playerPosY = Math.round((canvasHUB.height / 2) / this.tileSize);
 
+            tile.y = tile.y - 1;
+
             console.log(tile);
+            console.log(collisionMap[(tile.y - 1)][tile.x]);
         
         if (!(tile.x == playerPosX && tile.y == playerPosY) && !(collisionMap[tile.y][tile.x] === 1)) { // To avoid a bug, where player wouldn't walk anymore, when clicked twice on the same tile
     
@@ -87,6 +90,9 @@ export default class Mouse {
                     let pathStart = {x: playerPosX, y: playerPosY},
                         pathfinder = new Pathfinder(collisionMap, pathStart, tile),
                         path = pathfinder.calculatePath();
+                        for (let p of path) {
+                            console.log(p);
+                        }
     
                     // Calculate path
                     if (path.length > 0) {
