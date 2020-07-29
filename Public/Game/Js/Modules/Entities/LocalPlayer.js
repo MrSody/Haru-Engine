@@ -256,7 +256,7 @@ export default class LocalPlayer extends Player {
         HUB.fillStyle = "#FFF";
         HUB.font = "9pt Minecraftia";
         // Muestra el nombre del player
-        HUB.fillText(this.name, cXnull, (cYnull - 20));
+        HUB.fillText(this.name, cXnull, (cYnull - 35));
 
         this.drawMode(ctx, cXnull, cYnull);
         

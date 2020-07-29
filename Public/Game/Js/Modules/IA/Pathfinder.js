@@ -195,7 +195,6 @@ class Pathfinder {
 		// Returns true if cell is walkable or not walkable but an enemy
 		//return ((world[x] != null) && (world[x][y] != null) && ((world[x][y] <= maxWalkableTileNum) || (x == pathEnd.x && y == pathEnd.y && (world[x][y] == 1 || world[x][y] == 2))));
 		return ((this.world[y] != null) && (this.world[y][x] != null) && ((this.world[y][x] <= this.maxWalkableTileNum) || (x == this.pathEnd.x && y == this.pathEnd.y && (this.world[y][x] == 1 || this.world[y][x] == 2))));
-		//return ((this.world[y - 1] != null) && (this.world[y - 1][x] != null) && ((this.world[y - 1][x] <= this.maxWalkableTileNum) || (x == this.pathEnd.x && y == this.pathEnd.y && (this.world[y - 1][x] == 1 || this.world[y][x] == 2))));
 		/*return ((world[x] != null) && (world[x][y] != null) && (world[x][y] <= maxWalkableTileNum));*/
 	}
 

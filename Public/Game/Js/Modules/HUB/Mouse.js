@@ -21,8 +21,6 @@ export default class Mouse {
     move (e, collisionMap) {
         let tile = this.getClickedTile(e);
 
-        console.log(collisionMap[tile.y][tile.x]);
-
         if (tile.x >= 0 && tile.y >= 0) {
             if (collisionMap[tile.y][tile.x] === this.tileNOWalking) {
                 document.documentElement.style.cursor = this.cursorNOWalking;
@@ -36,8 +34,6 @@ export default class Mouse {
         let tile = this.getClickedTile(e),
             playerPosX = Math.round((canvasHUB.width / 2) / this.tileSize),
             playerPosY = Math.round((canvasHUB.height / 2) / this.tileSize);
-        
-        console.log(tile);
         
         if (!(tile.x == playerPosX && tile.y == playerPosY) && !(collisionMap[tile.y][tile.x] === 1)) { // To avoid a bug, where player wouldn't walk anymore, when clicked twice on the same tile
     
@@ -89,16 +85,9 @@ export default class Mouse {
                     clearTimeout(timer);
                     localPlayer.stop = false;
 
-                    // Mejora la posicion del click
-                    //tile.y = tile.y - 1;
-
-                    let pathStart = {x: playerPosX, y: playerPosY},
-                        pathfinder = new Pathfinder(collisionMap, pathStart, tile),
-                        path = pathfinder.calculatePath();
-                        for (let p of path) {
-                            console.log(p);
-                        }
-    
+                    let pathStart = {x: playerPosX, y: playerPosY};
+                    let pathfinder = new Pathfinder(collisionMap, pathStart, tile);
+                    let path = pathfinder.calculatePath();
                     // Calculate path
                     if (path.length > 0) {
                         localPlayer.setPath(path);

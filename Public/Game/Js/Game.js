@@ -508,9 +508,9 @@ function draw () {
     let height = $('#game').outerHeight();
     let middleTileX = Math.round((width / 2) / 32);
     let middleTileY = Math.round(((height / 2) / 32));
-    let posWorld = localPlayer.getPosWorld();
     let maxTilesX = Math.floor((width / 32) + 2);
     let maxTilesY = Math.floor((height / 32) + 2);
+    let posWorld = localPlayer.getPosWorld();
 
     // Wipe the canvas clean
     cleanScreen(width, height);
