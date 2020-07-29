@@ -507,16 +507,16 @@ function draw () {
     let width = $('#game').outerWidth();
     let height = $('#game').outerHeight();
     let middleTileX = Math.round((width / 2) / 32);
-    let middleTileY = Math.round((height / 2) / 32);
+    let middleTileY = Math.round(((height / 2) / 32));
     let posWorld = localPlayer.getPosWorld();
     let maxTilesX = Math.floor((width / 32) + 2);
-    let maxTilesY = Math.floor((height / 32) + 2);    
+    let maxTilesY = Math.floor((height / 32) + 2);
 
     // Wipe the canvas clean
     cleanScreen(width, height);
 
     for (let h = 0; h < maxTilesY; h++) {
-        for (let w = 0; w < maxTilesX; w++) {            
+        for (let w = 0; w < maxTilesX; w++) {
 
             // Dibuja capas inferiores
             clsMap.drawMapDown(ctxCapaMapaAbajo, w, h);
@@ -526,7 +526,7 @@ function draw () {
                 let posNow = remotePlayer.posNow(middleTileX, middleTileY, posWorld);
                 
                 if (posNow.x == w && posNow.y == h) {
-                    remotePlayer.draw(ctxPersonaje, ctxHUB, posNow.x, posNow.y);
+                    remotePlayer.draw(ctxPersonaje, ctxHUB, posNow.x, (posNow.y - 0.5));
                 }
             }
 
@@ -535,13 +535,13 @@ function draw () {
                 let posNow = npc.posNow(middleTileX, middleTileY, posWorld);
 
                 if (posNow.x == w && posNow.y == h) {
-                    npc.draw(ctxPersonaje, ctxHUB, posNow.x, posNow.y);
+                    npc.draw(ctxPersonaje, ctxHUB, posNow.x, (posNow.y - 0.5));
                 }
             }
 
-            // Draw local playeyer
+            // Draw local player
             if (middleTileX == w && middleTileY == h) {
-                localPlayer.draw(ctxPersonaje, ctxHUB, middleTileX, middleTileY);
+                localPlayer.draw(ctxPersonaje, ctxHUB, middleTileX, (middleTileY - 0.5));
             }
 
             // Dibuja las capas superiores

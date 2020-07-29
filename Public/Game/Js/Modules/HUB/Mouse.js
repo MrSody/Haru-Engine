@@ -14,17 +14,21 @@ export default class Mouse {
     getClickedTile (e) {
         return {
             x: Math.floor(e.pageX / this.tileSize),
-            y: Math.floor(e.pageY / this.tileSize)
+            y: Math.floor((e.pageY + (0.5 * this.tileSize)) / this.tileSize)
         };
     }
 
     move (e, collisionMap) {
         let tile = this.getClickedTile(e);
 
-        if (collisionMap[tile.y][tile.x] === this.tileNOWalking) {
-            document.documentElement.style.cursor = this.cursorNOWalking;
-        } else {
-            document.documentElement.style.cursor = this.cursorWalking;
+        console.log(collisionMap[tile.y][tile.x]);
+
+        if (tile.x >= 0 && tile.y >= 0) {
+            if (collisionMap[tile.y][tile.x] === this.tileNOWalking) {
+                document.documentElement.style.cursor = this.cursorNOWalking;
+            } else {
+                document.documentElement.style.cursor = this.cursorWalking;
+            }
         }
     }
 
@@ -32,11 +36,8 @@ export default class Mouse {
         let tile = this.getClickedTile(e),
             playerPosX = Math.round((canvasHUB.width / 2) / this.tileSize),
             playerPosY = Math.round((canvasHUB.height / 2) / this.tileSize);
-
-            tile.y = tile.y - 1;
-
-            console.log(tile);
-            console.log(collisionMap[(tile.y - 1)][tile.x]);
+        
+        console.log(tile);
         
         if (!(tile.x == playerPosX && tile.y == playerPosY) && !(collisionMap[tile.y][tile.x] === 1)) { // To avoid a bug, where player wouldn't walk anymore, when clicked twice on the same tile
     
@@ -87,6 +88,10 @@ export default class Mouse {
                 if (!localPlayer.isMoving()) {
                     clearTimeout(timer);
                     localPlayer.stop = false;
+
+                    // Mejora la posicion del click
+                    //tile.y = tile.y - 1;
+
                     let pathStart = {x: playerPosX, y: playerPosY},
                         pathfinder = new Pathfinder(collisionMap, pathStart, tile),
                         path = pathfinder.calculatePath();

@@ -247,6 +247,8 @@ export default class LocalPlayer extends Player {
     draw (ctx, HUB, cXnull, cYnull) {
         const tileSize = 32;
         cXnull *= tileSize;
+
+        //cYnull = (cYnull - 0.5);
         cYnull *= tileSize;
 
         this.updateFrame();
@@ -257,7 +259,8 @@ export default class LocalPlayer extends Player {
         HUB.fillText(this.name, cXnull, (cYnull - 20));
 
         this.drawMode(ctx, cXnull, cYnull);
-
+        
+        /*
         let hitDelta = Date.now() - this.lastHitPointUpdate;
 
         if (this.hitArray.length > 0 && hitDelta > 50) {
@@ -282,5 +285,6 @@ export default class LocalPlayer extends Player {
                 ctx.fillText(this.hitArray[i][0], this.pos["x"]+12, this.pos["y"]-20);
             }
         }
+        */
     }
 }
