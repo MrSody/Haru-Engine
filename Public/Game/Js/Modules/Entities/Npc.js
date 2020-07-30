@@ -210,5 +210,72 @@ export default class Npc {
 
         // Posicion nueva
         ctx.drawImage(this.skin, this.frame * 64, this.dir * 48, 64, 48, (cXnull - 16), (cYnull - 16), 64, 48);
-	}
+    }
+
+/* ------------------------------ *
+    EVENTS
+ * ------------------------------ */
+    eventVision (posNow, ) {
+        if (!this.isMoving()) {
+            if (this.reaction != 1) {
+                console.log("Va a atacar");
+                let visionDistance = this.getVisionDistance();
+                let initVisionX = posNow.x - visionDistance;
+                let initVisionY = posNow.y - visionDistance;
+                let endVisionX = initVisionX + (visionDistance * 2);
+                let endVisionY = initVisionY + (visionDistance * 2);
+
+                console.log("X "+ initVisionX +" - "+ endVisionX);
+                console.log("Y "+ initVisionY +" - "+ endVisionY);
+
+                /*
+                for (let y = initVisionY; y <= endVisionY; y++) {
+                    let x = posNow.x - visionDistance;
+                    for (; x <= endVisionX; x++) {
+                        if (x >= middleTileX && x <= middleTileX && y >= middleTileY && y <= middleTileY) {
+
+                            let pathFinder = new Pathfinder(collisionMap, posNow, {x: middleTileX, y: middleTileY}),
+                                Mover = pathFinder.attack();
+                                
+                            console.log("El npc "+ npc.getName() +" Ataca a "+ localPlayer.getName() +"---"+ Mover);
+
+                            if (Mover.length > 0) {
+                                npc.setPath(Mover);
+                            }
+                        }
+                    }
+                }
+                */
+            }
+            /*
+            let posNow = npc.posNow(middleTileX, middleTileY, posWorld);
+            
+            if (posNow && npc.isAggressive()) {
+                
+                let visionDistance = npc.getVisionDistance(),
+                    initVisionX = posNow.x - visionDistance,
+                    initVisionY = posNow.y - visionDistance,
+                    endVisionX = initVisionX + (visionDistance * 2),
+                    endVisionY = initVisionY + (visionDistance * 2);
+                
+                for (let y = initVisionY; y <= endVisionY; y++) {
+                    let x = posNow.x - visionDistance;
+                    for (; x <= endVisionX; x++) {
+                        if (x >= middleTileX && x <= middleTileX && y >= middleTileY && y <= middleTileY) {
+
+                            let pathFinder = new Pathfinder(collisionMap, posNow, {x: middleTileX, y: middleTileY}),
+                                Mover = pathFinder.attack();
+                                
+                            console.log("El npc "+ npc.getName() +" Ataca a "+ localPlayer.getName() +"---"+ Mover);
+
+                            if (Mover.length > 0) {
+                                npc.setPath(Mover);
+                            }
+                        }
+                    }
+                }
+            }
+            */
+        }
+    }
 }

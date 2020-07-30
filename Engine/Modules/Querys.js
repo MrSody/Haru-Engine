@@ -39,7 +39,7 @@ class Querys {
 	}
 
 	getSearchNpc () {
-		return `Select ID, Name, Health, Skin, Level, ID_Map, X, Y, Vision_Distance FROM Npc`;
+		return `Select ID, Name, Health, Skin, Level, ID_Map, X, Y, Vision_Distance, Reaction FROM Npc`;
 	}
 }
 

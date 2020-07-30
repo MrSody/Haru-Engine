@@ -1,3 +1,13 @@
+/*
+DATA OF NPC
+- Rection [
+    0 = Neutral => Si se ataca, pasa a ser agresivo
+    1 = Amistoso => no se puede atacar
+    2 = Agresivo => Ataca al ver cualquier pj
+    3 = Guardia => Ataca al ver a otro pj con reaccion agresivo
+]
+*/
+
 class Npc {
     constructor (data, posWorldX, posWorldY, Skin) {
         this.id = data.ID;
@@ -8,6 +18,7 @@ class Npc {
         this.posWorld = {x: posWorldX, y: posWorldY};
         
         this.visionDistance = data.Vision_Distance;
+        this.reaction = data.Reaction;
         
 		this.dir = 2;
 		this.frame = 0;
@@ -24,7 +35,6 @@ class Npc {
 /* ------------------------------ *
     GETTERS
 * ------------------------------ */
-
     getID () {
         return this.id;
     }
@@ -41,10 +51,6 @@ class Npc {
         return this.posWorld;
     }
     
-    getVisionDistance () {
-        return this.visionDistance;
-    }
-    
     getDir () {
         return this.dir;
     }
@@ -56,10 +62,9 @@ class Npc {
 /* ------------------------------ *
     SETTERS
 * ------------------------------ */
-    
-    setPosWorld (X, Y) {
-        this.posWorld.x += X;
-        this.posWorld.y += Y;
+    setPosWorld (x, y) {
+        this.posWorld.x += x;
+        this.posWorld.y += y;
     }
     
     setDirection (dir) {
