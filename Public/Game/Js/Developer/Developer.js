@@ -24,8 +24,22 @@ export default class Developer {
 
     drawCollision (ctx, cXnull, cYnull, mapCollision) {
         if (mapCollision[cYnull][cXnull] === 1) {
-            ctx.fillStyle = "#FF0000";
+            ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
             ctx.fillRect((cXnull * this.tileSize), ((cYnull - 0.5) * this.tileSize), 32, 32);
+        }
+    }
+
+    drawVisionNpc (ctx, visionDistance, posNow) {
+        let initVisionX = posNow.x - visionDistance;
+        let initVisionY = posNow.y - visionDistance;
+        let endVisionX = initVisionX + (visionDistance * 2);
+        let endVisionY = initVisionY + (visionDistance * 2);
+
+        for (; initVisionY <= endVisionY; initVisionY++) {
+            for (let x = initVisionX; x <= endVisionX; x++) {
+                ctx.fillStyle = "rgba(0, 255, 0, 0.5)";
+                ctx.fillRect((x * this.tileSize), ((initVisionY - 0.5) * this.tileSize), 32, 32);
+            }
         }
     }
 }

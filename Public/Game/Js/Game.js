@@ -21,7 +21,7 @@ import Developer from './Developer/Developer.js';
 *-------------------------------*/
 let canvasHUB,		// Canvas DOM elemento
     ctxHUB,		    // Canvas contexto de representación
-    // Capas
+    // CAPAS
     canvasCapaMapaAbajo,
     ctxCapaMapaAbajo,
     canvasPersonaje,
@@ -39,7 +39,7 @@ let canvasHUB,		// Canvas DOM elemento
     localPlayer,	// Clase jugador local
     remotePlayers = [],	// Clase jugador remoto
     npcs = [],
-
+    // DEVELOPER
     modeDeveloper = false,
     
 	lastMapUpdate = Date.now(),
@@ -342,8 +342,8 @@ function localMessage (e) {
                 socket.emit('chat:newMessage', {name: localPlayer.getName(), mode: data.mode, text: data.text, chatTo: data.chatTo});
             } else {
                 if (data.mode) {
-                    clsInterface.showMessage({mode: data.mode, text: data.text, name: localPlayer.getName()});
                     modeDeveloper = !modeDeveloper;
+                    clsInterface.showMessage({mode: data.mode, text: data.text +": "+ modeDeveloper, name: localPlayer.getName()});
                 } else {
                     clsInterface.showMessage({mode: data.mode, text: data.text, name: localPlayer.getName()});
                 }
@@ -444,7 +444,7 @@ function update () {
         }
     }
 }
-/*
+
 function event () {
     let width = $('#game').outerWidth(),
         height = $('#game').outerHeight(),
@@ -491,7 +491,6 @@ function event () {
         }
     }
 }
-*/
 
 /*-------------------------------
     GAME DRAW
@@ -536,6 +535,10 @@ function draw () {
 
                 if (posNow.x == w && posNow.y == h) {
                     npc.draw(ctxPersonaje, ctxHUB, posNow.x, (posNow.y - 0.5));
+                    npc.eventVision(posNow);
+                    if (modeDeveloper && npc.isAggressive()) {
+                        clsDeveloper.drawVisionNpc(ctxHUB, npc.getVisionDistance(), posNow);
+                    }
                 }
             }
 
@@ -547,6 +550,7 @@ function draw () {
             // Dibuja las capas superiores
             clsMap.drawMapUp(ctxCapaMapaArriba, w, h);
 
+            // DEVELOPER
             if (modeDeveloper) {
                 clsDeveloper.drawGrid(ctxHUB, w, h);
                 clsDeveloper.drawCollision(ctxHUB, w, h, clsMap.getCollision());
