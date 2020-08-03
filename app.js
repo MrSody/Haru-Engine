@@ -11,11 +11,11 @@ const app = express();
 const socketIO = require('socket.io');
 
 // CONNECTION TO DB
-const DBAdapter = require("./Engine/Modules/DBAdapters/MySQLDBAdapter");
+const DBAdapter = require("./engine/modules/dbAdapters/mySQLDBAdapter");
 const conexion = DBAdapter();
 
 // RUTAS
-const routes = require('./Routes/routes');
+const routes = require('./routes/routes');
 
 const bodyParser = require('body-parser');
 
@@ -25,14 +25,14 @@ const bodyParser = require('body-parser');
 app.set('appName', 'P-MS');
 app.set('port', process.env.PORT || 3000);
 //app.set('port', 3030);
-app.set('views', __dirname + '/Vistas');
+app.set('views', __dirname + '/vistas');
 app.set('view engine', 'ejs');
 
 //extended: false significa que parsea solo string (no archivos de imagenes por ejemplo)
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // Bring public files - Trae los archivos publicos
-app.use(express.static(__dirname +'/Public'));
+app.use(express.static(__dirname +'/public'));
 
 /* ------------------------------ *
     ROUTES
@@ -58,8 +58,8 @@ app.get("/game", (req, res) => {
 
 // CONSTANTES
 const io = socketIO(server);
-const Querys = require('./Engine/Modules/Querys').Querys;
-const engineApi = require("./Engine/Engine").Engine;
+const Querys = require('./engine/modules/querys').Querys;
+const engineApi = require("./engine/engine").Engine;
 
 const engine = new engineApi();
 const query = new Querys();
