@@ -5,6 +5,7 @@
         <title>P - MS: Juego</title>
 
         <link rel="stylesheet" type="text/css" href="../Game/Css/Style_Juego.css">
+        <link rel="stylesheet" type="text/css" href="../Game/Css/styleCharacter.css">
         <!--
         <link rel="stylesheet" href="../css/jquery.mCustomScrollbar.css"/>
         -->
@@ -26,13 +27,13 @@
         <!--<canvas id="game" class="Invisible" style="height: 120px; width: 200px; position: absolute;"></canvas>
         <canvas id="bgGame" class="Invisible" style="height: 120px; width: 200px;"></canvas>-->
         <!-- Canvas de ayuda -->
-        <canvas id="capasMapaAbajo" style="height: 120px; width: 200px; position: absolute;"></canvas>
-        <canvas id="capaPersonaje" style="height: 120px; width: 200px; position: absolute;"></canvas>
-        <canvas id="capasMapaArriba" style="height: 120px; width: 200px; position: absolute;"></canvas>
+        <canvas id="capasMapaAbajo" style="position: absolute;"></canvas>
+        <canvas id="capaPersonaje" style="position: absolute;"></canvas>
+        <canvas id="capasMapaArriba" style="position: absolute;"></canvas>
         
         <!-- Canvas Principal -->
 
-        <canvas id="game" style="height: 120px; width: 200px; position: absolute;"></canvas>
+        <canvas id="game" style="position: absolute;"></canvas>
 
         <!--<canvas id="game" style="height: 120px; width: 200px;"></canvas>-->
 
@@ -57,49 +58,14 @@
 
     </div>
 
-    <!--
-	<script src="js/SoundManager.js"></script>
-    <script src="js/jquery-1.9.1.min.js"></script>
-    <script src="Server/Nucleo/node_modules/socket.io/node_modules/socket.io-client/dist/socket.io.min.js"></script>
-	<script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
-    -->
-   
     <!-- DROP -->
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
     <script src="https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
-
-    <!--<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>-->
-    <script src="https://code.highcharts.com/highcharts.js"></script>
-    <script src="https://code.highcharts.com/highcharts-more.js"></script>
-    <script src="https://code.highcharts.com/modules/exporting.js"></script>
-    <script src="https://code.highcharts.com/modules/export-data.js"></script>
-
     
     <script src="../Game/Js/Modules/IA/Pathfinder.js"></script>
-    <!--<script src="public/js/DropMove.js"></script>-->
     <!-- MODULOS -->
-    <!-- INTERFACE -->
-    <script src="../Game/Js/Modules/HUB/Interface.js"></script>
-
-    <!-- PLAYER -->
-    <script src="../Game/Js/Modules/Entities/Player.js"></script>
-    <script src="../Game/Js/Modules/Entities/LocalPlayer.js"></script>
-    <script src="../Game/Js/Modules/Entities/RemotePlayer.js"></script>
-
-    <!-- NPC -->
-    <script src="../Game/Js/Modules/World/Npc.js"></script>
-
-    <!-- MAP -->
-    <script src="../Game/Js/Modules/World/Map.js"></script>
-
-    <script src="../Game/Js/helpFunction.js"></script>
-    <script src="../Game/Js/Modules/HUB/Chat.js"></script>
-    <script src="../Game/Js/Modules/HUB/Keyboard.js"></script>
-    <script src="../Game/Js/Modules/HUB/Mouse.js"></script>
-    <script src="../Game/Js/Game.js"></script>
-    <!--<script src="../js/jquery-1.9.1.min.js"></script>-->
-    <!-- <script src="../js/jquery.mCustomScrollbar.concat.min.js"></script> -->
+    <script type="module" src="../Game/Js/Game.js"></script>
     <script src="/socket.io/socket.io.js"></script>
 
 </body>

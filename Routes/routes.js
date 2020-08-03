@@ -7,6 +7,8 @@ const router = express.Router();
 // CONNECTION TO DB
 const DBAdapter = require("../Engine/Modules/DBAdapters/MySQLDBAdapter");
 const conexion = DBAdapter();
+const QUERYS = require('../Engine/Modules/Querys').Querys;
+const Query = new QUERYS();
 
 //HOME - Game
 router.get('/', (req, res) => {
@@ -19,50 +21,44 @@ router.post('/game', (req, res) => {
 });
 
 router.post('/login', (req, res) => {
-    let us = req.body.usLogin;
-    let clave = req.body.claveLogin;
-    console.log("repueta "+ us);
+    let email = req.body.email;
+    let password = req.body.password;
 
-    getAccount(res, us, clave);
+    getAccount(res, email, password);
 });
 
 router.post('/registro', (req, res) => {
-    let nick = req.body.nickName;
-    let us = req.body.us;
-    let clave = req.body.clave;
-    let correo = req.body.correo;
-    console.log("repueta "+ us);
+    let email = req.body.email;
+    let password = req.body.password;
 
-    insertAccount(us, clave, nick, correo);  
+    insertAccount(res, email, password);  
 });
 
-function getAccount (res, user, password) {
-    conexion.query("select * from Cuenta where NickName=? and Clave=?", [user, password], (err, results) => {
+function getAccount (res, email, password) {
+    conexion.query(Query.getLogin(), [email, password], (err, results) => {
 
         if (!err) {
             if (results.length > 0) {
-                console.log('account ', results);
                 res.render('index.ejs', {ID: results[0].ID});
             } else {
-                console.log("Error:  no existe");
+                res.render('index.ejs', {ID: 0});
+                console.log(`Error - Routes - getAccount:  no existe`);
             }
         } else {
-            console.log("Error: no esta en base de datos");
+            console.log(`Error - Routes - getAccount: no esta en base de datos ${err}`);
         }
     }); 
 }
 
-function insertAccount (user, password, nick, email) {
-    let query = "INSERT INTO Cuenta (Usuario, Clave, NickName, Correo, Fecha_Creacion) VALUES (?, ?, ?, ?, Now())";
-
+function insertAccount (res, email, password) {
     //find account connect
-    conexion.query(query, [user, password, nick, email], (err, results) => {
+    conexion.query(Query.getReguister(), [email, password], (err, results) => {
 
         if (!err) {
-            //getAccount(user, password);
+            getAccount(res, user, password);
             console.log("Cuenta creada");
         } else {
-            throw err;
+            console.log(`Error - Routes - insertAccount:  no existe ${err}`);
         }
     });
 }

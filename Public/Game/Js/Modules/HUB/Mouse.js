@@ -1,31 +1,39 @@
-class Mouse {
-    constructor () {}
+export default class Mouse {
+    constructor (tileSize) {
+        this.tileSize = tileSize;
 
-    getClickedTile (e) {
-        var x = e.pageX;
-        var y = e.pageY;
-    
-        return {x: Math.floor(x / 32), y: Math.floor(y / 32)};
+        this.tileWalking = 0;
+        this.tileNOWalking = 1;
+        this.tileTalkToNPC = 2;
+        this.tileAttackEnemy = 3;
+
+        this.cursorWalking = "url('../Game/Img/icons/mouse_walk.png') 16 16, auto";
+        this.cursorNOWalking = "url('../Game/Img/icons/mouse_noWalk.png') 16 16, auto";
     }
 
-    move (e) {
-        if (!$('#hubPrincial').hasClass('Invisible')) {
-            let tile = this.getClickedTile(e);
+    getClickedTile (e) {
+        return {
+            x: Math.floor(e.pageX / this.tileSize),
+            y: Math.floor((e.pageY + (0.5 * this.tileSize)) / this.tileSize)
+        };
+    }
 
-            if (collisionMap[tile.y][tile.x] === 1) {
-                document.documentElement.style.cursor = "url('../Game/Img/icons/mouse_noWalk.png') 16 16, auto";
+    move (e, collisionMap) {
+        let tile = this.getClickedTile(e);
+
+        if (tile.x >= 0 && tile.y >= 0) {
+            if (collisionMap[tile.y][tile.x] === this.tileNOWalking) {
+                document.documentElement.style.cursor = this.cursorNOWalking;
             } else {
-                document.documentElement.style.cursor = "url('../Game/Img/icons/mouse_walk.png') 16 16, auto";
+                document.documentElement.style.cursor = this.cursorWalking;
             }
         }
     }
 
-    click (e) {
+    click (e, collisionMap, canvasHUB, localPlayer) {
         let tile = this.getClickedTile(e),
-            playerPosX = Math.round((canvasHUB.width / 2) / 32),
-            playerPosY = Math.round((canvasHUB.height / 2) / 32);
-
-            console.log(tile);
+            playerPosX = Math.round((canvasHUB.width / 2) / this.tileSize),
+            playerPosY = Math.round((canvasHUB.height / 2) / this.tileSize);
         
         if (!(tile.x == playerPosX && tile.y == playerPosY) && !(collisionMap[tile.y][tile.x] === 1)) { // To avoid a bug, where player wouldn't walk anymore, when clicked twice on the same tile
     
@@ -76,10 +84,10 @@ class Mouse {
                 if (!localPlayer.isMoving()) {
                     clearTimeout(timer);
                     localPlayer.stop = false;
-                    let pathStart = {x: playerPosX, y: playerPosY},
-                        pathfinder = new Pathfinder(collisionMap, pathStart, tile),
-                        path = pathfinder.calculatePath();
-    
+
+                    let pathStart = {x: playerPosX, y: playerPosY};
+                    let pathfinder = new Pathfinder(collisionMap, pathStart, tile);
+                    let path = pathfinder.calculatePath();
                     // Calculate path
                     if (path.length > 0) {
                         localPlayer.setPath(path);

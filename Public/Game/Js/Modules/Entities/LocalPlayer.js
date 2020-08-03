@@ -1,9 +1,11 @@
-class LocalPlayer extends Player {
+import Player from './Player.js';
+
+export default class LocalPlayer extends Player {
     constructor (datos) {
         super(datos);
         this.money = datos.money;
 
-        this.absPos = {absX: 0, absY: 0};
+        this.absPos = {x: 0, y: 0};
         this.goRun = false;
         this.path = [[]];
     }
@@ -22,9 +24,9 @@ class LocalPlayer extends Player {
 /* ------------------------------ *
     SETTERS
 * ------------------------------ */
-    setAbsPos (absX, absY) {
-        this.absPos.absX = absX;
-        this.absPos.absY = absY;
+    setAbsPos (x, y) {
+        this.absPos.x = x;
+        this.absPos.y = y;
     }
 
     setRun (running) {
@@ -74,28 +76,28 @@ class LocalPlayer extends Player {
 
                 if (posX < lastPosX) { // Left
                     this.dir = 3;
-                    this.absPos.absX = -1;
-                    this.absPos.absY = 0;
+                    this.absPos.x = -1;
+                    this.absPos.y = 0;
 
                 } else if(posX > lastPosX) { // Right
                     this.dir = 1;
-                    this.absPos.absX = 1;
-                    this.absPos.absY = 0;
+                    this.absPos.x = 1;
+                    this.absPos.y = 0;
 
                 } else if(posY < lastPosY) { // Up
                     this.dir = 0;
-                    this.absPos.absX = 0;
-                    this.absPos.absY = -1;
+                    this.absPos.x = 0;
+                    this.absPos.y = -1;
 
                 } else if(posY > lastPosY) { // Down
                     this.dir = 2;
-                    this.absPos.absX = 0;
-                    this.absPos.absY = 1;
+                    this.absPos.x = 0;
+                    this.absPos.y = 1;
 
                 }
             } else {
-                this.absPos.absX = 0;
-                this.absPos.absY = 0;
+                this.absPos.x = 0;
+                this.absPos.y = 0;
             }
 
             if (this.stepCount < this.path.length - 1 && !this.moveInterrupt) {
@@ -138,66 +140,66 @@ class LocalPlayer extends Player {
                 if (posX < lastPosX) { // Left
                     if (posY < lastPosY) {
                         this.dir = 3;
-                        this.absPos.absX = -1;
-                        this.absPos.absY = -1;
+                        this.absPos.x = -1;
+                        this.absPos.y = -1;
                     } else if (posY > lastPosY) {
                         this.dir = 3;
-                        this.absPos.absX = -1;
-                        this.absPos.absY = 1;
+                        this.absPos.x = -1;
+                        this.absPos.y = 1;
                     } else {
                         this.dir = 3;
-                        this.absPos.absX = -2;
-                        this.absPos.absY = 0;
+                        this.absPos.x = -2;
+                        this.absPos.y = 0;
                     }
 
                 } else if(posX > lastPosX) { // Right
                     if (posY < lastPosY) {
                         this.dir = 1;
-                        this.absPos.absX = 1;
-                        this.absPos.absY = -1;
+                        this.absPos.x = 1;
+                        this.absPos.y = -1;
                     } else if (posY > lastPosY) {
                         this.dir = 1;
-                        this.absPos.absX = 1;
-                        this.absPos.absY = 1;
+                        this.absPos.x = 1;
+                        this.absPos.y = 1;
                     } else {
                         this.dir = 1;
-                        this.absPos.absX = 2;
-                        this.absPos.absY = 0;
+                        this.absPos.x = 2;
+                        this.absPos.y = 0;
                     }
 
                 } else if(posY < lastPosY) { // Up
                     if (posY < lastPosY) {
                         this.dir = 0;
-                        this.absPos.absX = 1;
-                        this.absPos.absY = -1;
+                        this.absPos.x = 1;
+                        this.absPos.y = -1;
                     } else if (posY > lastPosY) {
                         this.dir = 0;
-                        this.absPos.absX = -1;
-                        this.absPos.absY = -1;
+                        this.absPos.x = -1;
+                        this.absPos.y = -1;
                     } else {
                         this.dir = 0;
-                        this.absPos.absX = 0;
-                        this.absPos.absY = -2;
+                        this.absPos.x = 0;
+                        this.absPos.y = -2;
                     }
 
                 } else if(posY > lastPosY) { // Down
                     if (posY < lastPosY) {
                         this.dir = 2;
-                        this.absPos.absX = 1;
-                        this.absPos.absY = 1;
+                        this.absPos.x = 1;
+                        this.absPos.y = 1;
                     } else if (posY > lastPosY) {
                         this.dir = 2;
-                        this.absPos.absX = -1;
-                        this.absPos.absY = 1;
+                        this.absPos.x = -1;
+                        this.absPos.y = 1;
                     } else {
                         this.dir = 2;
-                        this.absPos.absX = 0;
-                        this.absPos.absY = 2;
+                        this.absPos.x = 0;
+                        this.absPos.y = 2;
                     }
                 }
             } else {
-                this.absPos.absX = 0;
-                this.absPos.absY = 0;
+                this.absPos.x = 0;
+                this.absPos.y = 0;
             }
 
             if (this.stepCount < this.path.length - 1 && !this.moveInterrupt) {
@@ -245,6 +247,8 @@ class LocalPlayer extends Player {
     draw (ctx, HUB, cXnull, cYnull) {
         const tileSize = 32;
         cXnull *= tileSize;
+
+        //cYnull = (cYnull - 0.5);
         cYnull *= tileSize;
 
         this.updateFrame();
@@ -252,10 +256,11 @@ class LocalPlayer extends Player {
         HUB.fillStyle = "#FFF";
         HUB.font = "9pt Minecraftia";
         // Muestra el nombre del player
-        HUB.fillText(this.name, cXnull, (cYnull - 20));
+        HUB.fillText(this.name, cXnull, (cYnull - 35));
 
         this.drawMode(ctx, cXnull, cYnull);
-
+        
+        /*
         let hitDelta = Date.now() - this.lastHitPointUpdate;
 
         if (this.hitArray.length > 0 && hitDelta > 50) {
@@ -280,5 +285,6 @@ class LocalPlayer extends Player {
                 ctx.fillText(this.hitArray[i][0], this.pos["x"]+12, this.pos["y"]-20);
             }
         }
+        */
     }
 }

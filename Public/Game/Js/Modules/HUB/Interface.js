@@ -1,7 +1,22 @@
-class Interface {
+export default class Interface {
     constructor () {
         this.maxPlayers = 5;
         this.maxLoadScreen = 4;
+
+        this.IDPJ;
+        this.characters = [];
+    }
+
+    setIDPJ (id) {
+        this.IDPJ = id;
+    }
+
+    getIDPJ () {
+        return this.IDPJ;
+    }
+
+    getCharacters () {
+        return this.characters;
     }
 
 /*-------------------------------
@@ -16,34 +31,31 @@ class Interface {
     }
 
     removeClass (element, style) {
-        let documentSelect = this.documentSelect(element);
-        documentSelect.classList.remove(style);
+        this.documentSelect(element).classList.remove(style);
     }
 
     addClass (element, style) {
-        let documentSelect = this.documentSelect(element);
-        documentSelect.classList.add(style);
+        this.documentSelect(element).classList.add(style);
     }
 
     removeOrAddByID (element, style) {
-        let documentSelect = this.documentSelect(element);
-        documentSelect.classList.toggle(style);
+        this.documentSelect(element).classList.toggle(style);
     }
 
     innerHTML (element, html) {
-        let documentSelect = this.documentSelect(element);
-        documentSelect.innerHTML = html;
+        this.documentSelect(element).innerHTML = html;
     }
 
     focus (element) {
-        let documentSelect = this.documentSelect(element);
-        documentSelect.focus();
+        this.documentSelect(element).focus();
     }
 
     blur (element) {
-        let documentSelect = this.documentSelect(element);
-        documentSelect.blur();
-        //alert("quitar focus");
+        this.documentSelect(element).blur();
+    }
+
+    fullScreen (element, width, height) {
+        this.documentSelect(element).setAttribute("style", `width: ${width}; height: ${height}`);
     }
 
 /*-------------------------------
@@ -66,28 +78,19 @@ class Interface {
 /*-------------------------------
     HUB - Pantalla de personajes
 *-------------------------------*/
-    accountCharacters (data) {
-        let [id, skinBase, nombre] = data;
+    accountCharacters (count) {
+        let character = this.characters[count];
 
-        let html =  `<div id="Pj_${id}" class="row personaje bgCharacter" onclick="selCharacter(${id},'${skinBase}','${nombre}')">
-                        <div class="col">
-                            <img src="../sprites/Player/Base/${skinBase}.png">
-                        </div>
-                        <div class="col">
-                            <div>${nombre}</div>
-                            <div>Rango</div>
-                        </div>
+        let html =  `<div class="col">
+                        <img src="../sprites/Player/Base/${character.skinBase}.png">
+                    </div>
+                    <div class="col">
+                        <div>${character.name}</div>
                     </div>`;
 
         return html;
     }
 
-    accountNewCharacter (count, id) {
-        let html =  `<div id="Pj_${count}" class="col-12 bgNewCharacter" onclick="createNewCharacter(${id})"></div>`;
-
-        return html;
-    }
-    
     // Muestra los personajes en la interface
     onAccountCharacters (data) {
         // Ocualta la pantalla de carga
@@ -100,45 +103,53 @@ class Interface {
 
         let html = "";
 
-        this.selCharacter(data[0].id, data[0].SkinBase, data[0].Nombre);
+        this.selCharacter(data[0].ID, data[0].Skin_Base, data[0].Name);
 
+        let count = 0;
         data.forEach((Pj) => {
 
-            let dataPJ = [Pj.id, Pj.SkinBase, Pj.Nombre];
+            this.characters.push({ID: Pj.ID, skinBase: Pj.Skin_Base, name: Pj.Name});
 
-            html += this.accountCharacters(dataPJ);
+            this.addClass(`#Pj_${count}`, 'bgCharacter');
+            this.innerHTML(`#Pj_${count}`, this.accountCharacters(count));
+            count++;
         });
 
-        for (let count = (data.length + 1); count <= this.maxPlayers; count++) {
-            html += this.accountNewCharacter(count, data[0].id);
+        for (let count = data.length; count < this.maxPlayers; count++) {
+            this.addClass(`#Pj_${count}`, 'bgNewCharacter');
         }
-
-        this.innerHTML('#listPersonajes', html);
     }
 
-    selCharacter (...data) {
-        let [id, skinBase, nombre] = data;
-    
-        this.innerHTML('#characters_Skin', `<div id="characters_Skin" style="margin-top: 15%; margin-left: 40%;"><img src="../sprites/Player/Base/${skinBase}.png" style="width: 150px;"></div>`);
-        this.innerHTML('#characters_BtnGetInGame', `<div id="characters_BtnGetInGame" class="mx-auto" style="width: 50%; margin-top: 10%;"><button onclick="getInGame(${id});" style="width: 100%;">Entrar al mundo</button></div>`);
-    
-        this.innerHTML('#characters_Name', `<div id="characters_Name"><b>Nombre: ${nombre}</b></div>`);
-        this.innerHTML('#characters_Rank', `<div id="characters_Rank"><b>Rango: rango</b></div>`);
+    selCharacter (ID, Skin_Base, Name) {
+        // Save ID pj active
+        this.setIDPJ(ID);
+        
+        this.innerHTML('#characters_Skin', `<div id="characters_Skin" style="margin-top: 15%; margin-left: 40%;"><img src="../sprites/Player/Base/${Skin_Base}.png" style="width: 150px;"></div>`);
+        this.innerHTML('#characters_Name', `Nombre: ${Name}`);
     }
 
 /*-------------------------------
     HUB - GAME
 *-------------------------------*/
-    changeCharacter (mode) {
+    showMessage (data) {
+        let chatTxtClr;
 
-        $("[id^=containerCharacter]").addClass('Invisible');
-
-        switch (mode) {
-            case 1:
-                this.removeClass('#containerCharacter_Character', 'Invisible');
+        switch (data.mode) {
+            case 's':
+                chatTxtClr = "yellow";
+                break;
+            case 'w':
+                chatTxtClr = "red";
                 break;
             default:
-                alert("Contenedor "+ mode);
+                chatTxtClr = "white";
         }
+
+        let spanMessage = document.createElement("span");
+        spanMessage.style = "color: "+ chatTxtClr;
+        spanMessage.innerHTML = data.name +": "+ data.text +"<br>";
+        this.documentSelect("#Mensajes").appendChild(spanMessage);
+        
+        this.documentSelect("#Mensaje").value = "";
     }
 }

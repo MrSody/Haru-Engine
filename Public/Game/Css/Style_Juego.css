@@ -1,71 +1,14 @@
 body {
     margin: 0;
     padding: 0;
+    overflow-x: hidden;
+    overflow-y: hidden;
 }
 
-/*--------------------------
-    PERSONAJES
----------------------------*/
-
-#listPersonajes {
-    background: rgba(0, 0, 0, 0.50);
-    padding: 5px 15px;
-    height: 80%;
-    border-bottom-left-radius: 5px;
-    /*position: absolute;*/
-    top: 0;
-    right: 0;
+.Invisible {
+	visibility: hidden;
+    position: absolute;
 }
-
-.personaje {
-    padding: 10px;
-}
-
-#DataCharacter {
-    background: rgba(0, 0, 0, 0.50);
-    padding: 5px 15px;
-    /*height: 80%;*/
-    border-bottom-left-radius: 5px;
-    /*position: absolute;*/
-    top: 0;
-    left: 0;
-}
-
-/*--------------------------
-    CHARCTER
----------------------------*/
-
-    #draggable_contenedorPersonaje {
-        background: rgba(0, 0, 0, 0.50);
-        padding: 10px;
-        width: 300px;
-        border-radius: 10px;
-        /*position: relative;
-        z-index: 100;*/
-        /*position: absolute;*/
-    }
-
-    .cuadroLeft {
-        background-color: rgba(3, 3, 3, 0.74);
-        width: 40px;
-        height: 40px;
-        padding: 2px;
-        margin: 5px 0px 5px 5px;
-    }
-    .cuadroRight {
-        background-color: rgba(3, 3, 3, 0.74);
-        width: 40px;
-        height: 40px;
-        padding: 2px;
-        margin: 5px 5px 5px 0px;
-    }
-    .cuadro{
-        background-color: rgba(3, 3, 3, 0.74);
-        width: 80px;
-        height: 40px;
-        padding: 2px;
-        margin: 5px 5px 5px 5px;
-    }
 
 /*--------------------------
     GAME
@@ -90,7 +33,13 @@ body {
 	max-width: 265px;
 	max-height: 145px;
     margin-bottom: 5px;
-    color: white;
+	color: white;
+	border: 1px solid #ddd;
+	overflow-y: scroll;
+}
+
+#Mensajes {
+	height: auto;
 }
 
 #Mensaje {
@@ -117,7 +66,8 @@ body {
 
 #message {
 	/*position: absolute;*/
-	right: 10px;;
+	right: 10px;
+	/* autocomplete: off; */
 	top: 10px;
 	color: #c96;
 	/*font-family: "Minecraftia";*/
@@ -133,7 +83,12 @@ body {
 	border-radius:3px;
 }
 
-.Invisible {
-	visibility: hidden;
+#COpciones {
+    background: rgba(0, 0, 0, 0.50);
+    padding: 5px 15px;
+    /* width: 150px; */
+    border-bottom-left-radius: 5px;
     position: absolute;
+    top: 0;
+    right: 0;
 }

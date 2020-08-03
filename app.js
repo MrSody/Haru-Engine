@@ -103,7 +103,7 @@ function onSocketConnection (client) {
     client.on('player:move', onMovePlayer);
 
     // Map
-    client.on('map:move', onMoveMap);
+    client.on('map:data', onMap);
 
     // Move Npc
     client.on('npc:move', onMoveNpc);
@@ -190,7 +190,7 @@ function onPlayerConnect (data) {
                 toClient.emit('players:localPlayer', player);
 
                 // Send world-data to client
-                toClient.emit('map:init', {spritesheet: engine.getSpriteMap(), tileSize: engine.getTileSize()});
+                toClient.emit('map:init', {spritesheet: engine.getSpriteWorld(), tileSize: engine.getTileSize()});
 
                 // Message the welcome to client
                 toClient.emit('chat:newMessage', {name: 'Server', mode: '', text: 'Bienvenido a P-MS'});
@@ -213,7 +213,7 @@ function onPlayerConnect (data) {
                 });
 
             } else {
-                console.log("Error - onPlayerConnect: No tiene datos el player: "+ data.idPlayer);
+                console.log(`Error - onPlayerConnect: No tiene datos el player: ${data.idPlayer}`);
             }
         } else {
             console.log("Error - onPlayerConnect: "+ data.idPlayer +" - "+ err);
@@ -236,14 +236,14 @@ function onMovePlayer (data) {
         io.emit('player:move', {id: player.getID(), posWorld: player.getPosWorld(), dir: player.getDir(), mode: data.mode});
 
         // Envia los Npc's del mapa al cliente
-        let NPCCercanos = engine.NPCNearby(player, Npcs);
+        let NPCCercanos = engine.NPCNearby(player);
 
         NPCCercanos.forEach((Npc) => {
             toClient.emit('npcs:newNpc', Npc);
         });
 
     } else {
-		util.log("Player not found: "+ this.id);
+		console.log("Player not found: "+ this.id);
 		return;
 	};
 }
@@ -258,23 +258,17 @@ function onNewMessage(data) {
 /* ------------------------------ *
     MAPA
 * ------------------------------ */
-function onMoveMap(data) {
+function onMap (data) {
     let toClient = this,
         player = engine.playerById(toClient.id);
 
 	// Player found
 	if (player) {
-        // Actualiza la posicion del jugador en la pantalla
-        player.setSizeScreen(data.width, data.height);
-
         //Variables
         let map = engine.getMap(player, data.width, data.height);
 
         //Envia al cliente el mapa
-        toClient.emit('map:data', {capa1: map.capa1, capa2: map.capa2, capa3: map.capa3, capa4: map.capa4, capa5: map.capa5});
-
-        // Envia las colisiones
-        toClient.emit('map:collision', {collisionMap: map.collision});
+        toClient.emit('map:data', {capa1: map.capa1, capa2: map.capa2, capa3: map.capa3, capa4: map.capa4, capa5: map.capa5, collisionMap: map.collision});
     } else {
         console.log("Player not found: "+ toClient.id);
 		return;

@@ -1,11 +1,11 @@
-class Npc {
+export default class Npc {
     constructor (data) {
         this.id = data.id;
         this.name = data.name;
         this.health = {now: data.health.now, max: data.health.max};
         this.skin = new Image();
         this.skin.src = data.skin;
-        this.pos = {x: data.pos.x, y: data.pos.y};
+        this.posWorld = {x: data.posWorld.x, y: data.posWorld.y};
         this.reaction = data.reaction;
         this.events = data.events;
         
@@ -34,7 +34,6 @@ class Npc {
 /* ------------------------------ *
     GETTERS
 * ------------------------------ */
-    
     getID () {
         return this.id;
     }
@@ -43,8 +42,8 @@ class Npc {
         return this.name;
     }
 
-    getPos () {
-        return this.pos;
+    getPosWorld () {
+        return this.posWorld;
     }
 
     getReaction () {
@@ -74,9 +73,9 @@ class Npc {
 /* ------------------------------ *
     SETTERS
 * ------------------------------ */
-    
-    setPos (posX, posY) {
-        this.pos = {x: posX, y: posY};
+    setPosWorld (posX, posY) {
+        this.posWorld.x = posX;
+        this.posWorld.y = posY;
     }
     
     setDir (dir) {
@@ -113,7 +112,6 @@ class Npc {
 /* ------------------------------ *
     FUNCIONES
  * ------------------------------ */
-    
     playerMove () {
         let pathValue;
 
@@ -193,26 +191,10 @@ class Npc {
     
     // Actualiza la posicion del Npc
     posNow (widthMap, heightMap, posWorld) {
-
-        let posIntX = Math.floor(posWorld.x - widthMap),
-            posIntY = Math.floor(posWorld.y - heightMap),
-            posEndX = Math.floor(posWorld.x + widthMap),
-            posEndY = Math.floor(posWorld.y + heightMap),
-            posNpc = this.pos;
-
-        if ((posIntX >= posNpc.x || posNpc.x <= posEndX) && (posIntY >= posNpc.y || posNpc.y <= posEndY)) {
-            for(var y = 0, intY = posIntY; intY <= posEndY; intY++, y++) {
-                for(var x = 0, intX = posIntX; intX <= posEndX; intX++, x++) {
-
-                    if (posNpc.x == intX && posNpc.y == intY) {
-                        //console.log("dentro posNow");
-                        return {x: x, y: y};
-                    }
-                }
-            }
-        }
-
-        return false;
+        return {
+            x: Math.floor(this.posWorld.x - posWorld.x) + widthMap,
+            y: Math.floor(this.posWorld.y - posWorld.y) + heightMap
+        };
     }
 
     draw (ctx, HUB, cXnull, cYnull) {
@@ -228,5 +210,72 @@ class Npc {
 
         // Posicion nueva
         ctx.drawImage(this.skin, this.frame * 64, this.dir * 48, 64, 48, (cXnull - 16), (cYnull - 16), 64, 48);
-	}
+    }
+
+/* ------------------------------ *
+    EVENTS
+ * ------------------------------ */
+    eventVision (posNow, ) {
+        if (!this.isMoving()) {
+            if (this.reaction != 1) {
+                console.log("Va a atacar");
+                let visionDistance = this.getVisionDistance();
+                let initVisionX = posNow.x - visionDistance;
+                let initVisionY = posNow.y - visionDistance;
+                let endVisionX = initVisionX + (visionDistance * 2);
+                let endVisionY = initVisionY + (visionDistance * 2);
+
+                console.log("X "+ initVisionX +" - "+ endVisionX);
+                console.log("Y "+ initVisionY +" - "+ endVisionY);
+
+                /*
+                for (let y = initVisionY; y <= endVisionY; y++) {
+                    let x = posNow.x - visionDistance;
+                    for (; x <= endVisionX; x++) {
+                        if (x >= middleTileX && x <= middleTileX && y >= middleTileY && y <= middleTileY) {
+
+                            let pathFinder = new Pathfinder(collisionMap, posNow, {x: middleTileX, y: middleTileY}),
+                                Mover = pathFinder.attack();
+                                
+                            console.log("El npc "+ npc.getName() +" Ataca a "+ localPlayer.getName() +"---"+ Mover);
+
+                            if (Mover.length > 0) {
+                                npc.setPath(Mover);
+                            }
+                        }
+                    }
+                }
+                */
+            }
+            /*
+            let posNow = npc.posNow(middleTileX, middleTileY, posWorld);
+            
+            if (posNow && npc.isAggressive()) {
+                
+                let visionDistance = npc.getVisionDistance(),
+                    initVisionX = posNow.x - visionDistance,
+                    initVisionY = posNow.y - visionDistance,
+                    endVisionX = initVisionX + (visionDistance * 2),
+                    endVisionY = initVisionY + (visionDistance * 2);
+                
+                for (let y = initVisionY; y <= endVisionY; y++) {
+                    let x = posNow.x - visionDistance;
+                    for (; x <= endVisionX; x++) {
+                        if (x >= middleTileX && x <= middleTileX && y >= middleTileY && y <= middleTileY) {
+
+                            let pathFinder = new Pathfinder(collisionMap, posNow, {x: middleTileX, y: middleTileY}),
+                                Mover = pathFinder.attack();
+                                
+                            console.log("El npc "+ npc.getName() +" Ataca a "+ localPlayer.getName() +"---"+ Mover);
+
+                            if (Mover.length > 0) {
+                                npc.setPath(Mover);
+                            }
+                        }
+                    }
+                }
+            }
+            */
+        }
+    }
 }

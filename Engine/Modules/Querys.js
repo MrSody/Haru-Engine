@@ -1,29 +1,45 @@
 class Querys {
 	constructor () {}
 
+/* ------------------------------ *
+    WEB
+* ------------------------------ */
+
+	getLogin () {
+		return `select * from Account where Email =? and Password =?`;
+	}
+
+	getReguister () {
+		return `INSERT INTO Account (Email, Password, Creation_Date) VALUES (?, ?, Now())`;
+	}
+
+/* ------------------------------ *
+    GAME
+* ------------------------------ */
+
     getSearchAccount () {
-        return  `Select ID_PJ as id, Nombre, skinBase, skinPelo from Personaje where ID_Cuenta =?`;
+        return  `Select ID, Name, Skin_Base, Skin_Hair from Character_Account where ID_Account =?`;
 	}
 	
 	getSearchCharacter () {
 		return	"Select " +
 				// Personaje
-				"Personaje.ID_Pj as id, "+
-				"Personaje.Nombre as nombre, "+
-				"Personaje.SkinBase as skinBase, "+
-				"Personaje.SkinPelo as skinPelo, "+
-				"Personaje.Salud as salud, "+
-				"Personaje.Nivel as nivel, "+
-				"Personaje.Xp as xp, "+
-				"Personaje.Dinero as dinero, "+
-				"Personaje.N_map as Nmap, "+
-				"Personaje.X as X, "+
-				"Personaje.Y as Y "+
-				"from Personaje where Personaje.ID_Pj =?";
+				"Character_Account.ID as ID, "+
+				"Character_Account.Name as name, "+
+				"Character_Account.Skin_Base as skinBase, "+
+				"Character_Account.Skin_Hair as skinHair, "+
+				"Character_Account.Health as health, "+
+				"Character_Account.Level as level, "+
+				"Character_Account.XP as xp, "+
+				"Character_Account.Money as money, "+
+				"Character_Account.ID_Map as IDMap, "+
+				"Character_Account.X as X, "+
+				"Character_Account.Y as Y "+
+				"from Character_Account where Character_Account.ID =?";
 	}
 
 	getSearchNpc () {
-		return `Select ID, Name, Health, Skin, Level, IDMap, PosX, PosY, Reaction, Events, VisionDistance, Phrases FROM Npc`;
+		return `Select ID, Name, Health, Skin, Level, ID_Map, X, Y, Vision_Distance, Reaction FROM Npc`;
 	}
 }
 

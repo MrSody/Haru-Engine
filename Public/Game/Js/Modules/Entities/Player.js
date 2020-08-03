@@ -1,12 +1,12 @@
-class Player {
+export default class Player {
     constructor (datos) {
         console.log("datos pj"+ datos.name);
         this.id = datos.id;
         this.name = datos.name;
         this.skinBase = new Image();
-        this.skinBase.src = datos.skinBase;
-        
-		this.pos = {x: datos.posWorld.x, y: datos.posWorld.y};
+		this.skinBase.src = datos.skinBase;
+		
+		this.posWorld = {x: datos.posWorld.x, y: datos.posWorld.y};
 		
 		this.dir = 2;
 		this.frame = 0;
@@ -14,8 +14,6 @@ class Player {
 		this.mode = 0, // 0 = parado, 1 = caminando, 2 = corriendo, 3 = fighting;
 
 		////////////////////////
-
-		this.speed = 480;
 
 		//this.sound = new SoundManager();
 		this.currhp = 0;
@@ -56,18 +54,17 @@ class Player {
 /* ------------------------------ *
     GETTERS
 * ------------------------------ */
-
     getID () {
         return this.id;
     }
 
-    getPos () {
-        return this.pos;
-    }
-
     getName () {
 		return this.name;
-    }
+	}
+	
+	getPosWorld () {
+		return this.posWorld;
+	}
 
     getDir () {
 		return this.dir;
@@ -88,12 +85,11 @@ class Player {
 /* ------------------------------ *
     SETTERS
 * ------------------------------ */
-
-    setPos (x, y) {
-        this.pos.x = x;
-        this.pos.y = y;
+	setPosWorld (x, y) {
+		this.posWorld.x = x;
+		this.posWorld.y = y;
 	}
-	
+
 	setDir (dir) {
 		this.dir = dir;
 	}
@@ -101,7 +97,6 @@ class Player {
 /* ------------------------------ *
     FUNCIONES
 * ------------------------------ */
-
 	nextFrame () {
 		if(this.frame < 3) {
 			this.frame++;
@@ -125,13 +120,13 @@ class Player {
 
 		switch (this.mode) {
             case 0: //Parado
-                ctx.drawImage(this.skinBase, this.frame * spriteWidth, ((this.dir * spriteHeight) + ((spriteHeight * 4) * this.mode)), spriteWidth, spriteHeight, (cXnull - 16), (cYnull - 16), spriteWidth, spriteHeight);
+				ctx.drawImage(this.skinBase, this.frame * spriteWidth, ((this.dir * spriteHeight) + ((spriteHeight * 4) * this.mode)), spriteWidth, spriteHeight, (cXnull - 16), (cYnull - 32), spriteWidth, spriteHeight);
                 break;
 			case 1: //Caminado
-                ctx.drawImage(this.skinBase, this.frame * spriteWidth, ((this.dir * spriteHeight) + ((spriteHeight * 4) * this.mode)), spriteWidth, spriteHeight, (cXnull - 16), (cYnull - 16), spriteWidth, spriteHeight);
+                ctx.drawImage(this.skinBase, this.frame * spriteWidth, ((this.dir * spriteHeight) + ((spriteHeight * 4) * this.mode)), spriteWidth, spriteHeight, (cXnull - 16), (cYnull - 32), spriteWidth, spriteHeight);
                 break;
             case 2: //Corriendo
-                ctx.drawImage(this.skinBase, this.frame * spriteWidth, ((this.dir * spriteHeight) + ((spriteHeight * 4) * this.mode)), spriteWidth, spriteHeight, (cXnull - 16), (cYnull - 16), spriteWidth, spriteHeight);
+                ctx.drawImage(this.skinBase, this.frame * spriteWidth, ((this.dir * spriteHeight) + ((spriteHeight * 4) * this.mode)), spriteWidth, spriteHeight, (cXnull - 16), (cYnull - 32), spriteWidth, spriteHeight);
                 break;
             default:
                 console.log("Error: No hay mode del personaje");

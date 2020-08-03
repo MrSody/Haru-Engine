@@ -17,16 +17,16 @@
                 <form action="/login" method="post">
                     <div class="contenedor-input">
                         <label>
-                            Usuario <span class="req">*</span>
+                            Email <span class="req">*</span>
                         </label>
-                        <input id="usLogin" name="usLogin" type="text" required>
+                        <input id="usLogin" name="email" type="text" required>
                     </div>
 
                     <div class="contenedor-input">
                         <label>
                             Contraseña <span class="req">*</span>
                         </label>
-                        <input id="clave" name="claveLogin" type="password" required>
+                        <input id="clave" name="password" type="password" required>
                     </div>
                     <p class="forgot"><a href="#">Se te olvidó la contraseña?</a></p>
                     <input type="submit" class="button button-block" value="Iniciar Sesión">
@@ -38,31 +38,17 @@
             <div id="registrarse">
                 <h1>Registrarse</h1>
                 <form action="/registro" method="post">
-                    <div class="fila-arriba">
-                        <div class="contenedor-input">
-                            <label>
-                                NickName <span class="req">*</span>
-                            </label>
-                            <input type="text" name="nickName" required >
-                        </div>
-                    </div>
-                    <div class="contenedor-input">
-                        <label>
-                            Usuario <span class="req">*</span>
-                        </label>
-                        <input type="text" name="us" required>
-                    </div>
                     <div class="contenedor-input">
                             <label>
                                 Email <span class="req">*</span>
                             </label>
-                        <input type="email" name="correo" required>
+                        <input type="email" name="email" required>
                     </div>
                     <div class="contenedor-input">
                         <label>
                             Contraseña <span class="req">*</span>
                         </label>
-                        <input type="password" name="clave" required>
+                        <input type="password" name="password" required>
                     </div>
 
                     <div class="contenedor-input">
