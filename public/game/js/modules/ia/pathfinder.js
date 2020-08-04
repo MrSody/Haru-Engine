@@ -80,12 +80,6 @@ class Pathfinder {
             subLine = end.x - start.x,
             line = end.y - start.y,
             newPosX = 0, newPosY = 0;
-        
-        console.log(start.x +"-"+ start.y +"---"+ end.x +"-"+ end.y);
-        
-        if (line > 0 || line < 0 && subLine > 0 || subLine < 0) {
-            subLine = 0;
-        }        
   
         if (line > 0) {
             newPosY = 1;
@@ -101,12 +95,10 @@ class Pathfinder {
             newPosX = 0;
         } else if (subLine < 0) {
             newPosX = -1;
-        }
-        
-        //return {x: Math.round(end.x - newPosX), y: Math.round(end.y - newPosY)}
+		}
+		
         this.pathEnd.x = Math.round(end.x - newPosX);
-        this.pathEnd.y = Math.round(end.y - newPosY);
-        console.log("Mover: "+ this.pathEnd.x +" - "+ this.pathEnd.y);
+		this.pathEnd.y = Math.round(end.y - newPosY);
         return this.calculatePath();
     }
     

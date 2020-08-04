@@ -228,7 +228,6 @@ function onMovePlayer (data) {
 
 	// Player not found
 	if (player) {
-        console.log("Dentro MovePlayer "+ data.x +" -- "+ data.y);
         // Update player position
         engine.movePlayer(player, data);
 
@@ -284,15 +283,12 @@ function onMoveNpc (data) {
 
 	// Player not found
 	if (npc) {
-        console.log("npc");
-        npc.setPos(data.x, data.y);
+        npc.setPosWorld(data.x, data.y);
         npc.setDirection(data.dir);
-
-        console.log(npc.getPos());
 
         // Broadcast updated position to connected socket clients
         //io.sockets.emit('npc:move', {id: npc.getID(), pos: npc.getPos(), dir: npc.getDir()});
-        io.emit('npc:move', {id: npc.getID(), pos: npc.getPos(), dir: npc.getDir()});
+        io.emit('npc:move', {id: npc.getID(), pos: npc.getPosWorld(), dir: npc.getDir()});
 
     } else {
 		util.log("Npc not found: "+ this.id);

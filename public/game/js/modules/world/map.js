@@ -37,6 +37,12 @@ export default class Map {
         this.capaCollision = data.collisionMap;
     }
 
+    setCollision (x, y, data) {
+        if (this.capaCollision[y][x] == 0) {
+            this.capaCollision[y][x] = data;
+        }
+    }
+
 /* ------------------------------ *
     DRAW
 * ------------------------------ */

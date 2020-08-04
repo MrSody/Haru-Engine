@@ -29,6 +29,8 @@ export default class Npc {
         this.absPos = {absX: 0, absY: 0};
         
         this.posAttack = {x: 0, y: 0};
+
+        this.goFight = false;
     }
 
 /* ------------------------------ *
@@ -92,7 +94,7 @@ export default class Npc {
 		this.moving = true;
 
         // Check if on the way to attack
-		if ((this.goAttack || this.goToNpc) && this.stepCount == 0) {
+		if (this.goAttack && this.stepCount == 0) {
 			// Face player towards enemy
 			if (this.path[this.path.length-1][0] > this.path[this.path.length-2][0]) {
 				this.finalDir = 1;
@@ -113,17 +115,11 @@ export default class Npc {
     FUNCIONES
  * ------------------------------ */
     playerMove () {
-        let pathValue;
-
         // Check if on the way to attack
         this.setPath(this.path);
 
         // Path length is 1 i.e. when clicked on player position
 		if (this.path.length >= 1) {
-            console.log(this.path.length);
-            console.log("dentro"+ this.path[this.stepCount][0] +"-"+ this.path[this.stepCount][1] +"-"+ this.path[this.stepCount]);
-
-            console.log("stepCount1:"+ this.stepCount);
 
             if (this.stepCount != 0) {
 
@@ -133,33 +129,24 @@ export default class Npc {
                     lastPosY = this.path[this.stepCount - 1][1];
 
                 if (posX < lastPosX) { // Left
-
-                    console.log("3-1");
                     this.dir = 3;
                     this.absPos.absX = -1;
                     this.absPos.absY = 0;
 
                 } else if(posX > lastPosX) { // Right
-
-                    console.log("1-1");
                     this.dir = 1;
                     this.absPos.absX = 1;
                     this.absPos.absY = 0;
 
                 } else if(posY < lastPosY) { // Up
-
-                    console.log("0-1");
                     this.dir = 0;
                     this.absPos.absX = 0;
                     this.absPos.absY = -1;
 
                 } else if(posY > lastPosY) { // Down
-
-                    console.log("2-1");
                     this.dir = 2;
                     this.absPos.absX = 0;
                     this.absPos.absY = 1;
-
                 }
 
             } else {
@@ -170,18 +157,12 @@ export default class Npc {
             if (this.stepCount < this.path.length-1 && !this.moveInterrupt) {
                 //this.path.shift();
                 this.stepCount++;
-                console.log("stepCount:"+ this.stepCount);
             } else { // End of path
                 if(this.goFight != null) {
-                    console.log("partepj2");
                     this.fighting = this.goFight;
                     this.mode = 1;
-                } else if(this.goToNpc != null) {
-                    console.log("partepj3");
-                    this.talkingTo = this.goToNpc;
                 }
-
-                console.log("partepj4");
+                
                 this.moving = false;
                 this.stepCount=0;
                 //this.dir = this.finalDir;
@@ -215,67 +196,30 @@ export default class Npc {
 /* ------------------------------ *
     EVENTS
  * ------------------------------ */
-    eventVision (posNow, ) {
+    eventVision (posNow, middleTileX, middleTileY, collisionMap) {
         if (!this.isMoving()) {
             if (this.reaction != 1) {
-                console.log("Va a atacar");
                 let visionDistance = this.getVisionDistance();
                 let initVisionX = posNow.x - visionDistance;
                 let initVisionY = posNow.y - visionDistance;
                 let endVisionX = initVisionX + (visionDistance * 2);
                 let endVisionY = initVisionY + (visionDistance * 2);
 
-                console.log("X "+ initVisionX +" - "+ endVisionX);
-                console.log("Y "+ initVisionY +" - "+ endVisionY);
-
-                /*
                 for (let y = initVisionY; y <= endVisionY; y++) {
-                    let x = posNow.x - visionDistance;
-                    for (; x <= endVisionX; x++) {
+                    for (let x = initVisionX; x <= endVisionX; x++) {
                         if (x >= middleTileX && x <= middleTileX && y >= middleTileY && y <= middleTileY) {
-
                             let pathFinder = new Pathfinder(collisionMap, posNow, {x: middleTileX, y: middleTileY}),
                                 Mover = pathFinder.attack();
-                                
-                            console.log("El npc "+ npc.getName() +" Ataca a "+ localPlayer.getName() +"---"+ Mover);
 
+                            this.goFight = true;
+                            
                             if (Mover.length > 0) {
-                                npc.setPath(Mover);
-                            }
-                        }
-                    }
-                }
-                */
-            }
-            /*
-            let posNow = npc.posNow(middleTileX, middleTileY, posWorld);
-            
-            if (posNow && npc.isAggressive()) {
-                
-                let visionDistance = npc.getVisionDistance(),
-                    initVisionX = posNow.x - visionDistance,
-                    initVisionY = posNow.y - visionDistance,
-                    endVisionX = initVisionX + (visionDistance * 2),
-                    endVisionY = initVisionY + (visionDistance * 2);
-                
-                for (let y = initVisionY; y <= endVisionY; y++) {
-                    let x = posNow.x - visionDistance;
-                    for (; x <= endVisionX; x++) {
-                        if (x >= middleTileX && x <= middleTileX && y >= middleTileY && y <= middleTileY) {
-
-                            let pathFinder = new Pathfinder(collisionMap, posNow, {x: middleTileX, y: middleTileY}),
-                                Mover = pathFinder.attack();
-                                
-                            console.log("El npc "+ npc.getName() +" Ataca a "+ localPlayer.getName() +"---"+ Mover);
-
-                            if (Mover.length > 0) {
-                                npc.setPath(Mover);
+                                this.setPath(Mover);
                             }
                         }
                     }
                 }
             }
-            */
         }
     }
 }

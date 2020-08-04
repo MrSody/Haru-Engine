@@ -311,7 +311,7 @@ function onMoveNpc (data) {
     let npc = findNpc(data.id);
 
     if (npc) {        
-        npc.setPos(data.pos.x, data.pos.y);
+        npc.setPosWorld(data.pos.x, data.pos.y);
         npc.setDir(data.dir);
         npc.setAbsPos(0, 0);
     } else {
@@ -434,60 +434,9 @@ function update () {
             let absPos = npc.getAbsPos();
             
             //if (absPos.x || absPos.y) {
-                console.log("Npc: "+ npc.getName() +" SE movio ");
                 npc.playerMove();
-
-                console.warn(`Movimiento del npc: ${absPos.absX} -- ${absPos.absY}`);
-
                 socket.emit('npc:move', {id: npc.getID(), x: absPos.absX, y: absPos.absY, dir: npc.getDir()});
             //}
-        }
-    }
-}
-
-function event () {
-    let width = $('#game').outerWidth(),
-        height = $('#game').outerHeight(),
-        middleTileX = Math.round((width / 2) / 32),
-        middleTileY = Math.round((height / 2) / 32),
-        posWorld = localPlayer.getPos(),
-        maxTilesX = Math.floor((width / 32) + 1),
-        maxTilesY = Math.floor((height / 32) + 1);
-    
-    // Radio ataque Npc
-    for (let i = npcs.length; i-- > 0;) {
-        let npc = npcs[i];
-
-        //console.log("El npc se mueve "+ npc.isMoving());
-
-        if (!npc.isMoving()) {
-            let posNow = npc.posNow(middleTileX, middleTileY, posWorld);
-            
-            if (posNow && npc.isAggressive()) {
-                
-                let visionDistance = npc.getVisionDistance(),
-                    initVisionX = posNow.x - visionDistance,
-                    initVisionY = posNow.y - visionDistance,
-                    endVisionX = initVisionX + (visionDistance * 2),
-                    endVisionY = initVisionY + (visionDistance * 2);
-                
-                for (let y = initVisionY; y <= endVisionY; y++) {
-                    let x = posNow.x - visionDistance;
-                    for (; x <= endVisionX; x++) {
-                        if (x >= middleTileX && x <= middleTileX && y >= middleTileY && y <= middleTileY) {
-
-                            let pathFinder = new Pathfinder(collisionMap, posNow, {x: middleTileX, y: middleTileY}),
-                                Mover = pathFinder.attack();
-                                
-                            console.log("El npc "+ npc.getName() +" Ataca a "+ localPlayer.getName() +"---"+ Mover);
-
-                            if (Mover.length > 0) {
-                                npc.setPath(Mover);
-                            }
-                        }
-                    }
-                }
-            }
         }
     }
 }
@@ -534,8 +483,9 @@ function draw () {
                 let posNow = npc.posNow(middleTileX, middleTileY, posWorld);
 
                 if (posNow.x == w && posNow.y == h) {
+                    //clsMap.setCollision(w, h, 3);
                     npc.draw(ctxPersonaje, ctxHUB, posNow.x, (posNow.y - 0.5));
-                    npc.eventVision(posNow);
+                    npc.eventVision(posNow, middleTileX, middleTileY, clsMap.getCollision());
                     if (modeDeveloper && npc.isAggressive()) {
                         clsDeveloper.drawVisionNpc(ctxHUB, npc.getVisionDistance(), posNow);
                     }

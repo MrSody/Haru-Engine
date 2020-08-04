@@ -181,18 +181,10 @@ class Engine {
         let posWorld = player.getPosWorld();
         let newPos = this.updatePos(player.getIDMap(), (posPlayer.x + data.x), (posPlayer.y + data.y));
 
-        console.log("posPlayer: "+ posPlayer.x +" -- "+ posPlayer.y);
-        console.log("posWorld - antes: "+ posWorld.x +" -- "+ posWorld.y);
-        console.log("NEWPOS: "+ newPos.x +" -- "+ newPos.y);
-
-        console.log("Player X: "+ Math.floor(player.getPos().x + data.x) +" - "+ Math.floor(player.getPos().y + data.y) +" idMap: "+ newPos.IDMap +" dir: "+ data.dir);
-
         player.setPos(newPos.x, newPos.y);
         player.setDirection(data.dir);
         player.setIDMap(newPos.IDMap);
         player.setPosWorld((posWorld.x + data.x), (posWorld.y + data.y));
-
-        console.log("ahora: "+ player.getPosWorld().x +" -- "+ player.getPosWorld().y);
     }
 
     playerDisconnect (id) {
