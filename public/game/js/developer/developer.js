@@ -23,10 +23,16 @@ export default class Developer {
     }
 
     drawCollision (ctx, cXnull, cYnull, mapCollision) {
-        if (mapCollision[cYnull][cXnull] === 1) {
-            ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
-            ctx.fillRect((cXnull * this.tileSize), ((cYnull - 0.5) * this.tileSize), 32, 32);
-        }
+        switch ( mapCollision[cYnull][cXnull] ) {
+            case 1: // COLLISION
+                ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
+                ctx.fillRect((cXnull * this.tileSize), ((cYnull - 0.5) * this.tileSize), 32, 32);
+                break;
+            case 2: // NPC - Aggressive
+                ctx.fillStyle = "rgba(0, 0, 255, 1)";
+                ctx.fillRect((cXnull * this.tileSize), ((cYnull - 0.5) * this.tileSize), 32, 32);
+                break;
+            }
     }
 
     drawVisionNpc (ctx, visionDistance, posNow) {

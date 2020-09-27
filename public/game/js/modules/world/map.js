@@ -10,7 +10,12 @@ export default class Map {
         this.capaThree;
         this.capaFour;
         this.capaFive;
-        this.capaCollision;
+        this.capaCollision = {now: 0, old: 0};
+
+        // SIZE SCREEN
+        this.sizeScreen = {width: 0, height: 0};
+        this.middleTile = {x: 0, y: 0};
+        this.maxTiles = {x: 0, y: 0};
     }
 
 /* ------------------------------ *
@@ -21,7 +26,19 @@ export default class Map {
     }
 
     getCollision () {
-        return this.capaCollision;
+        return this.capaCollision.now;
+    }
+
+    getSizeScreen () {
+        return this.sizeScreen;
+    }
+
+    getMiddleTile () {
+        return this.middleTile;
+    }
+
+    getMaxTiles () {
+        return this.maxTiles;
     }
 
 /* ------------------------------ *
@@ -34,13 +51,29 @@ export default class Map {
         this.capaThree = data.capa3;
         this.capaFour = data.capa4;
         this.capaFive = data.capa5;
-        this.capaCollision = data.collisionMap;
+        this.capaCollision = {now: data.collisionMap, old: data.collisionMapOld};
     }
 
     setCollision (x, y, data) {
-        if (this.capaCollision[y][x] == 0) {
-            this.capaCollision[y][x] = data;
+        switch (data) {
+            case 0:     // Clean Collision Map
+                this.capaCollision.now[y][x] = this.capaCollision.old[y][x];
+                break;
+            case 2:     // Add Collision - NPC Aggressive
+                if (this.capaCollision.now[y][x] == 0) {
+                    this.capaCollision.now[y][x] = data;
+                }
+                break;
         }
+    }
+
+    setSizeScreen (width, height) {
+        this.sizeScreen.width = width;
+        this.sizeScreen.height = height;
+        this.middleTile.x = Math.round((width / 2) / 32);
+        this.middleTile.y = Math.round(((height / 2) / 32));
+        this.maxTiles.x = Math.floor((width / 32) + 2);
+        this.maxTiles.y = Math.floor((height / 32) + 2);
     }
 
 /* ------------------------------ *

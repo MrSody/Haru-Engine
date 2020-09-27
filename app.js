@@ -209,7 +209,7 @@ function onPlayerConnect (data) {
                 let NPCCercanos = engine.NPCNearby(player);
 
                 NPCCercanos.forEach((Npc) => {
-                    toClient.emit('npcs:newNpc', Npc);
+                    toClient.emit('npcs:newNpc', {npc: Npc, count: NPCCercanos.length});
                 });
 
             } else {
@@ -238,7 +238,7 @@ function onMovePlayer (data) {
         let NPCCercanos = engine.NPCNearby(player);
 
         NPCCercanos.forEach((Npc) => {
-            toClient.emit('npcs:newNpc', Npc);
+            toClient.emit('npcs:newNpc', {npc: Npc, count: NPCCercanos.length});
         });
 
     } else {
@@ -267,7 +267,7 @@ function onMap (data) {
         let map = engine.getMap(player, data.width, data.height);
 
         //Envia al cliente el mapa
-        toClient.emit('map:data', {capa1: map.capa1, capa2: map.capa2, capa3: map.capa3, capa4: map.capa4, capa5: map.capa5, collisionMap: map.collision});
+        toClient.emit('map:data', {capa1: map.capa1, capa2: map.capa2, capa3: map.capa3, capa4: map.capa4, capa5: map.capa5, collisionMap: map.collision, collisionMapOld: map.collision});
     } else {
         console.log("Player not found: "+ toClient.id);
 		return;

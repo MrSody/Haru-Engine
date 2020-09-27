@@ -202,18 +202,10 @@ function onMapData (data) {
 
 // Npc's
 function onNewNpc (data) {
-    if (npcs.length == 0) {
-        npcs.push(new Npc(data));
-    } else {
-        npcs.forEach((npc) => {
-            if (data.id != npc.getID()) {
-                npcs.push(new Npc(data));
-            } else {
-                npcs.splice(0, npcs.length);
-                npcs.push(new Npc(data));
-            }
-        });
+    if (npcs.length == data.count) {
+        npcs.splice(0, npcs.length);
     }
+    npcs.push(new Npc(data.npc));
 }
 
 /*-------------------------------
@@ -291,6 +283,9 @@ function onMovePlayer (data) {
     } else {
         console.log("MovePlayer - Player not found: "+ data.id);
     }
+
+    // Update Collision
+    //clsMap.setCollisionOriginal();            
 }
 
 // Remove player Remote -- PRUEBA
@@ -310,7 +305,7 @@ function onRemovePlayer (data) {
 function onMoveNpc (data) {
     let npc = findNpc(data.id);
 
-    if (npc) {        
+    if (npc) {
         npc.setPosWorld(data.pos.x, data.pos.y);
         npc.setDir(data.dir);
         npc.setAbsPos(0, 0);
@@ -398,7 +393,6 @@ function animate () {
         draw();
         lastRender = dateNow;
         update();
-        //event();
 
         if(dateNow - lastFpsCycle > 1000){
             lastFpsCycle = dateNow;
@@ -417,11 +411,11 @@ function update () {
 		let absPos = localPlayer.getAbsPos();
         let width = $(window).width();
         let height = $(window).height();
-
+        
         localPlayer.playerMove();
-
+        
         socket.emit('player:move', {id: localPlayer.getID(), x: absPos.x, y: absPos.y, dir: localPlayer.getDir(), mode: localPlayer.getMode()});
-    
+        
         // Mover el MAPA
         socket.emit('map:data', {width: width, height: height});
 	}
@@ -452,26 +446,26 @@ function cleanScreen (width, height) {
 }
 
 function draw () {
-    let width = $('#game').outerWidth();
-    let height = $('#game').outerHeight();
-    let middleTileX = Math.round((width / 2) / 32);
-    let middleTileY = Math.round(((height / 2) / 32));
-    let maxTilesX = Math.floor((width / 32) + 2);
-    let maxTilesY = Math.floor((height / 32) + 2);
+    let sizeScreen = clsMap.getSizeScreen();
+    let middleTile = clsMap.getMiddleTile();
+    let maxTiles = clsMap.getMaxTiles();
     let posWorld = localPlayer.getPosWorld();
 
     // Wipe the canvas clean
-    cleanScreen(width, height);
+    cleanScreen(sizeScreen.width, sizeScreen.height);
 
-    for (let h = 0; h < maxTilesY; h++) {
-        for (let w = 0; w < maxTilesX; w++) {
+    for (let h = 0; h < maxTiles.y; h++) {
+        for (let w = 0; w < maxTiles.x; w++) {
+            
+            // clean mapCollision
+            clsMap.setCollision(w, h, 0);
 
             // Dibuja capas inferiores
             clsMap.drawMapDown(ctxCapaMapaAbajo, w, h);
 
             // Draw remote players
             for (let remotePlayer of remotePlayers) {
-                let posNow = remotePlayer.posNow(middleTileX, middleTileY, posWorld);
+                let posNow = remotePlayer.posNow(middleTile.x, middleTile.y, posWorld);
                 
                 if (posNow.x == w && posNow.y == h) {
                     remotePlayer.draw(ctxPersonaje, ctxHUB, posNow.x, (posNow.y - 0.5));
@@ -480,21 +474,24 @@ function draw () {
 
             // Draw NPCs            
             for(let npc of npcs) {
-                let posNow = npc.posNow(middleTileX, middleTileY, posWorld);
+                let posNow = npc.posNow(middleTile.x, middleTile.y, posWorld);
 
                 if (posNow.x == w && posNow.y == h) {
                     //clsMap.setCollision(w, h, 3);
                     npc.draw(ctxPersonaje, ctxHUB, posNow.x, (posNow.y - 0.5));
-                    npc.eventVision(posNow, middleTileX, middleTileY, clsMap.getCollision());
-                    if (modeDeveloper && npc.isAggressive()) {
-                        clsDeveloper.drawVisionNpc(ctxHUB, npc.getVisionDistance(), posNow);
+                    npc.eventVision(posNow, middleTile.x, middleTile.y, clsMap.getCollision());
+                    if (npc.isAggressive()) {
+                        clsMap.setCollision(posNow.x, posNow.y, 2);
+                        if (modeDeveloper) {
+                            clsDeveloper.drawVisionNpc(ctxHUB, npc.getVisionDistance(), posNow);
+                        }
                     }
                 }
             }
 
             // Draw local player
-            if (middleTileX == w && middleTileY == h) {
-                localPlayer.draw(ctxPersonaje, ctxHUB, middleTileX, (middleTileY - 0.5));
+            if (middleTile.x == w && middleTile.y == h) {
+                localPlayer.draw(ctxPersonaje, ctxHUB, middleTile.x, (middleTile.y - 0.5));
             }
 
             // Dibuja las capas superiores
@@ -507,6 +504,8 @@ function draw () {
             }
         }
     }
+    //console.log("GAME.js");
+    //console.log(clsMap.getCollision());
 }
 
 // Browser window resize
@@ -516,6 +515,8 @@ function onResize () {
     let height = $(window).height();
 
     socket.emit('map:data', {width: width, height: height});
+
+    clsMap.setSizeScreen(width, height);
 
 	// Maximise the canvas
 	canvasHUB.width = window.innerWidth;
