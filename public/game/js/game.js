@@ -480,7 +480,7 @@ function draw () {
                     npc.draw(ctxPersonaje, ctxHUB, posNow.x, (posNow.y - 0.5));
                     npc.eventVision(posNow, middleTile.x, middleTile.y, clsMap.getCollision());
                     if (npc.isAggressive()) {
-                        clsMap.setCollision(posNow.x, posNow.y, 2);
+                        clsMap.setCollision(posNow.x, posNow.y, 3);
                         if (modeDeveloper) {
                             clsDeveloper.drawVisionNpc(ctxHUB, npc.getVisionDistance(), posNow);
                         }
