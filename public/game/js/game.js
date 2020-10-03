@@ -477,7 +477,6 @@ function draw () {
                 let posNow = npc.posNow(middleTile.x, middleTile.y, posWorld);
 
                 if (posNow.x == w && posNow.y == h) {
-                    //clsMap.setCollision(w, h, 3);
                     npc.draw(ctxPersonaje, ctxHUB, posNow.x, (posNow.y - 0.5));
                     npc.eventVision(posNow, middleTile.x, middleTile.y, clsMap.getCollision());
                     if (npc.isAggressive()) {

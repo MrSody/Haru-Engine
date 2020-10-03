@@ -91,10 +91,10 @@ export default class Npc {
     
     setPath (path) {
 		this.path = path;
-		this.moving = true;
+        this.moving = true;
 
         // Check if on the way to attack
-		if (this.goAttack && this.stepCount == 0) {
+		if (this.goAttack && this.stepCount == (this.path.length - 1)) {
 			// Face player towards enemy
 			if (this.path[this.path.length-1][0] > this.path[this.path.length-2][0]) {
 				this.finalDir = 1;
@@ -107,7 +107,12 @@ export default class Npc {
 			}
 
 			// Remove last path element so player doesn't step on enemy
-			this.path.pop();
+            this.path.pop();
+
+            // Reset stepCount
+            if (this.stepCount == this.path.length) {
+                this.stepCount = 0;
+            }
 		}
 	}
 
@@ -122,6 +127,7 @@ export default class Npc {
 		if (this.path.length >= 1) {
 
             if (this.stepCount != 0) {
+            //if (this.stepCount != 0 && this.stepCount != (this.path.length - 1)) {
 
                 var posX = this.path[this.stepCount][0],
                     posY = this.path[this.stepCount][1],
@@ -154,18 +160,18 @@ export default class Npc {
                 this.absPos.absY = 0;
             }
 
-            if (this.stepCount < this.path.length-1 && !this.moveInterrupt) {
+            if (this.stepCount < (this.path.length - 1) && !this.moveInterrupt) {
                 //this.path.shift();
                 this.stepCount++;
             } else { // End of path
-                if(this.goFight != null) {
+                if (this.goFight != null) {
                     this.fighting = this.goFight;
                     this.mode = 1;
                 }
                 
                 this.moving = false;
                 this.stepCount=0;
-                //this.dir = this.finalDir;
+                this.dir = this.finalDir;
             }
         }
 	}
@@ -208,13 +214,18 @@ export default class Npc {
                 for (let y = initVisionY; y <= endVisionY; y++) {
                     for (let x = initVisionX; x <= endVisionX; x++) {
                         if (x >= middleTileX && x <= middleTileX && y >= middleTileY && y <= middleTileY) {
-                            let pathFinder = new Pathfinder(collisionMap, posNow, {x: middleTileX, y: middleTileY}),
-                                Mover = pathFinder.attack();
-
-                            this.goFight = true;
-                            
-                            if (Mover.length > 0) {
-                                this.setPath(Mover);
+                            if ((posNow.x > middleTileX || posNow.x < middleTileX) || (posNow.y > middleTileY || posNow.y < middleTileY)) {
+                                let pathFinder = new Pathfinder(collisionMap, posNow, {x: middleTileX, y: middleTileY}),
+                                    //Mover = pathFinder.move();
+                                    Mover = pathFinder.calculatePath();
+                                    
+                                this.goAttack = true;
+                                
+                                if (Mover.length > 0) {
+                                    this.setPath(Mover);
+                                }
+                            } else {
+                                console.log("Esta Peleando el NPC");
                             }
                         }
                     }

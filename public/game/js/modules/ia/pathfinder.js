@@ -2,7 +2,7 @@ class Pathfinder {
     constructor(world, pathStart, pathEnd) {
         this.world = world;
         this.pathStart = pathStart;
-        this.pathEnd = pathEnd;
+		this.pathEnd = pathEnd;
         // the world data are integers:
         // anything higher than this number is considered blocked
         // this is handy is you use numbered sprites, more than one
@@ -48,7 +48,10 @@ class Pathfinder {
             world = this.world,
             subLine = end.x - start.x,
             line = end.y - start.y,
-            newPosX = 0, newPosY = 0;
+			newPosX = 0, newPosY = 0;
+			
+			console.log("Mover: "+ start.x +"-"+ start.y);
+			console.log("Mover: "+ this.pathEnd.x +"-"+ this.pathEnd.y);
   
         if (line > 0) {
             newPosY = 1;
@@ -69,7 +72,6 @@ class Pathfinder {
         //return {x: Math.round(end.x - newPosX), y: Math.round(end.y - newPosY)}
         this.pathEnd.x = Math.round(end.x - newPosX);
         this.pathEnd.y = Math.round(end.y - newPosY);
-        console.log("Mover: "+ this.pathEnd.x +"-"+ this.pathEnd.y);
         return this.calculatePath();
     }
     
@@ -79,7 +81,9 @@ class Pathfinder {
             world = this.world,
             subLine = end.x - start.x,
             line = end.y - start.y,
-            newPosX = 0, newPosY = 0;
+			newPosX = 0, newPosY = 0;
+			
+		console.log("1: "+ line +" -- "+ subLine);
   
         if (line > 0) {
             newPosY = 1;
@@ -97,8 +101,12 @@ class Pathfinder {
             newPosX = -1;
 		}
 		
+		console.log("2: "+ newPosX +" -- "+ newPosY);
+
         this.pathEnd.x = Math.round(end.x - newPosX);
 		this.pathEnd.y = Math.round(end.y - newPosY);
+		console.log("Mover: "+ start.x +"-"+ start.y);
+		console.log("Mover: "+ this.pathEnd.x +"-"+ this.pathEnd.y);
         return this.calculatePath();
     }
     
