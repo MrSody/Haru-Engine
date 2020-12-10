@@ -9,6 +9,8 @@ export default class Mouse {
 
         this.cursorWalking = "url('../game/img/icons/mouse_walk.png') 16 16, auto";
         this.cursorNOWalking = "url('../game/img/icons/mouse_noWalk.png') 16 16, auto";
+        this.cursorTalkToNPC = "url('../game/img/icons/mouse_talk.png') 16 16, auto";
+        this.cursorAttackEnemy = "url('../game/img/icons/mouse_attack.png') 16 16, auto";
     }
 
     getClickedTile (e) {
@@ -22,26 +24,36 @@ export default class Mouse {
         let tile = this.getClickedTile(e);
 
         if (tile.x >= 0 && tile.y >= 0) {
-            if (collisionMap[tile.y][tile.x] === this.tileNOWalking) {
-                document.documentElement.style.cursor = this.cursorNOWalking;
-            } else {
-                document.documentElement.style.cursor = this.cursorWalking;
+            switch ( collisionMap[tile.y][tile.x] ) {
+                case this.tileNOWalking:
+                    document.documentElement.style.cursor = this.cursorNOWalking;
+                    break;
+                case this.tileTalkToNPC:
+                    document.documentElement.style.cursor = this.cursorTalkToNPC;
+                    break;
+                case this.tileAttackEnemy:
+                    document.documentElement.style.cursor = this.cursorAttackEnemy;
+                    break;
+                default:
+                    document.documentElement.style.cursor = this.cursorWalking;
+                    break;    
             }
         }
     }
 
     click (e, collisionMap, canvasHUB, localPlayer) {
-        let tile = this.getClickedTile(e),
-            playerPosX = Math.round((canvasHUB.width / 2) / this.tileSize),
-            playerPosY = Math.round((canvasHUB.height / 2) / this.tileSize);
+        let tile = this.getClickedTile(e);
+        let playerPosX = Math.round((canvasHUB.width / 2) / this.tileSize);
+        let playerPosY = Math.round((canvasHUB.height / 2) / this.tileSize);
         
         if (!(tile.x == playerPosX && tile.y == playerPosY) && !(collisionMap[tile.y][tile.x] === 1)) { // To avoid a bug, where player wouldn't walk anymore, when clicked twice on the same tile
     
-            $("#conversation, #confirmation").addClass("hidden");
+            //$("#conversation, #confirmation").addClass("hidden");
     
             if (collisionMap[tile.y][tile.x] == 2) { // Going to talk to NPC
     
                 console.log("Habla con npc");
+                /*
     
                 var npc = getNpcAt(tile.x * 32, tile.y * 32);
     
@@ -51,17 +63,19 @@ export default class Mouse {
                 }
     
                 localPlayer.setGoToNpc(npc);
+                */
     
             } else if (collisionMap[tile.y][tile.x] == 3) { // Going to attack enemy
     
                 console.log("ataca al enemigo");
-    
+                /*
                 for (var i = 0; i < enemies.length; i++) {
                     if (enemies[i].alive && tile.x * 32 == enemies[i].x && tile.y * 32 == enemies[i].y) {
                         localPlayer.setGoFight(i);
                         break;
                     }
                 }
+                */
     
             } else {
     
