@@ -55,15 +55,11 @@ export default class Map {
     }
 
     setCollision (x, y, data) {
-        switch (data) {
-            case 0:     // Clean Collision Map
-                this.capaCollision.now[y][x] = this.capaCollision.old[y][x];
-                break;
-            case 3:     // Add Collision - NPC Aggressive
-                if (this.capaCollision.now[y][x] == 0) {
-                    this.capaCollision.now[y][x] = data;
-                }
-                break;
+
+        if ( typeof(data)  == "object" ) {
+            this.capaCollision.now[y][x] = data;
+        } else {
+            this.capaCollision.now[y][x] = this.capaCollision.old[y][x];
         }
     }
 

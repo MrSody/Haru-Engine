@@ -120,6 +120,8 @@ export default class Npc {
     FUNCIONES
  * ------------------------------ */
     playerMove () {
+
+        console.log(this.posWorld);
         // Check if on the way to attack
         this.setPath(this.path);
 

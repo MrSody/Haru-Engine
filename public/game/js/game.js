@@ -479,9 +479,12 @@ function draw () {
                 if (posNow.x == w && posNow.y == h) {
                     npc.draw(ctxPersonaje, ctxHUB, posNow.x, (posNow.y - 0.5));
                     npc.eventVision(posNow, middleTile.x, middleTile.y, clsMap.getCollision());
-                    if (npc.isAggressive()) {
-                        clsMap.setCollision(posNow.x, posNow.y, 3);
-                        if (modeDeveloper) {
+
+                    // Save data Npc in map collision
+                    clsMap.setCollision(posNow.x, posNow.y, npc);
+
+                    if (modeDeveloper) {
+                        if (npc.isAggressive()) {
                             clsDeveloper.drawVisionNpc(ctxHUB, npc.getVisionDistance(), posNow);
                         }
                     }

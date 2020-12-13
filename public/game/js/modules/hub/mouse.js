@@ -4,8 +4,9 @@ export default class Mouse {
 
         this.tileWalking = 0;
         this.tileNOWalking = 1;
-        this.tileTalkToNPC = 2;
-        this.tileAttackEnemy = 3;
+        // Reation NPC
+        this.tileTalkToNPC = 1;
+        this.tileAttackEnemy = 2;
 
         this.cursorWalking = "url('../game/img/icons/mouse_walk.png') 16 16, auto";
         this.cursorNOWalking = "url('../game/img/icons/mouse_noWalk.png') 16 16, auto";
@@ -24,19 +25,35 @@ export default class Mouse {
         let tile = this.getClickedTile(e);
 
         if (tile.x >= 0 && tile.y >= 0) {
-            switch ( collisionMap[tile.y][tile.x] ) {
-                case this.tileNOWalking:
-                    document.documentElement.style.cursor = this.cursorNOWalking;
+
+            if ( typeof( collisionMap[tile.y][tile.x] ) == "number" ) {
+                
+                switch ( collisionMap[tile.y][tile.x] ) {
+                    case this.tileNOWalking:
+                        document.documentElement.style.cursor = this.cursorNOWalking;
                     break;
-                case this.tileTalkToNPC:
-                    document.documentElement.style.cursor = this.cursorTalkToNPC;
+
+                    default:
+                        document.documentElement.style.cursor = this.cursorWalking;
                     break;
-                case this.tileAttackEnemy:
-                    document.documentElement.style.cursor = this.cursorAttackEnemy;
+                }
+
+            } else if ( typeof( collisionMap[tile.y][tile.x] ) == "object" ) {
+                
+                let npc = collisionMap[tile.y][tile.x];
+
+                switch ( npc.getReaction() ) {
+                    case this.tileTalkToNPC: 
+                        document.documentElement.style.cursor = this.cursorTalkToNPC;
                     break;
-                default:
-                    document.documentElement.style.cursor = this.cursorWalking;
-                    break;    
+
+                    case this.tileAttackEnemy:
+                        document.documentElement.style.cursor = this.cursorAttackEnemy;
+                    break;
+                }
+
+            } else {
+                document.documentElement.style.cursor = this.cursorWalking;
             }
         }
     }
@@ -46,37 +63,37 @@ export default class Mouse {
         let playerPosX = Math.round((canvasHUB.width / 2) / this.tileSize);
         let playerPosY = Math.round((canvasHUB.height / 2) / this.tileSize);
         
-        if (!(tile.x == playerPosX && tile.y == playerPosY) && !(collisionMap[tile.y][tile.x] === 1)) { // To avoid a bug, where player wouldn't walk anymore, when clicked twice on the same tile
+        if (!(tile.x == playerPosX && tile.y == playerPosY) && !(collisionMap[tile.y][tile.x] === this.tileNOWalking)) { // To avoid a bug, where player wouldn't walk anymore, when clicked twice on the same tile
     
             //$("#conversation, #confirmation").addClass("hidden");
     
-            if (collisionMap[tile.y][tile.x] == 2) { // Going to talk to NPC
+            if ( typeof( collisionMap[tile.y][tile.x] ) == "object") { // Going NPC
+                
+                let npc = collisionMap[tile.y][tile.x];
+
+                switch ( npc.getReaction() ) {
+                    case this.tileTalkToNPC: // Going to talk to NPC
+                        console.log("Habla con npc");
+                        /*
     
-                console.log("Habla con npc");
-                /*
-    
-                var npc = getNpcAt(tile.x * 32, tile.y * 32);
-    
-                if (npc.questID != null) {
-                    var quest = questlist[npc.questID];
-                    localPlayer.addQuest(quest);
+                        var npc = getNpcAt(tile.x * 32, tile.y * 32);
+            
+                        if (npc.questID != null) {
+                            var quest = questlist[npc.questID];
+                            localPlayer.addQuest(quest);
+                        }
+            
+                        localPlayer.setGoToNpc(npc);
+                        */
+                    break;
+
+                    case this.tileAttackEnemy: // Going to attack enemy
+                        console.log("ataca al enemigo "+ tile.x +" - "+ tile.y );
+
+                        //localPlayer.setGoFight(i);
+                    break;
                 }
-    
-                localPlayer.setGoToNpc(npc);
-                */
-    
-            } else if (collisionMap[tile.y][tile.x] == 3) { // Going to attack enemy
-    
-                console.log("ataca al enemigo");
-                /*
-                for (var i = 0; i < enemies.length; i++) {
-                    if (enemies[i].alive && tile.x * 32 == enemies[i].x && tile.y * 32 == enemies[i].y) {
-                        localPlayer.setGoFight(i);
-                        break;
-                    }
-                }
-                */
-    
+                
             } else {
     
                 if (localPlayer.isFighting()) {
