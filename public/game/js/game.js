@@ -366,12 +366,16 @@ game.onmousemove = function (e) {
 /*-------------------------------
     Funciones Teclado videojuego
 *-------------------------------*/
-game.onkeydown = function (e) {    
-    clsKeyboard.keyDown(e.keyCode);
+document.onkeydown = function (e) {
+    if (!$('#hubPrincial').hasClass('Invisible')) {
+        clsKeyboard.keyDown(e.keyCode, localPlayer, clsInterface);
+    }
 }
 
-game.onkeyup = function (e) {
-    clsKeyboard.keyUp(e.keyCode);
+document.onkeyup = function (e) {
+    if (!$('#hubPrincial').hasClass('Invisible')) {
+        clsKeyboard.keyUp(e.keyCode, localPlayer, clsInterface);
+    }
 }
 
 /*-------------------------------

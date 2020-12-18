@@ -1,9 +1,9 @@
 export default  class Keyboard {
     constructor (player) {}
 
-    keyDown (keyCode) {
+    keyDown (keyCode, localPlayer, clsInteface) {
         if (!$('#hubPrincial').hasClass('Invisible')) {
-            //alert("tecla "+ e.keyCode);
+            //alert("tecla "+ keyCode);
     
             if (!$("#Mensaje").is(":focus")) {
                 switch (keyCode) {
@@ -15,9 +15,9 @@ export default  class Keyboard {
         }
     }
 
-    keyUp (keyCode) {
+    keyUp (keyCode, localPlayer, clsInteface) {
         if (!$('#hubPrincial').hasClass('Invisible')) {
-            //alert("tecla "+ e.keyCode);
+            //alert("tecla "+ keyCode);
     
             if (!$("#Mensaje").is(":focus")) {
                 switch (keyCode) {
