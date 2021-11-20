@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 12-06-2020 a las 18:57:41
+-- Tiempo de generación: 10-12-2020 a las 02:26:13
 -- Versión del servidor: 10.4.11-MariaDB
 -- Versión de PHP: 7.4.2
 
@@ -41,7 +41,7 @@ CREATE TABLE `Account` (
 
 INSERT INTO `Account` (`ID`, `Email`, `Password`, `Creation_Date`) VALUES
 (1, 'prueba', '1234', '2020-02-20'),
-(2, 'prueba@gmail.com', '1234', '2020-02-20');
+(2, 'prueba2', '1234', '2020-02-20');
 
 -- --------------------------------------------------------
 
@@ -87,15 +87,16 @@ CREATE TABLE `Npc` (
   `ID_Map` int(11) NOT NULL,
   `X` int(11) NOT NULL,
   `Y` int(11) NOT NULL,
-  `Vision_Distance` int(11) NOT NULL
+  `Vision_Distance` int(11) NOT NULL,
+  `Reaction` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `Npc`
 --
 
-INSERT INTO `Npc` (`ID`, `Name`, `Health`, `Skin`, `Level`, `ID_Map`, `X`, `Y`, `Vision_Distance`) VALUES
-(1, 'Pepe', 150, 'pj', 5, 1, 16, 13, 2);
+INSERT INTO `Npc` (`ID`, `Name`, `Health`, `Skin`, `Level`, `ID_Map`, `X`, `Y`, `Vision_Distance`, `Reaction`) VALUES
+(1, 'Pepe', 150, 'pj', 5, 1, 16, 13, 2, 2);
 
 --
 -- Índices para tablas volcadas
