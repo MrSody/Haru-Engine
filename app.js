@@ -25,7 +25,7 @@ const bodyParser = require('body-parser');
 app.set('appName', 'P-MS');
 app.set('port', process.env.PORT || 3000);
 //app.set('port', 3030);
-app.set('views', __dirname + '/vistas');
+app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
 //extended: false significa que parsea solo string (no archivos de imagenes por ejemplo)

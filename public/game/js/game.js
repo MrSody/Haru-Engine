@@ -510,8 +510,6 @@ function draw () {
             }
         }
     }
-    //console.log("GAME.js");
-    //console.log(clsMap.getCollision());
 }
 
 // Browser window resize

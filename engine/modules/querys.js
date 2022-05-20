@@ -31,6 +31,7 @@ class Querys {
 				"Character_Account.Health as health, "+
 				"Character_Account.Level as level, "+
 				"Character_Account.XP as xp, "+
+				"Character_Account.Fraction as fraction, "+
 				"Character_Account.Money as money, "+
 				"Character_Account.ID_Map as IDMap, "+
 				"Character_Account.X as X, "+
