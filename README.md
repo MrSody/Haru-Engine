@@ -1,27 +1,18 @@
-![](https://img.shields.io/github/stars/projectMMO/editor.md.svg)
-![](https://img.shields.io/github/forks/projectMMO/editor.md.svg)
-![](https://img.shields.io/github/tag/projectMMO/editor.md.svg)
-![](https://img.shields.io/github/release/projectMMO/editor.md.svg)
-![](https://img.shields.io/github/issues/projectMMO/editor.md.svg)
-![](https://img.shields.io/bower/v/editor.md.svg)
-
-**Table of Contents**
-
-[TOC]
+![Badge en Desarollo](https://img.shields.io/badge/STATUS-IN%20DEVELOPING-green)
 
 # ProjectMMO
  It is an MMO video game engine in the browser development in Javascript and nodeJS
 
-#Install
+# Install
 
 `$ npm install`
 
-#You can run
+# You can run
 
 `$ npm start`
 
 for default the application run in [http://localhost:3000/](http://localhost:3000/)
 
-#Run test
+# Run test
 
 `$ npm test`
