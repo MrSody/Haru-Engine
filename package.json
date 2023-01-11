@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "dependencies": {
-    "ejs": "^3.1.7",
+    "ejs": "^3.1.8",
     "express": "^4.17.2",
     "mysql": "^2.18.1",
     "mysql2": "^2.3.3",
@@ -15,7 +15,8 @@
     "jest": "^27.4.5"
   },
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "start": "node app.js"
   },
   "keywords": [],
   "author": "",
