@@ -59,7 +59,7 @@ test('playerById', () => {
 
 test('npcById', () => {
     let posWorld = Engine.posWorld(DATA_DB_NPC.ID_Map, DATA_DB_NPC.X, DATA_DB_NPC.Y);
-    let response = new NPC(DATA_DB_NPC, posWorld.x, posWorld.y, "imagen1\n");
+    let response = new NPC(DATA_DB_NPC, posWorld.x, posWorld.y, "imagen1\r\n");
 
     Engine.addNPC(DATA_DB_NPC);
 
@@ -99,7 +99,7 @@ test('NPCNearby', () => {
     let player = Engine.addPlayer(idPlayer, DATA_DB_PLAYER, posWorldPlayer.x, posWorldPlayer.y);
     //NPC
     let posWorldNpc = Engine.posWorld(DATA_DB_NPC.ID_Map, DATA_DB_NPC.X, DATA_DB_NPC.Y);
-    let npc = new NPC(DATA_DB_NPC, posWorldNpc.x, posWorldNpc.y, "imagen1\n");
+    let npc = new NPC(DATA_DB_NPC, posWorldNpc.x, posWorldNpc.y, "imagen1\r\n");
     let response = [npc, npc];
 
     Engine.addNPC(DATA_DB_NPC);
@@ -113,7 +113,7 @@ test('NPCNearby', () => {
 test('addPlayer', () => {
     let idPlayer = '1';
     let posWorldPlayer = Engine.posWorld(DATA_DB_PLAYER.IDMap, DATA_DB_PLAYER.X, DATA_DB_PLAYER.Y);
-    let response = new PLAYER(idPlayer, DATA_DB_PLAYER, posWorldPlayer.x, posWorldPlayer.y, "imagen1\n", "");
+    let response = new PLAYER(idPlayer, DATA_DB_PLAYER, posWorldPlayer.x, posWorldPlayer.y, "imagen1\r\n", "");
 
 
     expect(Engine.addPlayer(idPlayer, DATA_DB_PLAYER)).toStrictEqual(response);
@@ -147,7 +147,7 @@ test('movePlayer', () => {
 test('playerDisconnect', () => {
     let idPlayer = '1';
     let posWorldPlayer = Engine.posWorld(DATA_DB_PLAYER.IDMap, DATA_DB_PLAYER.X, DATA_DB_PLAYER.Y);
-    let response = new PLAYER(idPlayer, DATA_DB_PLAYER, posWorldPlayer.x, posWorldPlayer.y, "imagen1\n", "");
+    let response = new PLAYER(idPlayer, DATA_DB_PLAYER, posWorldPlayer.x, posWorldPlayer.y, "imagen1\r\n", "");
 
     expect(Engine.playerDisconnect(idPlayer)).toStrictEqual(response);
 });
