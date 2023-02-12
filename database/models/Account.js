@@ -23,7 +23,8 @@ const schema = {
         field: 'Password',
     },
     createDate: {
-        type: DataTypes.STRING,
+      allowNull: false,
+        type: DataTypes.DATE,
         defaultValue: Sequelize.NOW,
         field: 'Create_Date',
     }
