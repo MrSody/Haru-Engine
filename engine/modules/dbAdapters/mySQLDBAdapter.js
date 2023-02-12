@@ -1,10 +1,14 @@
 const mysql = require('mysql');
+const { config } = require("../../../config/config");
+
+const USER = encodeURIComponent(config.dbUser);
+const PASSWORD = encodeURIComponent(config.dbPassword);
 
 const dataConnection = {
-    host     : 'localhost',
-    user     : 'root',
-    password : '',
-    database : 'projectMMO'
+    host     : `${config.dbHost}`,
+    user     : `${USER}`,
+    password : `${PASSWORD}`,
+    database : `${config.dbName}`
 }
 
 const getConnection = function () {

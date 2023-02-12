@@ -121,8 +121,8 @@ class Engine {
     FUNCIONES - NPC
 * ------------------------------ */
     addNPC (dataNPC) {
-        let posWorld = this.posWorld(dataNPC.ID_Map, dataNPC.X, dataNPC.Y);
-        let skinNpc = fs.readFileSync(`./engine/sprite/npc/${dataNPC.Skin}.txt`, 'utf-8');
+        let posWorld = this.posWorld(dataNPC.idMap, dataNPC.posX, dataNPC.posY);
+        let skinNpc = fs.readFileSync(`./engine/sprite/npc/${dataNPC.skin}.txt`, 'utf-8');
 
         this.npcs.push(new NPC(dataNPC, posWorld.x, posWorld.y, skinNpc));
     }

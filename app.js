@@ -13,6 +13,7 @@ const socketIO = require('socket.io');
 // CONNECTION TO DB
 const DBAdapter = require("./engine/modules/dbAdapters/mySQLDBAdapter");
 const conexion = DBAdapter();
+const { models } = require('./database');
 
 // RUTAS
 const routes = require('./routes/routes');
@@ -24,7 +25,6 @@ const bodyParser = require('body-parser');
 * ------------------------------ */
 app.set('appName', 'P-MS');
 app.set('port', process.env.PORT || 3000);
-//app.set('port', 3030);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
@@ -44,7 +44,7 @@ app.get("*", (req, res) => {
 });
 
 const server = app.listen(app.get('port'), () => {
-    console.log('server funcionado en puerto: ', app.get('port'), '\nNombre: ', app.get('appName'));
+    console.log('server funcionado en puerto: ', app.get('port'), `\nApplication: http://localhost:${app.get('port')}`);
 });
 
 app.get("/game", (req, res) => {
@@ -114,22 +114,21 @@ function onSocketConnection (client) {
     client.on('login', onLogin);
 }
 
-function loadNPCs () {
-    // Trae los NPCs de db
-    conexion.query(query.getSearchNpc(), (err, results) => {
+// TODO: append sequelize in app.js
+// change methods of mysql
+// and delete the library mysql
+async function loadNPCs () {
+    try {
+        const results = await models.npc.findAll();
 
-        if (!err) {
-
-            results.forEach((dataNPC) => {
-                // Add new npc
-                engine.addNPC(dataNPC);
-            });
-            console.log("Completado: Se han cargado todos los NPCs...");
-
-        } else {
-            console.log("Error - loadNPCs : No se pudo cargar los NPCs - "+ err);
-        }
-    });
+        results.forEach((dataNPC) => {
+            engine.addNPC(dataNPC['dataValues']);
+        });
+    
+        console.log("Completado: Se han cargado todos los NPCs...");
+    } catch(e) {
+        console.log("Error - loadNPCs : No se pudo cargar los NPCs - "+ e);
+    }
 }
 
 /* ------------------------------ *
@@ -141,7 +140,7 @@ function onLogin (data) {
 
 function onAccountConnect (data) {
     let toClient = this;
-
+    
     //find account connect
     conexion.query(query.getSearchAccount(), [data.idAccount], (err, results) => {
 

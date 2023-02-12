@@ -31,15 +31,16 @@ const DATA_DB_PLAYER2 = {
 };
 
 const DATA_DB_NPC = {
-    ID: 1,
-    Name: 'test',
-    Health: 100,
-    Skin: 'testSkin',
-    Level: 1,
-    ID_Map: 1,
-    X: 16,
-    Y: 15,
-    Vision_Distance: ''
+    id: 1,
+    name: 'test',
+    health: 100,
+    skin: 'testSkin',
+    level: 1,
+    idMap: 1,
+    posX: 16,
+    posY: 15,
+    visionDistance: '',
+    reaction: 1,
 };
 
 
@@ -58,12 +59,12 @@ test('playerById', () => {
 });
 
 test('npcById', () => {
-    let posWorld = Engine.posWorld(DATA_DB_NPC.ID_Map, DATA_DB_NPC.X, DATA_DB_NPC.Y);
-    let response = new NPC(DATA_DB_NPC, posWorld.x, posWorld.y, "imagen1\r\n");
+    let posWorld = Engine.posWorld(DATA_DB_NPC.idMap, DATA_DB_NPC.posX, DATA_DB_NPC.posY);
+    let response = new NPC(DATA_DB_NPC, posWorld.x, posWorld.y, "imagen1");
 
     Engine.addNPC(DATA_DB_NPC);
 
-    expect(Engine.npcById(DATA_DB_NPC.ID)).toStrictEqual(response);
+    expect(Engine.npcById(DATA_DB_NPC.id)).toStrictEqual(response);
 });
 
 test('searchIDMap', () => {
@@ -98,8 +99,8 @@ test('NPCNearby', () => {
     let posWorldPlayer = Engine.posWorld(DATA_DB_PLAYER.IDMap, DATA_DB_PLAYER.X, DATA_DB_PLAYER.Y);
     let player = Engine.addPlayer(idPlayer, DATA_DB_PLAYER, posWorldPlayer.x, posWorldPlayer.y);
     //NPC
-    let posWorldNpc = Engine.posWorld(DATA_DB_NPC.ID_Map, DATA_DB_NPC.X, DATA_DB_NPC.Y);
-    let npc = new NPC(DATA_DB_NPC, posWorldNpc.x, posWorldNpc.y, "imagen1\r\n");
+    let posWorldNpc = Engine.posWorld(DATA_DB_NPC.idMap, DATA_DB_NPC.posX, DATA_DB_NPC.posY);
+    let npc = new NPC(DATA_DB_NPC, posWorldNpc.x, posWorldNpc.y, "imagen1");
     let response = [npc, npc];
 
     Engine.addNPC(DATA_DB_NPC);
