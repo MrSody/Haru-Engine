@@ -78,7 +78,7 @@ const schema = {
     },
     online: {
         type: DataTypes.BOOLEAN,
-        field: 'Onlinea',
+        field: 'Online',
     },
     deleteDate: {
         type: DataTypes.DATE,
