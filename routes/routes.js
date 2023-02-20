@@ -4,12 +4,6 @@
 const express = require('express');
 const router = express.Router();
 
-// CONNECTION TO DB
-const DBAdapter = require("../engine/modules/dbAdapters/mySQLDBAdapter");
-const conexion = DBAdapter();
-const QUERYS = require('../engine/modules/querys').Querys;
-const Query = new QUERYS();
-
 // Controllers
 const accountController = require('../app/controllers/page/accountController');
 
