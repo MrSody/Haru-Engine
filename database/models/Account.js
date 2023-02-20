@@ -31,18 +31,18 @@ const schema = {
 }
 
 class Account extends Model {
-  static associate() {
-    // associate
-  }
-
-  static config(sequelize) {
-    return {
-      sequelize,
-      tableName: NAME_TABLE,
-      modelName: NAME_MODEL,
-      timestamps: false
+    static associate(models) {
+        this.hasMany(models.character, { as: 'characters', foreignKey: 'idAccount'});
     }
-  }
+
+    static config(sequelize) {
+		return {
+		sequelize,
+		tableName: NAME_TABLE,
+		modelName: NAME_MODEL,
+		timestamps: false
+		}
+    }
 }
 
 module.exports = { NAME_TABLE, NAME_MODEL, schema, model: Account }

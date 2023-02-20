@@ -11,7 +11,7 @@ const QUERYS = require('../engine/modules/querys').Querys;
 const Query = new QUERYS();
 
 // Controllers
-const accountController = require('../app/controllers/accountController');
+const accountController = require('../app/controllers/page/accountController');
 
 //HOME - Game
 router.get('/', (req, res) => {

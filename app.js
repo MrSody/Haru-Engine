@@ -14,6 +14,7 @@ const socketIO = require('socket.io');
 const DBAdapter = require("./engine/modules/dbAdapters/mySQLDBAdapter");
 const conexion = DBAdapter();
 const { models } = require('./database');
+const characterController = require('./app/controllers/game/characterController');
 
 // RUTAS
 const routes = require('./routes/routes');
@@ -44,7 +45,7 @@ app.get("*", (req, res) => {
 });
 
 const server = app.listen(app.get('port'), () => {
-    console.log('server funcionado en puerto: ', app.get('port'), `\nApplication: http://localhost:${app.get('port')}`);
+    console.log(`Application is working: http://localhost:${app.get('port')}`);
 });
 
 app.get("/game", (req, res) => {
@@ -118,17 +119,15 @@ function onSocketConnection (client) {
 // change methods of mysql
 // and delete the library mysql
 async function loadNPCs () {
-    try {
-        const results = await models.npc.findAll();
+    await models.npc.findAll()
+    .then(dataNPC => {
+        engine.addNPC(dataNPC);
+    })
+    .catch(e => {
+        console.log(`Error: app - loadNPCs: ${e}`);
+    });
 
-        results.forEach((dataNPC) => {
-            engine.addNPC(dataNPC['dataValues']);
-        });
-    
-        console.log("Completado: Se han cargado todos los NPCs...");
-    } catch(e) {
-        console.log("Error - loadNPCs : No se pudo cargar los NPCs - "+ e);
-    }
+    console.log("Completado: Se han cargado todos los NPCs...");
 }
 
 /* ------------------------------ *
@@ -138,21 +137,19 @@ function onLogin (data) {
     Console.log("onLogin "+ data);
 }
 
-function onAccountConnect (data) {
+async function onAccountConnect (data) {
     let toClient = this;
-    
-    //find account connect
-    conexion.query(query.getSearchAccount(), [data.idAccount], (err, results) => {
 
-        if (!err) {
-            if (results.length > 0) {
-                toClient.emit('account:characters', results);
-            } else {
-                console.log("Error - onAccountConnect: "+ data.idAccount +" no existe");
-            }
+    await characterController.getCharacterSearchAccount(data.idAccount)
+    .then(result => {
+        if (result.length > 0) {
+            toClient.emit('account:characters', result);
         } else {
-            console.log("Error - onAccountConnect: "+ data.idAccount +" - "+ err);
+            console.log("Error - onAccountConnect: "+ data.idAccount +" no existe");
         }
+    })
+    .catch(e => {
+        console.log(`Error: app - onAccountConnect: ${e}`);
     });
 }
 

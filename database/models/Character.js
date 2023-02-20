@@ -1,4 +1,5 @@
 const { Model, DataTypes, Sequelize } = require('sequelize');
+//const { characterSkinNameTable } = require('./CharacterSkin').NAME_TABLE;
 
 const NAME_TABLE = 'CHARACTER';
 const NAME_MODEL = 'character';
@@ -15,17 +16,22 @@ const schema = {
         allowNull: false,
         type: DataTypes.INTEGER,
         field: 'ID_Account',
-    },
-    idCharacterSkin: {
-        allowNull: false,
-        type: DataTypes.INTEGER,
-        field: 'ID_Character_Skin',
+        references: {
+            model: 'ACCOUNT',
+            key: 'id',
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'RESTRICT',
     },
     name: {
         unique: true,
         allowNull: false,
         type: DataTypes.STRING,
         field: 'Name',
+    },
+    gender: {
+        type: DataTypes.SMALLINT,
+        field: 'Gender',
     },
     health: {
         allowNull: false,
@@ -62,21 +68,36 @@ const schema = {
         type: DataTypes.INTEGER,
         field: 'Pos_Y',
     },
+    skinBase: {
+        type: DataTypes.INTEGER,
+        field: 'Skin_Base',
+    },
+    skinHair: {
+        type: DataTypes.INTEGER,
+        field: 'Skin_Hair',
+    },
+    online: {
+        type: DataTypes.BOOLEAN,
+        field: 'Onlinea',
+    },
+    deleteDate: {
+        type: DataTypes.DATE,
+        field: 'Delete_Date',
+    }
 }
 
 class Character extends Model {
-  static associate() {
-    // associate
-  }
-
-  static config(sequelize) {
-    return {
-      sequelize,
-      tableName: NAME_TABLE,
-      modelName: NAME_MODEL,
-      timestamps: false
+    static associate(models) {
     }
-  }
+
+    static config(sequelize) {
+        return {
+            sequelize,
+            tableName: NAME_TABLE,
+            modelName: NAME_MODEL,
+            timestamps: false
+        }
+    }
 }
 
 module.exports = { NAME_TABLE, NAME_MODEL, schema, model: Character }

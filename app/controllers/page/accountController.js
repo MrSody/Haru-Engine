@@ -1,26 +1,4 @@
-const { models } = require('../../database');
-
-async function getAccountByEmailAndPassword (res, email, password) {
-    try {
-        var result = await models.account.findOne({ 
-            where: {
-                email: email,
-                password: password
-            }
-        });
-
-        console.log(result)
-
-        if (result != null) {
-            res.render('index.ejs', {ID: result['dataValues'].id});
-        } else {
-            res.render('index.ejs', {ID: 0});
-            console.log(`Error: accountController - getAccountByEmailAndPassword: no existe`);
-        }
-    } catch(e) {
-        console.log(`Error: accountController - getAccountByEmailAndPassword: ${e}`);
-    }
-}
+const { models } = require('../../../database');
 
 async function createAccount (res, email, password) {
 
@@ -37,6 +15,26 @@ async function createAccount (res, email, password) {
         }
     } catch(e) {
         console.log(`Error: accountController - createAccount: ${e}`);
+    }
+}
+
+async function getAccountByEmailAndPassword (res, email, password) {
+    try {
+        var result = await models.account.findOne({ 
+            where: {
+                email: email,
+                password: password
+            }
+        });
+
+        if (result != null) {
+            res.render('index.ejs', {ID: result['dataValues'].id});
+        } else {
+            res.render('index.ejs', {ID: 0});
+            console.log(`Error: accountController - getAccountByEmailAndPassword: no existe`);
+        }
+    } catch(e) {
+        console.log(`Error: accountController - getAccountByEmailAndPassword: ${e}`);
     }
 }
 

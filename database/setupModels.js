@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const basename = path.basename(__filename);
+const db = {};
 
 function setupModels(sequelize) {
 
@@ -11,7 +12,14 @@ function setupModels(sequelize) {
     .forEach(file => {
         const dataFile = require(path.join(__dirname +'/models/', file));
         dataFile.model.init(dataFile.schema, dataFile.model.config(sequelize));
-        dataFile.model.associate(sequelize.models);
+
+        db[dataFile.NAME_MODEL] = dataFile;
+    });
+
+    Object.keys(db).forEach(modelName => {
+        if (db[modelName].model.associate) {
+            db[modelName].model.associate(sequelize.models);
+        }
     });
 }
 
