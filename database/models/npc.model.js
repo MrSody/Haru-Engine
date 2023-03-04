@@ -59,18 +59,18 @@ const schema = {
 }
 
 class Npc extends Model {
-  static associate() {
-    // associate
-  }
-
-  static config(sequelize) {
-    return {
-      sequelize,
-      tableName: NAME_TABLE,
-      modelName: NAME_MODEL,
-      timestamps: false
+    static associate() {
+        // associate
     }
-  }
+
+    static config(sequelize) {
+        return {
+            sequelize,
+            tableName: NAME_TABLE,
+            modelName: NAME_MODEL,
+            timestamps: false
+        }
+    }
 }
 
 module.exports = { NAME_TABLE, NAME_MODEL, schema, model: Npc }

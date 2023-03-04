@@ -23,16 +23,16 @@ const schema = {
         field: 'Password',
     },
     createDate: {
-      allowNull: false,
+        allowNull: false,
         type: DataTypes.DATE,
         defaultValue: Sequelize.NOW,
         field: 'Create_Date',
     }
 }
 
-class Account extends Model {
+class account extends Model {
     static associate(models) {
-        this.hasMany(models.character, { as: 'characters', foreignKey: 'idAccount'});
+        this.hasMany(models.character, { as: 'characters', foreignKey: 'ID_Account'});
     }
 
     static config(sequelize) {
@@ -45,4 +45,4 @@ class Account extends Model {
     }
 }
 
-module.exports = { NAME_TABLE, NAME_MODEL, schema, model: Account }
+module.exports = { NAME_TABLE, NAME_MODEL, schema, model: account }
