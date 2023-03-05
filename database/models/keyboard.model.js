@@ -15,56 +15,67 @@ const schema = {
         allowNull: false,
         type: DataTypes.INTEGER,
         field: 'Action1',
+        defaultValue: '81',
     },
     keyAction2: {
         allowNull: false,
         type: DataTypes.INTEGER,
         field: 'Action2',
+        defaultValue: '87',
     },
     keyAction3: {
         allowNull: false,
         type: DataTypes.INTEGER,
         field: 'Action3',
+        defaultValue: '69',
     },
     keyAction4: {
         allowNull: false,
         type: DataTypes.INTEGER,
         field: 'Action4',
+        defaultValue: '82',
     },
     keyAction5: {
         allowNull: false,
         type: DataTypes.INTEGER,
         field: 'Action5',
+        defaultValue: '84',
     },
     keyAction6: {
         allowNull: false,
         type: DataTypes.INTEGER,
         field: 'Action6',
+        defaultValue: '65',
     },
     keyCharacter: {
         allowNull: false,
         type: DataTypes.INTEGER,
         field: 'Character',
+        defaultValue: '80',
     },
     keyBook: {
         allowNull: false,
         type: DataTypes.INTEGER,
         field: 'Book',
+        defaultValue: '76',
     },
     keyMenu: {
         allowNull: false,
         type: DataTypes.INTEGER,
         field: 'Menu',
+        defaultValue: '27',
     },
     keyMap: {
         allowNull: false,
         type: DataTypes.INTEGER,
         field: 'Map',
+        defaultValue: '77',
     },
     keySkills: {
         allowNull: false,
         type: DataTypes.INTEGER,
         field: 'Skills',
+        defaultValue: '74',
     },
 }
 

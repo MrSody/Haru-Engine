@@ -14,6 +14,7 @@ const schema = {
     strength: {
         type: DataTypes.INTEGER,
         field: 'Strength',
+        defaultValue: '1',
     },
 }
 

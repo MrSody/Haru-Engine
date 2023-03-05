@@ -97,21 +97,25 @@ const schema = {
         allowNull: false,
         type: DataTypes.INTEGER,
         field: 'Health',
+        defaultValue: '100',
     },
     level: {
         allowNull: false,
         type: DataTypes.INTEGER,
         field: 'Level',
+        defaultValue: '1',
     },
     experience: {
         allowNull: false,
         type: DataTypes.INTEGER,
         field: 'Experience',
+        defaultValue: '0',
     },
     money: {
         allowNull: false,
         type: DataTypes.INTEGER,
         field: 'Money',
+        defaultValue: '0',
     },
     online: {
         type: DataTypes.BOOLEAN,
