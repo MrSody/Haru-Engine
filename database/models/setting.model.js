@@ -15,25 +15,25 @@ const schema = {
         allowNull: false,
         type: DataTypes.BOOLEAN,
         field: 'Heal_Player',
-        defaultValue: 'true',
+        defaultValue: '1',
     },
     namePlayer: {
         allowNull: false,
         type: DataTypes.BOOLEAN,
         field: 'Name_Player',
-        defaultValue: 'true',
+        defaultValue: '1',
     },
     healNPC: {
         allowNull: false,
         type: DataTypes.BOOLEAN,
         field: 'Heal_NPC',
-        defaultValue: 'true',
+        defaultValue: '1',
     },
     nameNPC: {
         allowNull: false,
         type: DataTypes.BOOLEAN,
         field: 'Name_NPC',
-        defaultValue: 'true',
+        defaultValue: '1',
     },
 }
 
