@@ -13,6 +13,7 @@ const schema = {
     },
     name: {
         unique: true,
+        allowNull: false,
         type: DataTypes.STRING,
         field: 'Name',
     },
@@ -20,6 +21,7 @@ const schema = {
         allowNull: false,
         type: DataTypes.INTEGER,
         field: 'Health',
+        defaultValue: '100',
     },
     skin: {
         allowNull: false,
@@ -30,6 +32,7 @@ const schema = {
         allowNull: false,
         type: DataTypes.INTEGER,
         field: 'Level',
+        defaultValue: '1',
     },
     idMap: {
         allowNull: false,
@@ -50,6 +53,7 @@ const schema = {
         allowNull: false,
         type: DataTypes.INTEGER,
         field: 'Vision_Distance',
+        defaultValue: '2',
     },
     reaction: {
         allowNull: false,

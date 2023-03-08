@@ -90,6 +90,7 @@ const schema = {
         field: 'Name',
     },
     gender: {
+        allowNull: false,
         type: DataTypes.SMALLINT,
         field: 'Gender',
     },
@@ -118,6 +119,7 @@ const schema = {
         defaultValue: '0',
     },
     online: {
+        allowNull: false,
         type: DataTypes.BOOLEAN,
         field: 'Online',
         defaultValue: '0',

@@ -12,10 +12,12 @@ const schema = {
         field: 'ID',
     },
     base: {
+        allowNull: false,
         type: DataTypes.INTEGER,
         field: 'Base',
     },
     hair: {
+        allowNull: false,
         type: DataTypes.INTEGER,
         field: 'Hair',
     },
