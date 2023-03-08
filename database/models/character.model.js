@@ -120,6 +120,7 @@ const schema = {
     online: {
         type: DataTypes.BOOLEAN,
         field: 'Online',
+        defaultValue: '0',
     },
     deleteDate: {
         type: DataTypes.DATE,
