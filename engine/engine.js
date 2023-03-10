@@ -147,10 +147,10 @@ class Engine {
     FUNCIONES - PLAYER
 * ------------------------------ */
     addPlayer (IDClient, dataPlayer) {
-        let posWorld = this.posWorld(dataPlayer.IDMap, dataPlayer.X, dataPlayer.Y);
+        let posWorld = this.posWorld(dataPlayer.LOCATION.idMap, dataPlayer.LOCATION.posX, dataPlayer.LOCATION.posY);
 
         // Sprite player
-        let skinBase = fs.readFileSync(`./engine/sprite/player/base/${dataPlayer.skinBase}.txt`, 'utf-8');
+        let skinBase = fs.readFileSync(`./engine/sprite/player/base/${dataPlayer.SKIN.base}.txt`, 'utf-8');
 
         let player = new PLAYER(IDClient, dataPlayer, posWorld.x, posWorld.y, skinBase, "");
 

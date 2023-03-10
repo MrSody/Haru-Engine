@@ -4,7 +4,8 @@
 *-------------------------------*/
 "use strict";
 // HUB
-import Interface from './modules/hub/interface.js';
+import Interface from './modules/hub/interface/interface.js';
+import InterfaceCharacter from './modules/hub/interface/interfaceCharacter.js';
 import Mouse from './modules/hub/mouse.js';
 import Keyboard from './modules/hub/keyboard.js';
 import Chat from './modules/hub/chat.js';
@@ -30,6 +31,7 @@ let canvasHUB,		// Canvas DOM elemento
     ctxCapaMapaArriba,
     // CLASSES
     clsInterface = new Interface(),
+    clsInterfaceCharacter = new InterfaceCharacter(),
     clsChat = new Chat(),
     clsKeyboard,
     clsMap,
@@ -61,6 +63,7 @@ window.onload = function() {
 let setEventHandlers = function() {
     // HUB - PERSONAJES
     document.querySelector('#characters_BtnGetInGame').addEventListener('click', getInGame);
+    document.querySelector('#player_BtnCreateCharacter').addEventListener('click', createNewCharacter);
     document.querySelector('#Pj_0').addEventListener('click', function(){ selCharacter(this.id); });    
     document.querySelector('#Pj_1').addEventListener('click', function(){ selCharacter(this.id); });
     document.querySelector('#Pj_2').addEventListener('click', function(){ selCharacter(this.id); });
@@ -81,7 +84,10 @@ let setEventHandlers = function() {
 	socket.on('connect', onSocketConnected);
 
     // Account characters - load the characters of the account on screen
-    socket.on('account:characters', onAccountCharacters);
+    socket.on('character:list', onAccountCharacters);
+
+    // Account character - Create
+    socket.on('character:create', onCreateCharacter);
 
     // Message
     socket.on('chat:newMessage', onReceiveMessage);
@@ -126,14 +132,32 @@ function onSocketConnected () {
     HUB - PERSONAJES
 *-------------------------------*/
 function onAccountCharacters (data) {
-    clsInterface.onAccountCharacters(data);
+    clsInterfaceCharacter.characterList(data);
+}
+
+function onCreateCharacter (data) {
+    clsInterfaceCharacter.createCharacter(data);
 }
 
 function getInGame () {
-    // Oculta los personajes y muestra la pantalla de carga
     clsInterface.loadScreen('#character', 'Invisible');
+    socket.emit('character:connected', {idCharacter: clsInterfaceCharacter.getIDPJ()});
+}
 
-    socket.emit('player:connected', {idPlayer: clsInterface.getIDPJ()});
+function createNewCharacter () {
+    let data = clsInterfaceCharacter.getDataCreateCharacter();
+    
+    clsInterface.loadScreen('#createCharacter', 'Invisible');
+
+    socket.emit('character:create', {
+        idAccount: data.idAccount, 
+        gender: data.genero, 
+        element: data.clase, 
+        village: data.inicio, 
+        appearance: data.apariencia, 
+        hair: data.cabello, 
+        name: data.name
+    });
 }
 
 function selCharacter (IDElement) {
@@ -142,25 +166,10 @@ function selCharacter (IDElement) {
     
     if (Math.round(id + 1) == characters.length) {
         let character = characters[id];
-        clsInterface.selCharacter(character.ID, character.skinBase, character.name);
+        clsInterfaceCharacter.selCharacter(character.ID, character.skinBase, character.name);
     } else {
-        createNewCharacter();
+        clsInterfaceCharacter.createCharacter();
     }
-}
-
-/*-------------------------------
-    HUB - CREAR PERSONAJE
-*-------------------------------*/
-function createNewCharacter () {
-    clsInterface.addClass('#character', 'Invisible');
-
-    clsInterface.removeClass('#createCharacter', 'Invisible');
-}
-
-function createCharacter (data) {
-    clsInterface.addClass('#character', 'Invisible');
-
-    alert("crear pj "+ data);
 }
 
 /*-------------------------------

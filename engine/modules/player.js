@@ -2,17 +2,17 @@ class Player {
     constructor (id, datos, posWorldX, posWorldY, skinBase, skinHair) {
         this.id = id;
 		// Datos Basicos
-        this.IDPj = datos.ID;
+        this.IDPj = datos.id;
         this.name = datos.name;
         this.skinBase = skinBase;
         this.skinHair = skinHair;
         this.health = {now: datos.health, max: datos.health};
         this.level = datos.level;
-        this.experience = {now: datos.xp, max: 800 * (this.level + 2)};
+        this.experience = {now: datos.experience, max: 800 * (this.level + 2)};
         this.money = datos.money;
         // Datos Mapa
-        this.IDMap = datos.IDMap;
-        this.pos = {x: datos.X, y: datos.Y};
+        this.IDMap = datos.LOCATION.idMap;
+        this.pos = {x: datos.LOCATION.posX, y: datos.LOCATION.posY};
         this.posWorld = {x: posWorldX, y: posWorldY};
 		this.direction = 2;
     }

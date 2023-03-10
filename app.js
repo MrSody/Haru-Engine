@@ -11,12 +11,11 @@ const app = express();
 const socketIO = require('socket.io');
 
 // CONNECTION TO DB
-const DBAdapter = require("./engine/modules/dbAdapters/mySQLDBAdapter");
-const conexion = DBAdapter();
 const { models } = require('./database');
 const characterController = require('./app/controllers/game/characterController');
+const locationController = require('./app/controllers/game/locationController');
 
-// RUTAS
+// ROUTES
 const routes = require('./routes/routes');
 
 const bodyParser = require('body-parser');
@@ -46,11 +45,11 @@ app.get("*", (req, res) => {
 
 const server = app.listen(app.get('port'), () => {
     console.log(`Application is working: http://localhost:${app.get('port')}`);
+    init();
 });
 
 app.get("/game", (req, res) => {
     console.log("dentro en game");
-    init();
 });
 
 /* ------------------------------ *
@@ -65,7 +64,7 @@ const engineApi = require("./engine/engine").Engine;
 const engine = new engineApi();
 const query = new Querys();
 
-function init () {
+async function init () {
     engine.init();
     // Carga los NPCs
     loadNPCs();
@@ -75,7 +74,6 @@ function init () {
 /* ------------------------------ *
     SERVER FUNCTIONS
 * ------------------------------ */
-// GAME EVENT HANDLERS
 function setEventHandlers () {
     // Connection
     io.sockets.on('connection', onSocketConnection);
@@ -83,16 +81,18 @@ function setEventHandlers () {
     //io.sockets.on('disconnect',function(){ console.log('user disconnected'); });
 };
 
-// New socket connection
 function onSocketConnection (client) {
     // Listen for account connect
     client.on('account:connected', onAccountConnect);
 
     // Listen for client disconnected
-    client.on('disconnect', onClientDisconnect);
+    client.on('account:disconnect', onClientDisconnect);
 
 	// Listen for new player message
-    client.on('player:connected', onPlayerConnect);
+    client.on('character:connected', onCharacterConnect);
+
+    // Listen for account create character
+    client.on('character:create', onCharacterCreate);
     
     // Listen for player updates
 	//client.on("update player", onUpdatePlayer);
@@ -110,7 +110,7 @@ function onSocketConnection (client) {
     client.on('npc:move', onMoveNpc);
 
 	// Listen for logout
-    //client.on("logout", onLogout);
+    client.on("logout", onClientDisconnect);
     
     client.on('login', onLogin);
 }
@@ -121,13 +121,16 @@ function onSocketConnection (client) {
 async function loadNPCs () {
     await models.npc.findAll()
     .then(dataNPC => {
-        engine.addNPC(dataNPC);
+        if (dataNPC.length > 0) {
+            engine.addNPC(dataNPC);
+        } else {
+            throw "There are no NPCs in the database.";
+        }
+        console.log("Completed: All NPCs have been loaded...");
     })
     .catch(e => {
         console.log(`Error: app - loadNPCs: ${e}`);
-    });
-
-    console.log("Completado: Se han cargado todos los NPCs...");
+    })
 }
 
 /* ------------------------------ *
@@ -140,12 +143,12 @@ function onLogin (data) {
 async function onAccountConnect (data) {
     let toClient = this;
 
-    await characterController.getCharacterSearchAccount(data.idAccount)
+    await characterController.getCharactersSearchAccount(data.idAccount)
     .then(result => {
         if (result.length > 0) {
-            toClient.emit('account:characters', result);
+            toClient.emit('character:list', result);
         } else {
-            console.log("Error - onAccountConnect: "+ data.idAccount +" no existe");
+            toClient.emit('character:create', result);
         }
     })
     .catch(e => {
@@ -154,66 +157,94 @@ async function onAccountConnect (data) {
 }
 
 // Socket client has disconnected
-function onClientDisconnect () {
+async function onClientDisconnect () {
     let toClient = this;
 
     try {
         let playerDisconnect = engine.playerDisconnect(this.id);
 
+        console.log(`Se desconecto el jugador: ${playerDisconnect.getName()} - con ID ${playerDisconnect.getIDPJ()}`)
+
+        let character = await models.character.findByPk(playerDisconnect.IDPj);
+        await character.update({ online: 0 });
+
         toClient.broadcast.emit('players:playerDisconnect', {id: playerDisconnect.getID()});
     } catch (error) {
-        console.log("ERROR - onClientDisconnect: "+ error);
+        console.log("ERROR: app - onClientDisconnect: "+ error);
     }
 }
 
 /* ------------------------------ *
-    PLAYER
+    CHARACTER
 * ------------------------------ */
-function onPlayerConnect (data) {
+function sendCharacterToClient (toClient, dataCharacter) {
+    // Add new player
+    let player = engine.addPlayer(toClient.id, dataCharacter);
+
+    console.log("Conectado al server "+ player.getName());
+
+    // Send information to client
+    toClient.emit('players:localPlayer', player);
+
+    // Send world-data to client
+    toClient.emit('map:init', {spritesheet: engine.getSpriteWorld(), tileSize: engine.getTileSize()});
+
+    // Message the welcome to client
+    toClient.emit('chat:newMessage', {name: 'Server', mode: '', text: 'Bienvenido a P-MS'});
+
+    // Broadcast new player to connected socket clients
+    toClient.broadcast.emit('players:remotePlayer', player);
+
+    // Send players connected to new player
+    for (let playerRemote of engine.getPlayers()) {
+        if (playerRemote.getID() != toClient.id) {
+            toClient.emit('players:remotePlayer', playerRemote);
+        }
+    }
+
+    // Envia los Npc's del mapa al cliente
+    let NPCCercanos = engine.NPCNearby(player);
+
+    NPCCercanos.forEach((Npc) => {
+        toClient.emit('npcs:newNpc', {npc: Npc, count: NPCCercanos.length});
+    });
+}
+
+async function onCharacterCreate (data) {
     let toClient = this;
 
-    conexion.query(query.getSearchCharacter(), [data.idPlayer], (err, results) => {
+    try {
+        let keyboard = await models.keyboard.create();
+    
+        let attributes = await models.attributes.create();
+        
+        let setting = await models.setting.create();
+    
+        let location = await locationController.createLocation(data.village);
+        
+        let skin = await models.skin.create({ base: data.appearance, hair: data.hair });
+    
+        let character = await characterController.createCharacter(data, skin, location, setting, attributes, keyboard);
 
-        if (!err) {
-            if (results.length > 0) {
+        sendCharacterToClient(toClient, character);
+    } catch (e) {
+        console.log(`Error: characterController - createCharacter: ${e}`);
+    }
+}
 
-                // Add new player
-                let player = engine.addPlayer(toClient.id, results[0]);
+async function onCharacterConnect (data) {
+    let toClient = this;
 
-                console.log("Conectado al server "+ player.getName());
-
-                // Send information to client
-                toClient.emit('players:localPlayer', player);
-
-                // Send world-data to client
-                toClient.emit('map:init', {spritesheet: engine.getSpriteWorld(), tileSize: engine.getTileSize()});
-
-                // Message the welcome to client
-                toClient.emit('chat:newMessage', {name: 'Server', mode: '', text: 'Bienvenido a P-MS'});
-
-                // Broadcast new player to connected socket clients
-                toClient.broadcast.emit('players:remotePlayer', player);
-
-                // Send players connected to new player
-                for (let playerRemote of engine.getPlayers()) {
-                    if (playerRemote.getID() != toClient.id) {
-                        toClient.emit('players:remotePlayer', playerRemote);
-                    }
-                }
-
-                // Envia los Npc's del mapa al cliente
-                let NPCCercanos = engine.NPCNearby(player);
-
-                NPCCercanos.forEach((Npc) => {
-                    toClient.emit('npcs:newNpc', {npc: Npc, count: NPCCercanos.length});
-                });
-
-            } else {
-                console.log(`Error - onPlayerConnect: No tiene datos el player: ${data.idPlayer}`);
-            }
+    await characterController.getCharacterByIdCharacter(data.idCharacter)
+    .then(dataCharacter => {
+        if (dataCharacter != null) {
+            sendCharacterToClient(toClient, dataCharacter);
         } else {
-            console.log("Error - onPlayerConnect: "+ data.idPlayer +" - "+ err);
+            throw `ID_Character: ${data.idCharacter}, character not exist`;
         }
+    })
+    .catch(e => {
+        console.log(`Error: app - onCharacterConnect: ${e}`);
     });
 }
 
@@ -291,5 +322,3 @@ function onMoveNpc (data) {
 		return;
 	}
 }
-
-init();
