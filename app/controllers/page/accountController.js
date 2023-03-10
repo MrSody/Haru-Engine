@@ -11,7 +11,7 @@ async function createAccount (res, email, password) {
         if (result != null) {
             console.log("Cuenta creada");
         } else {
-            console.log(`Error: accountController - createAccount: no se pudo crear la cuenta`);
+            throw`no se pudo crear la cuenta`;
         }
     } catch(e) {
         console.log(`Error: accountController - createAccount: ${e}`);
@@ -31,7 +31,6 @@ async function getAccountByEmailAndPassword (res, email, password) {
             res.render('index.ejs', {ID: result['dataValues'].id});
         } else {
             res.render('index.ejs', {ID: 0});
-            console.log(`Error: accountController - getAccountByEmailAndPassword: no existe`);
         }
     } catch(e) {
         console.log(`Error: accountController - getAccountByEmailAndPassword: ${e}`);
