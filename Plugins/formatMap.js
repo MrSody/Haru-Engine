@@ -11,6 +11,7 @@ var customMapFormat = {
 
         // Size map
         var layerOne = map.layers.filter(data => data.name == "1");
+        
         m.width = parseInt(layerOne.map(data => data.width));
         m.height = parseInt(layerOne.map(data => data.height));
         
@@ -30,13 +31,13 @@ var customMapFormat = {
                             capa[y] = lineCapa;
                         } else {
                             if (layer.name != "collision") {
-                                if (layer.cellAt(x, y).tileId >= 0) {
-                                    lineCapa.push(layer.cellAt(x, y).tileId);
+                                if (layer.tileAt(x, y) != null) {
+                                    lineCapa.push(layer.tileAt(x, y).id + 1);
                                 } else {
-                                    lineCapa.push(-1);
+                                    lineCapa.push(0);
                                 }
                             } else {
-                                if (layer.cellAt(x, y).tileId >= 0) {
+                                if (layer.tileAt(x, y) != null) {
                                     lineCapa.push(1);
                                 } else {
                                     lineCapa.push(0);
