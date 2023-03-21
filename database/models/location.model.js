@@ -12,8 +12,9 @@ const schema = {
         field: 'ID',
     },
     idMap: {
+        unique: true,
         allowNull: false,
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         field: 'ID_Map',
     },
     posX: {
