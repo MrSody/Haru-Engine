@@ -202,12 +202,12 @@ function sendCharacterToClient (toClient, dataCharacter) {
         }
     }
 
-    // Envia los Npc's del mapa al cliente
-    let NPCCercanos = engine.NPCNearby(player);
+    // Envia los Npc's del mapa al cliente -- error
+    // let NPCCercanos = engine.NPCNearby(player);
 
-    NPCCercanos.forEach((Npc) => {
-        toClient.emit('npcs:newNpc', {npc: Npc, count: NPCCercanos.length});
-    });
+    // NPCCercanos.forEach((Npc) => {
+    //     toClient.emit('npcs:newNpc', {npc: Npc, count: NPCCercanos.length});
+    // });
 }
 
 async function onCharacterCreate (data) {
@@ -261,12 +261,12 @@ function onMovePlayer (data) {
         // Broadcast updated position to connected socket clients
         io.emit('player:move', {id: player.getID(), posWorld: player.getPosWorld(), dir: player.getDir(), mode: data.mode});
 
-        // Envia los Npc's del mapa al cliente
-        let NPCCercanos = engine.NPCNearby(player);
+        // Envia los Npc's del mapa al cliente - error
+        // let NPCCercanos = engine.NPCNearby(player);
 
-        NPCCercanos.forEach((Npc) => {
-            toClient.emit('npcs:newNpc', {npc: Npc, count: NPCCercanos.length});
-        });
+        // NPCCercanos.forEach((Npc) => {
+        //     toClient.emit('npcs:newNpc', {npc: Npc, count: NPCCercanos.length});
+        // });
 
     } else {
 		console.log("Player not found: "+ this.id);
@@ -290,11 +290,9 @@ function onMap (data) {
 
 	// Player found
 	if (player) {
-        //Variables
         let map = engine.getMap(player, data.width, data.height);
 
-        //Envia al cliente el mapa
-        toClient.emit('map:data', {capa1: map.capa1, capa2: map.capa2, capa3: map.capa3, capa4: map.capa4, capa5: map.capa5, collisionMap: map.collision, collisionMapOld: map.collision});
+        toClient.emit('map:data', {capa1: map.capa1, capa2: map.capa2, capa3: map.capa3, capa4: map.capa4, capa5: map.capa5, capa6: map.capa6, collisionMap: map.collision, collisionMapOld: map.collision});
     } else {
         console.log("Player not found: "+ toClient.id);
 		return;

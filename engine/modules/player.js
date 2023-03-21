@@ -1,5 +1,5 @@
 class Player {
-    constructor (id, datos, posWorldX, posWorldY, skinBase, skinHair) {
+    constructor (id, datos, skinBase, skinHair) {
         this.id = id;
 		// Datos Basicos
         this.IDPj = datos.id;
@@ -12,8 +12,7 @@ class Player {
         this.money = datos.money;
         // Datos Mapa
         this.IDMap = datos.LOCATION.idMap;
-        this.pos = {x: datos.LOCATION.posX, y: datos.LOCATION.posY};
-        this.posWorld = {x: posWorldX, y: posWorldY};
+        this.posWorld = {x: datos.LOCATION.posX, y: datos.LOCATION.posY};
 		this.direction = 2;
     }
 
@@ -23,11 +22,6 @@ class Player {
     setIDMap (IDMap) {
         this.IDMap = IDMap;
     }
-
-	setPos (X, Y) {
-		this.pos.x = X;
-        this.pos.y = Y;
-	}
 
     setPosWorld (X, Y) {
         this.posWorld.x = X;
@@ -57,10 +51,6 @@ class Player {
         return this.IDMap;
     }
 
-    getPos () {
-        return this.pos;
-    }
-
     getPosWorld () {
         return this.posWorld;
     }
@@ -68,6 +58,10 @@ class Player {
 	getDir () {
 		return this.direction;
 	}
+
+/* ------------------------------ *
+    FUNCTIONS
+* ------------------------------ */
 }
 
 exports.Player = Player;

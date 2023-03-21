@@ -9,13 +9,13 @@ DATA OF NPC
 */
 
 class Npc {
-    constructor (data, posWorldX, posWorldY, Skin) {
+    constructor (data, Skin) {
         this.id = data.id;
         this.name = data.name;
         this.health = {now: data.health, max: data.health};
         this.skin = Skin;
         this.IDMap = data.idMap;
-        this.posWorld = {x: posWorldX, y: posWorldY};
+        this.posWorld = {x: data.posWorldX, y: data.posWorldY};
         
         this.visionDistance = data.visionDistance;
         this.reaction = data.reaction;
@@ -71,7 +71,7 @@ class Npc {
     }
 
 /* ------------------------------ *
-    FUNCIONES
+    FUNCTIONS
 * ------------------------------ */
 }
 
