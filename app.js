@@ -58,11 +58,9 @@ app.get("/game", (req, res) => {
 
 // CONSTANTES
 const io = socketIO(server);
-const Querys = require('./engine/modules/querys').Querys;
 const engineApi = require("./engine/engine").Engine;
 
 const engine = new engineApi();
-const query = new Querys();
 
 async function init () {
     engine.init();
