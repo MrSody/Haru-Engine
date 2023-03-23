@@ -3,7 +3,7 @@ const { models } = require('../../../database');
 async function createLocation(idAldea) {
     try {
         let location = await models.location.create({
-                            idMap: 1,
+                            idMap: '0',
                             posX: 10,
                             posY: 10
                         });
