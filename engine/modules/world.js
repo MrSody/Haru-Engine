@@ -33,36 +33,40 @@ class World {
     }
 
     getMap (idMap, width, height, posPlayer) {
-        let size = {
-                width: Math.ceil(width / this.tileSize),
-                height: Math.ceil(height / this.tileSize)
-            };
-        let mapSize = {
-                width: Math.round((width / 2) / this.tileSize),
-                height: Math.round((height / 2) / this.tileSize)
-            };
-        let pos = {
-                X: Math.floor(posPlayer.x - mapSize.width),
-                Y: Math.floor(posPlayer.y - mapSize.height)
-            };
+        let dataScreen = this.desingScreen(width, height, posPlayer);
         
         if (this.listMaps.includes(idMap.toString())) {
 
             let map = this.dataMap(idMap);
 
             return {
-                capa1: this.desingMap(map.layers.find(data => data.name == "1").data, size, pos),
-                capa2: this.desingMap(map.layers.find(data => data.name == "2").data, size, pos),
-                capa3: this.desingMap(map.layers.find(data => data.name == "3").data, size, pos),
-                capa4: this.desingMap(map.layers.find(data => data.name == "4").data, size, pos),
-                capa5: this.desingMap(map.layers.find(data => data.name == "5").data, size, pos),
-                capa6: this.desingMap(map.layers.find(data => data.name == "6").data, size, pos),
-                collision: this.desingMap(map.layers.find(data => data.name == "collision").data, size, pos)
+                capa1: this.desingMap(map.layers.find(data => data.name == "1").data, dataScreen.size, dataScreen.pos),
+                capa2: this.desingMap(map.layers.find(data => data.name == "2").data, dataScreen.size, dataScreen.pos),
+                capa3: this.desingMap(map.layers.find(data => data.name == "3").data, dataScreen.size, dataScreen.pos),
+                capa4: this.desingMap(map.layers.find(data => data.name == "4").data, dataScreen.size, dataScreen.pos),
+                capa5: this.desingMap(map.layers.find(data => data.name == "5").data, dataScreen.size, dataScreen.pos),
+                capa6: this.desingMap(map.layers.find(data => data.name == "6").data, dataScreen.size, dataScreen.pos),
+                collision: this.desingMap(map.layers.find(data => data.name == "collision").data, dataScreen.size, dataScreen.pos)
             };
         } else {
             console.log(`Error: world.js - getMap: Id Map: ${idMap} not found `);
             return false;
         }
+    }
+
+    getCoordinates (width, height, posPlayer) {
+        let dataScreen = this.desingScreen(width, height, posPlayer),
+            mapReturnX = [],
+            mapReturnY = [];
+
+        for (let mapY = 0; mapY <= dataScreen.size.height; mapY++) {
+            for (let mapX = 0; mapX <= dataScreen.size.width; mapX++){
+                mapReturnY.push(dataScreen.pos.Y + mapY);
+                mapReturnX.push(dataScreen.pos.X + mapX);
+            }
+        }
+
+        return {x: mapReturnX, y: mapReturnY};
     }
 
 /* ------------------------------ *
@@ -91,21 +95,21 @@ class World {
         return map;
     }
 
-    getMaps (posMapX, posMapY) {
-        let sizeMap = 3;
-        let posWorld = {
-                X: posMapX - 1,
-                Y: posMapY - 1
+    desingScreen (width, height, posPlayer) {
+        let size = {
+                width: Math.ceil(width / this.tileSize),
+                height: Math.ceil(height / this.tileSize)
+            },
+            mapSize = {
+                width: Math.round((width / 2) / this.tileSize),
+                height: Math.round((height / 2) / this.tileSize)
+            },
+            pos = {
+                X: Math.floor(posPlayer.x - mapSize.width),
+                Y: Math.floor(posPlayer.y - mapSize.height)
             };
-        let map = [];
 
-        for (let Y = 0; Y < sizeMap; Y++) {
-            for (let X = 0; X < sizeMap; X++) {
-                map.push(this.world[posWorld.Y + Y][posWorld.X + X]);
-            }
-        }
-
-        return map;
+        return {size: size, pos: pos};
     }
 }
     

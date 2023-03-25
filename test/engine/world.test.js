@@ -50,9 +50,12 @@ test('getTileSize', () => {
 });
 
 test('getMap', () => {
-    let posPlayer = {x: 4, y: 2};
+    let idMap = 'test',
+        width = 160,
+        height = 96,
+        posPlayer = {x: 4, y: 2};
 
-    expect(World.getMap('test', 160, 96, posPlayer)).toStrictEqual(responseMap);
+    expect(World.getMap(idMap, width, height, posPlayer)).toStrictEqual(responseMap);
 });
 
 test('desingMap', () => {
@@ -78,10 +81,28 @@ test('desingMap', () => {
     expect(World.desingMap(dataCapa, size, pos)).toStrictEqual(responseMap.capa2);
 });
 
-// test('getMaps', () => {
-//     let posMapX = 1;
-//     let posMapY = 1;
-//     let response = [0, 0, 0, 0, 1, 0, 0, 0, 0];
+test('getCoordinates', () => {
+    let width = 160,
+        height = 96,
+        posPlayer = {x: 4, y: 2},
+        response = {
+            x: [1, 2, 3, 4, 5, 6, 1, 2, 3, 4, 5, 6, 1, 2, 3, 4, 5, 6, 1, 2, 3, 4, 5, 6,],
+            y: [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3]
+        };
 
-//     expect(World.getMaps(posMapX, posMapY)).toStrictEqual(response);
-// });
+    expect(World.getCoordinates(width, height, posPlayer)).toStrictEqual(response);
+});
+
+test('desingScreen', () => {
+    let width = 160,
+        height = 96,
+        posPlayer = {x: 4, y: 2},
+        response = {
+            size: {width: 5, height: 3},
+            pos: {X: 1, Y: 0}
+        };
+
+    var t = World.desingScreen(width, height, posPlayer);
+
+    expect(World.desingScreen(width, height, posPlayer)).toStrictEqual(response);
+});
