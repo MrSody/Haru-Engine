@@ -1,5 +1,4 @@
 const { response } = require('express');
-
 const WORLD = require('../../engine/modules/world').World;
 
 const World = new WORLD();
@@ -64,7 +63,7 @@ test('desingMap', () => {
         posPlayer = {x: 4, y: 2},
         tileSize = 32,
         map = World.dataMap('test'),
-        dataCapa = map.layers.find(data => data.name == "2").data,
+        dataCapa = map.layers.find(data => data.name === "2").data,
         size = {
             width: Math.ceil(width / tileSize),
             height: Math.ceil(height / tileSize)
@@ -101,8 +100,6 @@ test('desingScreen', () => {
             size: {width: 5, height: 3},
             pos: {X: 1, Y: 0}
         };
-
-    var t = World.desingScreen(width, height, posPlayer);
 
     expect(World.desingScreen(width, height, posPlayer)).toStrictEqual(response);
 });

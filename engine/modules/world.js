@@ -2,16 +2,16 @@ class World {
     constructor () {
         this.listMaps = [];
         this.tileSize = 32;
-        this.dataSpriteSheets;
+        this.dataSpriteSheets = "";
     }
 
     initWorld () {
         let fs = require('fs');
 
-        fs.readdirSync(__dirname +'/maps/')
-        .filter(file => {
-            this.listMaps.push(file.slice(0, -5));
-        });
+        this.listMaps = fs.readdirSync(__dirname +'/maps/')
+                        .map(file => {
+                            return file.slice(0, -5);
+                        });
 
         this.dataSpriteSheets = fs.readFileSync("./engine/sprite/map/tilemap.txt", 'utf-8');
     }
@@ -40,13 +40,13 @@ class World {
             let map = this.dataMap(idMap);
 
             return {
-                capa1: this.desingMap(map.layers.find(data => data.name == "1").data, dataScreen.size, dataScreen.pos),
-                capa2: this.desingMap(map.layers.find(data => data.name == "2").data, dataScreen.size, dataScreen.pos),
-                capa3: this.desingMap(map.layers.find(data => data.name == "3").data, dataScreen.size, dataScreen.pos),
-                capa4: this.desingMap(map.layers.find(data => data.name == "4").data, dataScreen.size, dataScreen.pos),
-                capa5: this.desingMap(map.layers.find(data => data.name == "5").data, dataScreen.size, dataScreen.pos),
-                capa6: this.desingMap(map.layers.find(data => data.name == "6").data, dataScreen.size, dataScreen.pos),
-                collision: this.desingMap(map.layers.find(data => data.name == "collision").data, dataScreen.size, dataScreen.pos)
+                capa1: this.desingMap(map.layers.find(data => data.name === "1").data, dataScreen.size, dataScreen.pos),
+                capa2: this.desingMap(map.layers.find(data => data.name === "2").data, dataScreen.size, dataScreen.pos),
+                capa3: this.desingMap(map.layers.find(data => data.name === "3").data, dataScreen.size, dataScreen.pos),
+                capa4: this.desingMap(map.layers.find(data => data.name === "4").data, dataScreen.size, dataScreen.pos),
+                capa5: this.desingMap(map.layers.find(data => data.name === "5").data, dataScreen.size, dataScreen.pos),
+                capa6: this.desingMap(map.layers.find(data => data.name === "6").data, dataScreen.size, dataScreen.pos),
+                collision: this.desingMap(map.layers.find(data => data.name === "collision").data, dataScreen.size, dataScreen.pos)
             };
         } else {
             console.log(`Error: world.js - getMap: Id Map: ${idMap} not found `);
