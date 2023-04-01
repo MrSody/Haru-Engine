@@ -18,6 +18,7 @@
     },
     "categories": {
         "default": { "appenders": ["fileApp"], "level": "all" },
+        "app": { "appenders": ["fileApp"], "level": "all" },
         "database": { "appenders": ["fileDataBase"], "level": "all" }
     }
 }
