@@ -1,31 +1,31 @@
-const PLAYER = require('./modules/player.js').Player; // Player class
+const PLAYER = require('./modules/player.js').Player;
 const WORLD = require('./modules/world.js').World;
 const NPC = require('./modules/npc.js').Npc;
-
-/* ------------------------------ *
-VARIABLES
-* ------------------------------ */
 let fs = require('fs');
 
 const World = new WORLD();
 
+// LOGs
+const log4js = require('log4js');
+log4js.configure('log4js.json');
+const logger = log4js.getLogger('app');
+const loggerPlayers = log4js.getLogger('players');
+
 class Engine {
     constructor () {
-        this.players = []; // Array de los jugadores conectados
-        this.npcs = []; // Array de los NPC        
-        this.posDefault = {IDMap: 1, x: 15, y: 16} // position for default
+        this.players = [];
+        this.npcs = [];    
+        this.posDefault = {IDMap: 1, x: 15, y: 16}
     }
     
-    // Inizializa
     init () {
         this.loadWorld();
     }
 
     loadWorld () {
-        // INIIALIZAR EL WORLD
         World.initWorld();
 
-        console.log("Completado: Se han cargado el mundo...");        
+        logger.info("Completed: The world has been loaded...");        
     }
 
 /* ------------------------------ *
@@ -42,7 +42,6 @@ class Engine {
     getMap (player, width, height) {
         let posPlayer = player.getPosWorld();
 
-        // Retorna las capas del mapa y las colisiones, ademas de el spriteSheets
         return World.getMap(player.getIDMap(), width, height, posPlayer);
     }
 
@@ -51,18 +50,18 @@ class Engine {
     }
 
 /* ------------------------------ *
-    FUNCIONES DE AYUDA
+    FUNCTIONS HELP
 * ------------------------------ */
     playerById (ID) {
-        return this.players.find(player => player.getID() == ID);
+        return this.players.find(player => player.getID() === ID);
     }
 
     npcById (ID) {
-        return this.npcs.find(npc => npc.getID() == ID);
+        return this.npcs.find(npc => npc.getID() === ID);
     }
 
 /* ------------------------------ *
-    FUNCIONES - NPC
+    FUNCTIONS - NPC
 * ------------------------------ */
     addNPC (dataNPC) {
         let skinNpc = fs.readFileSync(`./engine/sprite/npc/${dataNPC.skin}.txt`, 'utf-8');
@@ -88,7 +87,7 @@ class Engine {
     }
 
 /* ------------------------------ *
-    FUNCIONES - PLAYER
+    FUNCTIONS - PLAYER
 * ------------------------------ */
     addPlayer (IDClient, dataPlayer) {
         // Sprite player
@@ -129,8 +128,6 @@ class Engine {
 
     playerDisconnect (id) {
         let player = this.playerById(id);
-
-        console.log("se desconecto "+ player.getName());
 
         this.players.splice(this.players.indexOf(player), 1);
         

@@ -15,9 +15,14 @@ const { models } = require('./database');
 const characterController = require('./app/controllers/game/characterController');
 const locationController = require('./app/controllers/game/locationController');
 
+// LOGs
+const log4js = require('log4js');
+log4js.configure('log4js.json');
+const logger = log4js.getLogger('app');
+const loggerPlayers = log4js.getLogger('players');
+
 // ROUTES
 const routes = require('./routes/routes');
-
 const bodyParser = require('body-parser');
 
 /* ------------------------------ *
@@ -49,7 +54,7 @@ const server = app.listen(app.get('port'), () => {
 });
 
 app.get("/game", (req, res) => {
-    console.log("dentro en game");
+    loggerPlayers.info('Inside the game');
 });
 
 /* ------------------------------ *
@@ -122,12 +127,12 @@ async function loadNPCs () {
         if (dataNPC.length > 0) {
             engine.addNPC(dataNPC);
         } else {
-            throw "There are no NPCs in the database.";
+            throw new Error("There are no NPCs in the database.");
         }
-        console.log("Completed: All NPCs have been loaded...");
+        logger.info("Completed: All NPCs have been loaded...");
     })
     .catch(e => {
-        console.log(`Error: app - loadNPCs: ${e}`);
+        logger.fatal('Error:', {file: 'app.js', method:'loadNPCs', message: e});
     })
 }
 
@@ -135,7 +140,7 @@ async function loadNPCs () {
     CONNECTIONS TO SERVER
 * ------------------------------ */
 function onLogin (data) {
-    Console.log("onLogin "+ data);
+    loggerPlayers.info("onLogin "+ data);
 }
 
 async function onAccountConnect (data) {
@@ -150,7 +155,7 @@ async function onAccountConnect (data) {
         }
     })
     .catch(e => {
-        console.log(`Error: app - onAccountConnect: ${e}`);
+        logger.fatal('Error:', {file: 'app.js', method:'onAccountConnect', message: e});
     });
 }
 
@@ -161,14 +166,14 @@ async function onClientDisconnect () {
     try {
         let playerDisconnect = engine.playerDisconnect(this.id);
 
-        console.log(`Se desconecto el jugador: ${playerDisconnect.getName()} - con ID ${playerDisconnect.getIDPJ()}`)
+        loggerPlayers.info(`The player disconnected: ${playerDisconnect.getName()} - with ID ${playerDisconnect.getIDPJ()}`)
 
         let character = await models.character.findByPk(playerDisconnect.IDPj);
         await character.update({ online: 0 });
 
         toClient.broadcast.emit('players:playerDisconnect', {id: playerDisconnect.getID()});
-    } catch (error) {
-        console.log("ERROR: app - onClientDisconnect: "+ error);
+    } catch (e) {
+        logger.fatal('Error:', {file: 'app.js', method:'onClientDisconnect', message: e});
     }
 }
 
@@ -179,7 +184,7 @@ function sendCharacterToClient (toClient, dataCharacter) {
     // Add new player
     let player = engine.addPlayer(toClient.id, dataCharacter);
 
-    console.log("Conectado al server "+ player.getName());
+    loggerPlayers.info(`The player connected: ${player.getName()}`);
 
     // Send information to client
     toClient.emit('players:localPlayer', player);
@@ -226,7 +231,7 @@ async function onCharacterCreate (data) {
 
         sendCharacterToClient(toClient, character);
     } catch (e) {
-        console.log(`Error: characterController - createCharacter: ${e}`);
+        logger.fatal('Error:', {file: 'app.js', method:'onCharacterCreate', message: e});
     }
 }
 
@@ -238,11 +243,11 @@ async function onCharacterConnect (data) {
         if (dataCharacter != null) {
             sendCharacterToClient(toClient, dataCharacter);
         } else {
-            throw `ID_Character: ${data.idCharacter}, character not exist`;
+            throw new Error(`ID_Character: ${data.idCharacter}, character not exist`);
         }
     })
     .catch(e => {
-        console.log(`Error: app - onCharacterConnect: ${e}`);
+        logger.fatal('Error:', {file: 'app.js', method:'onCharacterConnect', message: e});
     });
 }
 
@@ -267,14 +272,15 @@ function onMovePlayer (data) {
         // });
 
     } else {
-		console.log("Player not found: "+ this.id);
-		return;
-	};
+        logger.warn('Error:', {file: 'app.js', method:'onMovePlayer', message: `Player not found: ${this.id}`});
+	}
 }
 
 function onNewMessage(data) {
     let toClient = this,
         player = engine.playerById(toClient.id);
+
+    loggerPlayers.trace('New message: ', {name: data.name, mode: '', text: data.text})
 
     io.emit('chat:newMessage', {name: data.name, mode: '', text: data.text});
 }
@@ -292,8 +298,7 @@ function onMap (data) {
 
         toClient.emit('map:data', {capa1: map.capa1, capa2: map.capa2, capa3: map.capa3, capa4: map.capa4, capa5: map.capa5, capa6: map.capa6, collisionMap: map.collision, collisionMapOld: map.collision});
     } else {
-        console.log("Player not found: "+ toClient.id);
-		return;
+        logger.warn('Error:', {file: 'app.js', method:'onMap', message: `Player not found: ${toClient.id}`});
 	}
 }
 
@@ -314,7 +319,6 @@ function onMoveNpc (data) {
         io.emit('npc:move', {id: npc.getID(), pos: npc.getPosWorld(), dir: npc.getDir()});
 
     } else {
-		util.log("Npc not found: "+ this.id);
-		return;
+        logger.warn('Error:', {file: 'app.js', method:'onMoveNpc', message: `Player not found: ${this.id}`});
 	}
 }
