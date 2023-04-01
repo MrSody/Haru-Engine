@@ -17,7 +17,7 @@ const locationController = require('./app/controllers/game/locationController');
 
 // LOGs
 const log4js = require('log4js');
-log4js.configure('log4js.json');
+log4js.configure('./config/log4js.json');
 const logger = log4js.getLogger('app');
 const loggerPlayers = log4js.getLogger('players');
 
