@@ -14,11 +14,19 @@
             "maxLogSize": 10485760,
             "backups": 3,
             "compress": true
+        },
+        "filePlayer": {
+            "type": "file",
+            "filename": "logs/players.log",
+            "maxLogSize": 10485760,
+            "backups": 3,
+            "compress": true
         }
     },
     "categories": {
         "default": { "appenders": ["fileApp"], "level": "all" },
         "app": { "appenders": ["fileApp"], "level": "all" },
-        "database": { "appenders": ["fileDataBase"], "level": "all" }
+        "database": { "appenders": ["fileDataBase"], "level": "all" },
+        "players": { "appenders": ["filePlayer"], "level": "all" }
     }
 }
