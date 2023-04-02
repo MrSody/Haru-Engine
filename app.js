@@ -155,14 +155,17 @@ async function onClientDisconnect () {
     let toClient = this;
 
     try {
-        let playerDisconnect = engine.playerDisconnect(this.id);
+        let character = engine.playerDisconnect(this.id);
 
-        loggerPlayers.info(`The player disconnected: ${playerDisconnect.getName()} - with ID ${playerDisconnect.getIDPJ()}`)
+        loggerPlayers.info(`The player disconnected: ${character.getName()} - with ID ${character.getIDPJ()}`)
 
-        let character = await models.character.findByPk(playerDisconnect.IDPj);
-        await character.update({ online: 0 });
+        let characterDB = await models.character.findByPk(character.getID());
+        await characterDB.update({ online: 0 });
 
-        toClient.broadcast.emit('players:playerDisconnect', {id: playerDisconnect.getID()});
+        let accountDB = await models.account.findByPk(character.getIDPJ());
+        await accountDB.update({ online: 0 });
+
+        toClient.broadcast.emit('players:playerDisconnect', {id: character.getID()});
     } catch (e) {
         logger.fatal('Error:', {file: 'app.js', method:'onClientDisconnect', message: e});
     }

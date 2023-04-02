@@ -1,3 +1,4 @@
+const Sequelize = require('sequelize');
 const { models } = require('../../../database');
 
 // LOGs
@@ -33,8 +34,15 @@ async function getAccountByEmailAndPassword (res, email, password) {
         });
 
         if (result != null) {
-            res.render('index.ejs', {ID: result['dataValues'].id});
+            if(!result['dataValues'].online) {
+                await result.update({online: 1, lastConnection: Sequelize.literal('NOW()') });
+                res.render('index.ejs', {ID: result['dataValues'].id});
+            } else {
+                // The account is already connected.
+                res.render('index.ejs', {ID: 0});
+            }
         } else {
+            // The email or password is incorrect.
             res.render('index.ejs', {ID: 0});
         }
     } catch(e) {

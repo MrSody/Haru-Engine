@@ -27,7 +27,19 @@ const schema = {
         type: DataTypes.DATE,
         defaultValue: Sequelize.NOW,
         field: 'Create_Date',
-    }
+    },
+    online: {
+        allowNull: false,
+        type: DataTypes.BOOLEAN,
+        field: 'Online',
+        defaultValue: '0',
+    },
+    lastConnection: {
+        allowNull: false,
+        type: DataTypes.DATE,
+        defaultValue: Sequelize.NOW,
+        field: 'Last_Connection',
+    },
 }
 
 class account extends Model {
