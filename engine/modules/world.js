@@ -36,22 +36,20 @@ class World {
         let dataScreen = this.desingScreen(width, height, posPlayer);
         
         if (this.listMaps.includes(idMap.toString())) {
-
-            let map = this.dataMap(idMap);
-
-            return {
-                capa1: this.desingMap(map.layers.find(data => data.name === "1").data, dataScreen.size, dataScreen.pos),
-                capa2: this.desingMap(map.layers.find(data => data.name === "2").data, dataScreen.size, dataScreen.pos),
-                capa3: this.desingMap(map.layers.find(data => data.name === "3").data, dataScreen.size, dataScreen.pos),
-                capa4: this.desingMap(map.layers.find(data => data.name === "4").data, dataScreen.size, dataScreen.pos),
-                capa5: this.desingMap(map.layers.find(data => data.name === "5").data, dataScreen.size, dataScreen.pos),
-                capa6: this.desingMap(map.layers.find(data => data.name === "6").data, dataScreen.size, dataScreen.pos),
-                collision: this.desingMap(map.layers.find(data => data.name === "collision").data, dataScreen.size, dataScreen.pos)
-            };
-        } else {
-            console.log(`Error: world.js - getMap: Id Map: ${idMap} not found `);
             return false;
         }
+
+        let map = this.dataMap(idMap);
+
+        return {
+            capa1: this.desingMap(map.layers.find(data => data.name === "1").data, dataScreen.size, dataScreen.pos),
+            capa2: this.desingMap(map.layers.find(data => data.name === "2").data, dataScreen.size, dataScreen.pos),
+            capa3: this.desingMap(map.layers.find(data => data.name === "3").data, dataScreen.size, dataScreen.pos),
+            capa4: this.desingMap(map.layers.find(data => data.name === "4").data, dataScreen.size, dataScreen.pos),
+            capa5: this.desingMap(map.layers.find(data => data.name === "5").data, dataScreen.size, dataScreen.pos),
+            capa6: this.desingMap(map.layers.find(data => data.name === "6").data, dataScreen.size, dataScreen.pos),
+            collision: this.desingMap(map.layers.find(data => data.name === "collision").data, dataScreen.size, dataScreen.pos),
+        };
     }
 
     getCoordinates (width, height, posPlayer) {

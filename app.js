@@ -132,7 +132,7 @@ async function loadNPCs () {
         logger.info("Completed: All NPCs have been loaded...");
     })
     .catch(e => {
-        logger.fatal('Error:', {file: 'app.js', method:'loadNPCs', message: e});
+        logger.error('Error:', {file: 'app.js', method:'loadNPCs', message: e});
     })
 }
 

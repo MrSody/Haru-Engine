@@ -41,8 +41,13 @@ class Engine {
 
     getMap (player, width, height) {
         let posPlayer = player.getPosWorld();
+        let data = World.getMap(player.getIDMap(), width, height, posPlayer);
 
-        return World.getMap(player.getIDMap(), width, height, posPlayer);
+        if (!data) {
+            logger.warn('Error:', {file: 'engine.js', method:'getMap', message: `Id Map: ${player.getIDMap()} not found`});
+        }
+
+        return data;
     }
 
     getPlayers () {
@@ -83,7 +88,7 @@ class Engine {
         //     }
         // }
 
-        return NPCNearby;
+        //return NPCNearby;
     }
 
 /* ------------------------------ *

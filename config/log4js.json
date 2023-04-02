@@ -27,6 +27,6 @@
         "default": { "appenders": ["fileApp"], "level": "all" },
         "app": { "appenders": ["fileApp"], "level": "all" },
         "database": { "appenders": ["fileDataBase"], "level": "all" },
-        "players": { "appenders": ["filePlayer"], "level": "all" }
+        "players": { "appenders": ["out", "filePlayer"], "level": "all" }
     }
 }

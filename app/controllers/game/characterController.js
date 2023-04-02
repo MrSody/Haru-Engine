@@ -1,5 +1,8 @@
 const { models } = require('../../../database');
-const { model } = require('../../../database/models/Character.model');
+
+// LOGs
+const log4js = require('log4js');
+const logger = log4js.getLogger('database');
 
 async function getCharactersSearchAccount(idAccount) {
     try {
@@ -7,20 +10,20 @@ async function getCharactersSearchAccount(idAccount) {
                             include: [
                                 {
                                     association: 'SKIN',
-                                    attributes: ['base', 'hair']
-                                }
+                                    attributes: ['base', 'hair'],
+                                },
                             ],
                             attributes: ['id', 'name' ],
                             where: {
                                 idAccount: idAccount,
                                 deleteDate: null,
-                            }
+                            },
                         });
 
         return characters;
 
     } catch(e) {
-        console.log(`Error: characterController - getCharacterSearchAccount: ${e}`);
+        logger.error('Error:', {file: 'characterController.js', method:'getCharacterSearchAccount', message: e});
         return null;
     }
 }
@@ -41,7 +44,7 @@ async function createCharacter(data, skin, location, setting, attributes, keyboa
         return getCharacterByIdCharacter(character.id);
 
     } catch(e) {
-        console.log(`Error: characterController - createCharacter: ${e}`);
+        logger.error('Error:', {file: 'characterController.js', method:'createCharacter', message: e});
         return null;
     }
 }
@@ -52,26 +55,26 @@ async function getCharacterByIdCharacter(idCharacter) {
                             include: [
                                 {
                                     association: 'SKIN',
-                                    attributes: ['base', 'hair']
+                                    attributes: ['base', 'hair'],
                                 },
                                 {
                                     association: 'LOCATION',
-                                    attributes: ['idMap', 'posX', 'posY']
+                                    attributes: ['idMap', 'posX', 'posY'],
                                 },
                                 {
                                     association: 'ATTRIBUTES',
-                                    attributes: ['strength']
+                                    attributes: ['strength'],
                                 },
                                 {
                                     association: 'KEYBOARD',
-                                    attributes: ['keyAction1', 'keyAction2', 'keyAction3', 'keyAction4', 'keyAction5', 'keyAction6', 'keyCharacter', 'keyBook', 'keyMenu', 'keyMap', 'keySkills', ]
+                                    attributes: ['keyAction1', 'keyAction2', 'keyAction3', 'keyAction4', 'keyAction5', 'keyAction6', 'keyCharacter', 'keyBook', 'keyMenu', 'keyMap', 'keySkills'],
                                 },
                             ],
                             attributes: ['id', 'name', 'gender', 'health', 'level', 'experience', 'money' ],
                             where: {
                                 id: idCharacter,
                                 deleteDate: null,
-                            }
+                            },
                         });
 
         await character.update({ online: 1 });
@@ -79,7 +82,7 @@ async function getCharacterByIdCharacter(idCharacter) {
         return character;
 
     } catch(e) {
-        console.log(`Error: characterController - getCharacterByIdCharacter: ${e}`);
+        logger.error('Error:', {file: 'characterController.js', method:'getCharacterByIdCharacter', message: e});
         return null;
     }
 }
