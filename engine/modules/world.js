@@ -35,7 +35,7 @@ class World {
     getMap (idMap, width, height, posPlayer) {
         let dataScreen = this.desingScreen(width, height, posPlayer);
         
-        if (this.listMaps.includes(idMap.toString())) {
+        if (!this.listMaps.includes(idMap.toString())) {
             return false;
         }
 
