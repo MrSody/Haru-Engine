@@ -77,9 +77,6 @@ let setEventHandlers = function() {
 	window.addEventListener("resize", onResize, false);
     window.addEventListener("load", onResize, false);
 
-    // Window salir
-    window.onbeforeunload = function (event) { event.returnValue = "Se va a desconectar"; }
-
 	// Socket connection successful
 	socket.on('connect', onSocketConnected);
 
@@ -156,7 +153,7 @@ function createNewCharacter () {
         village: data.inicio, 
         appearance: data.apariencia, 
         hair: data.cabello, 
-        name: data.name
+        name: data.name,
     });
 }
 
@@ -323,13 +320,6 @@ function onMoveNpc (data) {
     }
 }
 
-function logout() {
-	socket.emit("logout", {id: localPlayer.getID()});
-	console.log("Player "+localPlayer.getID()+" logged out");
-	socket.emit("disconnect");
-	window.location = "login.html";
-}
-
 /*-------------------------------
     Mensajes
 *-------------------------------*/
@@ -396,9 +386,6 @@ let lastFpsCycle = Date.now();
 function animate () {
 
     setTimeout(function () {
-
-        // Request a new animation frame
-        window.requestAnimationFrame(animate);
         
         let dateNow = Date.now();
         let delta = (dateNow - lastRender) / 1000;
@@ -410,9 +397,12 @@ function animate () {
         if(dateNow - lastFpsCycle > 1000){
             lastFpsCycle = dateNow;
             let fps = Math.round(1 / delta);
-            //$(".text").html("FPS: "+ fps +" DELTA: "+ delta);
+            $("#FPS").html("FPS: "+ fps +" DELTA: "+ delta);
         }
-    }, 200);
+
+        // Request a new animation frame
+        window.requestAnimationFrame(animate);
+    }, 50);
 }
 
 /*-------------------------------

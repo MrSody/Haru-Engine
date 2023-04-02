@@ -78,10 +78,7 @@ async function init () {
     SERVER FUNCTIONS
 * ------------------------------ */
 function setEventHandlers () {
-    // Connection
     io.sockets.on('connection', onSocketConnection);
-
-    //io.sockets.on('disconnect',function(){ console.log('user disconnected'); });
 };
 
 function onSocketConnection (client) {
@@ -112,10 +109,8 @@ function onSocketConnection (client) {
     // Move Npc
     client.on('npc:move', onMoveNpc);
 
-	// Listen for logout
-    client.on("logout", onClientDisconnect);
-    
-    client.on('login', onLogin);
+    // Listen for client disconnect
+    client.on('disconnect', onClientDisconnect);
 }
 
 // TODO: append sequelize in app.js
@@ -139,10 +134,6 @@ async function loadNPCs () {
 /* ------------------------------ *
     CONNECTIONS TO SERVER
 * ------------------------------ */
-function onLogin (data) {
-    loggerPlayers.info("onLogin "+ data);
-}
-
 async function onAccountConnect (data) {
     let toClient = this;
 
