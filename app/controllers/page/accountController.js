@@ -1,30 +1,35 @@
 const { models } = require('../../../database');
 
+// LOGs
+const log4js = require('log4js');
+const logger = log4js.getLogger('app');
+const loggerPlayers = log4js.getLogger('players');
+
 async function createAccount (res, email, password) {
 
     try {
         const result = await models.account.create({
             email: email,
-            password: password
+            password: password,
         });
     
         if (result != null) {
-            console.log("Cuenta creada");
+            loggerPlayers.info(`Create account: ${email}`);
         } else {
-            throw`no se pudo crear la cuenta`;
+            throw new Error(`The account couldn't be created.`);
         }
     } catch(e) {
-        console.log(`Error: accountController - createAccount: ${e}`);
+        logger.error('Error:', {file: 'accountController.js', method:'createAccount', message: e});
     }
 }
 
 async function getAccountByEmailAndPassword (res, email, password) {
     try {
-        var result = await models.account.findOne({ 
+        let result = await models.account.findOne({ 
             where: {
                 email: email,
-                password: password
-            }
+                password: password,
+            },
         });
 
         if (result != null) {
@@ -33,7 +38,7 @@ async function getAccountByEmailAndPassword (res, email, password) {
             res.render('index.ejs', {ID: 0});
         }
     } catch(e) {
-        console.log(`Error: accountController - getAccountByEmailAndPassword: ${e}`);
+        logger.error('Error:', {file: 'accountController.js', method:'getAccountByEmailAndPassword', message: e});
     }
 }
 
