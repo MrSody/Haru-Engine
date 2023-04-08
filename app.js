@@ -69,9 +69,17 @@ const engine = new engineApi();
 
 async function init () {
     engine.init();
+
+    resetData();
+
     // Carga los NPCs
     loadNPCs();
     setEventHandlers();
+}
+
+async function resetData () {
+    await models.account.update({ online: 0 }, { where: {}});
+    await models.character.update({ online: 0 }, { where: {}});
 }
 
 /* ------------------------------ *
