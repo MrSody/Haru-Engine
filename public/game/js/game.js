@@ -195,7 +195,7 @@ function onInitMap (data) {
     onResize();
     
     // INICIA ANIMACION
-    animate();
+    window.requestAnimationFrame(animate);
     
     // Oculta la pantalla de carga
     clsInterface.removeOrAddByID('#loading', 'Invisible');
@@ -208,7 +208,7 @@ function onMapData (data) {
 
 // Npc's
 function onNewNpc (data) {
-    if (npcs.length == data.count) {
+    if (npcs.length === data.count) {
         npcs.splice(0, npcs.length);
     }
     npcs.push(new Npc(data.npc));
@@ -220,7 +220,7 @@ function onNewNpc (data) {
 // Buscar el jugador remoto
 function findRemotePlayer (id) {
     for (let remotePlayer of remotePlayers) {
-        if (remotePlayer.getID() == id) {
+        if (remotePlayer.getID() === id) {
             return remotePlayer;
         }
     }
@@ -239,7 +239,7 @@ function findPlayer (id) {
 
 function findNpc (id) {
     for (let npc of npcs) {
-        if (npc.getID() == id) {
+        if (npc.getID() === id) {
             return npc;
         }
     }
@@ -281,7 +281,7 @@ function onMovePlayer (data) {
         player.setPosWorld(data.posWorld.x, data.posWorld.y);
         player.setDir(data.dir);
 
-        if (localPlayer.getID() != player.getID()) {
+        if (localPlayer.getID() !== player.getID()) {
             player.setMode(data.mode);
         } else {
             player.setAbsPos(0, 0);
@@ -380,47 +380,57 @@ document.onkeyup = function (e) {
 /*-------------------------------
     GAME ANIMATION LOOP
 *-------------------------------*/
-let lastRender = Date.now();
-let lastFpsCycle = Date.now();
+let fps = 0;
+let lastCalledTime;
+function calculateFPS() {
+    if (!lastCalledTime) {
+      lastCalledTime = performance.now();
+      fps = 0;
+      return;
+    }
+  
+    let delta = (performance.now() - lastCalledTime) / 1000;
+    lastCalledTime = performance.now();
+    fps = Math.round(1 / delta);
+
+    if ((performance.now() - lastCalledTime) > 0 ){
+        $("#FPS").html("FPS: "+ fps);// +" DELTA: "+ delta);
+    }
+
+    return delta;
+}
 
 function animate () {
-
-    setTimeout(function () {
-        
-        let dateNow = Date.now();
-        let delta = (dateNow - lastRender) / 1000;
-
+    let delta = calculateFPS();
+    if (delta !== undefined) {
         draw();
-        lastRender = dateNow;
-        update();
-
-        if(dateNow - lastFpsCycle > 1000){
-            lastFpsCycle = dateNow;
-            let fps = Math.round(1 / delta);
-            $("#FPS").html("FPS: "+ fps +" DELTA: "+ delta);
-        }
-
-        // Request a new animation frame
-        window.requestAnimationFrame(animate);
-    }, 50);
+        update(delta);
+    }
+    // Request a new animation frame
+    window.requestAnimationFrame(animate);
 }
 
 /*-------------------------------
     GAME UPDATE
 *-------------------------------*/
-function update () {
+function update (delta) {
     // Mover el player
 	if (localPlayer.isMoving()) {
 		let absPos = localPlayer.getAbsPos();
         let width = $(window).width();
         let height = $(window).height();
+
+        localPlayer.playerMove(delta);
         
-        localPlayer.playerMove();
-        
-        socket.emit('player:move', {id: localPlayer.getID(), x: absPos.x, y: absPos.y, dir: localPlayer.getDir(), mode: localPlayer.getMode()});
-        
-        // Mover el MAPA
-        socket.emit('map:data', {width: width, height: height});
+        if (localPlayer.getTellCount()) {
+            
+            socket.emit('player:move', {id: localPlayer.getID(), x: absPos.x, y: absPos.y, dir: localPlayer.getDir(), mode: localPlayer.getMode()});
+            
+            // Mover el MAPA
+            socket.emit('map:data', {width: width, height: height});
+
+            localPlayer.tellCount = 0;
+        }
 	}
     
     // Npc movimiento

@@ -17,7 +17,7 @@ export default class Mouse {
     getClickedTile (e) {
         return {
             x: Math.floor(e.pageX / this.tileSize),
-            y: Math.floor((e.pageY + (0.5 * this.tileSize)) / this.tileSize)
+            y: Math.floor((e.pageY + (0.5 * this.tileSize)) / this.tileSize),
         };
     }
 
@@ -63,11 +63,13 @@ export default class Mouse {
         let playerPosX = Math.round((canvasHUB.width / 2) / this.tileSize);
         let playerPosY = Math.round((canvasHUB.height / 2) / this.tileSize);
         
-        if (!(tile.x == playerPosX && tile.y == playerPosY) && !(collisionMap[tile.y][tile.x] === this.tileNOWalking)) { // To avoid a bug, where player wouldn't walk anymore, when clicked twice on the same tile
+        // To avoid a bug, where player wouldn't walk anymore, when clicked twice on the same tile
+        if (!(tile.x === playerPosX && tile.y === playerPosY) && collisionMap[tile.y][tile.x] !== this.tileNOWalking) {
     
             //$("#conversation, #confirmation").addClass("hidden");
     
-            if ( typeof( collisionMap[tile.y][tile.x] ) == "object") { // Going NPC
+            // Going NPC
+            if ( typeof( collisionMap[tile.y][tile.x] ) == "object") {
                 
                 let npc = collisionMap[tile.y][tile.x];
 
@@ -75,7 +77,6 @@ export default class Mouse {
                     case this.tileTalkToNPC: // Going to talk to NPC
                         console.log("Habla con npc");
                         /*
-    
                         var npc = getNpcAt(tile.x * 32, tile.y * 32);
             
                         if (npc.questID != null) {
@@ -89,7 +90,6 @@ export default class Mouse {
 
                     case this.tileAttackEnemy: // Going to attack enemy
                         console.log("ataca al enemigo "+ tile.x +" - "+ tile.y );
-
                         //localPlayer.setGoFight(i);
                     break;
                 }
@@ -103,12 +103,11 @@ export default class Mouse {
                 }
     
                 console.log("camina");
-                localPlayer.playerMove();
+                //localPlayer.playerMove();
             }
     
             console.log("sigue a");
             localPlayer.stop = true;
-    
     
             // Wait for the player to stop at next tile
             let timer = setInterval(() => {
