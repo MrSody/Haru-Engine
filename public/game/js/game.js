@@ -161,7 +161,7 @@ function selCharacter (IDElement) {
     let characters = clsInterface.getCharacters();
     let id = Math.round(IDElement.split('_').reverse().shift());
     
-    if (Math.round(id + 1) == characters.length) {
+    if (Math.round(id + 1) === characters.length) {
         let character = characters[id];
         clsInterfaceCharacter.selCharacter(character.ID, character.skinBase, character.name);
     } else {
@@ -381,28 +381,8 @@ document.onkeyup = function (e) {
 /*-------------------------------
     GAME ANIMATION LOOP
 *-------------------------------*/
-let fps = 0;
-let lastCalledTime;
-function calculateFPS() {
-    if (!lastCalledTime) {
-      lastCalledTime = performance.now();
-      fps = 0;
-      return;
-    }
-  
-    let delta = (performance.now() - lastCalledTime) / 1000;
-    lastCalledTime = performance.now();
-    fps = Math.round(1 / delta);
-
-    if ((performance.now() - lastCalledTime) > 0 ){
-        $("#FPS").html("FPS: "+ fps);// +" DELTA: "+ delta);
-    }
-
-    return delta;
-}
-
 function animate () {
-    let delta = calculateFPS();
+    let delta = clsInterface.calculateFPS();
 
     if (delta !== undefined && !clsInterface.getShowLoadScreen()) {
         draw();
@@ -525,7 +505,6 @@ function draw () {
 
 // Browser window resize
 function onResize () {
-    // REDIMENZIONAR MAPA
     let width = $(window).width();
     let height = $(window).height();
 

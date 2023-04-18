@@ -2,6 +2,8 @@ export default class Interface {
     constructor () {
         this.maxLoadScreen = 4;
         this.showLoadScreen = false;
+        this.fps = 0;
+        this.lastCalledTime = performance.now();
     }
 /* ------------------------------ *
     GETTERS
@@ -103,5 +105,23 @@ export default class Interface {
         this.documentSelect("#Mensajes").appendChild(spanMessage);
         
         this.documentSelect("#Mensaje").value = "";
+    }
+
+    calculateFPS() {
+        if (!this.lastCalledTime) {
+            this.lastCalledTime = performance.now();
+            this.fps = 0;
+            return;
+        }
+    
+        let delta = (performance.now() - this.lastCalledTime) / 1000;
+        this.lastCalledTime = performance.now();
+        this.fps = Math.round(1 / delta);
+
+        if ((performance.now() - this.lastCalledTime) > 0 ){
+            $("#FPS").html("FPS: "+ this.fps);// +" DELTA: "+ delta);
+        }
+
+        return delta;
     }
 }
