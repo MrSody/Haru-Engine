@@ -57,7 +57,6 @@ export default class Map {
     }
 
     setCollision (x, y, data) {
-
         if ( typeof(data)  == "object" ) {
             this.capaCollision.now[y][x] = data;
         } else {

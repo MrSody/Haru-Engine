@@ -203,6 +203,7 @@ function onInitMap (data) {
 
 // CARGA LAS CAPAS DEL MAPA
 function onMapData (data) {
+    clsInterface.setShowLoadScreen(false);
     clsMap.setMap(data);
 }
 
@@ -402,7 +403,8 @@ function calculateFPS() {
 
 function animate () {
     let delta = calculateFPS();
-    if (delta !== undefined) {
+
+    if (delta !== undefined && !clsInterface.getShowLoadScreen()) {
         draw();
         update(delta);
     }
@@ -526,6 +528,8 @@ function onResize () {
     // REDIMENZIONAR MAPA
     let width = $(window).width();
     let height = $(window).height();
+
+    clsInterface.setShowLoadScreen(true);
 
     socket.emit('map:data', {width: width, height: height});
 

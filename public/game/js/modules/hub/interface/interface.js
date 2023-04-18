@@ -1,8 +1,22 @@
 export default class Interface {
     constructor () {
         this.maxLoadScreen = 4;
+        this.showLoadScreen = false;
     }
-    
+/* ------------------------------ *
+    GETTERS
+* ------------------------------ */
+    getShowLoadScreen() {
+        return this.showLoadScreen;
+    }
+
+/* ------------------------------ *
+    SETTERS
+* ------------------------------ */
+    setShowLoadScreen(showLoadScreen) {
+        this.showLoadScreen = showLoadScreen;
+    }
+
 /*-------------------------------
     Ayuda - HUB
 *-------------------------------*/
@@ -45,12 +59,19 @@ export default class Interface {
 /*-------------------------------
     HUB - Pantalla de carga
 *-------------------------------*/
+    loadScreen () {
+        this.generateLoadScreen();
+    }
+
     loadScreen (element, style) {
-        
         if (element != null && style != null) {
             this.addClass(element, style);
         }
 
+        this.generateLoadScreen();
+    }
+
+    generateLoadScreen () {
         let html = `<img src="../img/game/Wallpaper/${this.getRandomInt(1, this.maxLoadScreen)}.jpg" style="width: 100%">`;
 
         // Elimina la clase Invisible
