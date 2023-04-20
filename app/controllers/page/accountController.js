@@ -1,5 +1,7 @@
 const Sequelize = require('sequelize');
 const { models } = require('../../../database');
+const bcrypt = require('bcrypt');
+const { config } = require("../../../config/config");
 
 // LOGs
 const log4js = require('log4js');
@@ -11,7 +13,7 @@ async function createAccount (res, email, password) {
     try {
         const result = await models.account.create({
             email: email,
-            password: password,
+            password: bcrypt.hashSync(password, config.saltPassword),
         });
     
         if (result != null) {
@@ -20,6 +22,7 @@ async function createAccount (res, email, password) {
             throw new Error(`The account couldn't be created.`);
         }
     } catch(e) {
+        console.log(e);
         logger.error('Error:', {file: 'accountController.js', method:'createAccount', message: e});
     }
 }
@@ -29,11 +32,10 @@ async function getAccountByEmailAndPassword (res, email, password) {
         let result = await models.account.findOne({ 
             where: {
                 email: email,
-                password: password,
             },
         });
 
-        if (result != null) {
+        if (result != null && bcrypt.compareSync(password, result['dataValues'].password)) {
             if(!result['dataValues'].online) {
                 await result.update({online: 1, lastConnection: Sequelize.literal('NOW()') });
                 res.render('index.ejs', {ID: result['dataValues'].id});
