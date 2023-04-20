@@ -1,22 +1,22 @@
 export default class Interface {
     constructor () {
-        this.maxPlayers = 5;
         this.maxLoadScreen = 4;
-
-        this.IDPJ;
-        this.characters = [];
+        this.showLoadScreen = false;
+        this.fps = 0;
+        this.lastCalledTime = performance.now();
+    }
+/* ------------------------------ *
+    GETTERS
+* ------------------------------ */
+    getShowLoadScreen() {
+        return this.showLoadScreen;
     }
 
-    setIDPJ (id) {
-        this.IDPJ = id;
-    }
-
-    getIDPJ () {
-        return this.IDPJ;
-    }
-
-    getCharacters () {
-        return this.characters;
+/* ------------------------------ *
+    SETTERS
+* ------------------------------ */
+    setShowLoadScreen(showLoadScreen) {
+        this.showLoadScreen = showLoadScreen;
     }
 
 /*-------------------------------
@@ -58,74 +58,46 @@ export default class Interface {
         this.documentSelect(element).setAttribute("style", `width: ${width}; height: ${height}`);
     }
 
+    calculateFPS() {
+        if (!this.lastCalledTime) {
+            this.lastCalledTime = performance.now();
+            this.fps = 0;
+            return;
+        }
+    
+        let delta = (performance.now() - this.lastCalledTime) / 1000;
+        this.lastCalledTime = performance.now();
+        this.fps = Math.round(1 / delta);
+
+        if ((performance.now() - this.lastCalledTime) > 0 ){
+            $("#FPS").html("FPS: "+ this.fps);// +" DELTA: "+ delta);
+        }
+
+        return delta;
+    }
+
 /*-------------------------------
     HUB - Pantalla de carga
 *-------------------------------*/
+    loadScreen () {
+        this.generateLoadScreen();
+    }
+
     loadScreen (element, style) {
-        
         if (element != null && style != null) {
             this.addClass(element, style);
         }
 
+        this.generateLoadScreen();
+    }
+
+    generateLoadScreen () {
         let html = `<img src="../img/game/Wallpaper/${this.getRandomInt(1, this.maxLoadScreen)}.jpg" style="width: 100%">`;
 
         // Elimina la clase Invisible
         this.removeClass('#loading', 'Invisible');
 
         this.innerHTML('#loading', html);
-    }
-
-/*-------------------------------
-    HUB - Pantalla de personajes
-*-------------------------------*/
-    accountCharacters (count) {
-        let character = this.characters[count];
-
-        let html =  `<div class="col">
-                        <img src="../sprites/Player/Base/${character.skinBase}.png">
-                    </div>
-                    <div class="col">
-                        <div>${character.name}</div>
-                    </div>`;
-
-        return html;
-    }
-
-    // Muestra los personajes en la interface
-    onAccountCharacters (data) {
-        // Ocualta la pantalla de carga
-        this.addClass('#loading', 'Invisible');
-
-        // Muestra la pantalla de los personajes
-        this.removeClass('#character', 'Invisible');
-
-        console.log(data);
-
-        let html = "";
-
-        this.selCharacter(data[0].ID, data[0].Skin_Base, data[0].Name);
-
-        let count = 0;
-        data.forEach((Pj) => {
-
-            this.characters.push({ID: Pj.ID, skinBase: Pj.Skin_Base, name: Pj.Name});
-
-            this.addClass(`#Pj_${count}`, 'bgCharacter');
-            this.innerHTML(`#Pj_${count}`, this.accountCharacters(count));
-            count++;
-        });
-
-        for (let count = data.length; count < this.maxPlayers; count++) {
-            this.addClass(`#Pj_${count}`, 'bgNewCharacter');
-        }
-    }
-
-    selCharacter (ID, Skin_Base, Name) {
-        // Save ID pj active
-        this.setIDPJ(ID);
-        
-        this.innerHTML('#characters_Skin', `<div id="characters_Skin" style="margin-top: 15%; margin-left: 40%;"><img src="../sprites/Player/Base/${Skin_Base}.png" style="width: 150px;"></div>`);
-        this.innerHTML('#characters_Name', `Nombre: ${Name}`);
     }
 
 /*-------------------------------
@@ -149,7 +121,12 @@ export default class Interface {
         spanMessage.style = "color: "+ chatTxtClr;
         spanMessage.innerHTML = data.name +": "+ data.text +"<br>";
         this.documentSelect("#Mensajes").appendChild(spanMessage);
-        
+        this.scrollBottom();
         this.documentSelect("#Mensaje").value = "";
+    }
+
+    scrollBottom() {
+        let elementChat = this.documentSelect('#Chat');
+        elementChat.scrollTop = elementChat.scrollHeight;
     }
 }

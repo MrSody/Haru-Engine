@@ -8,6 +8,8 @@ export default class LocalPlayer extends Player {
         this.absPos = {x: 0, y: 0};
         this.goRun = false;
         this.path = [[]];
+        this.speed = 5;
+        this.tellCount = 0;
     }
 
 /* ------------------------------ *
@@ -19,6 +21,10 @@ export default class LocalPlayer extends Player {
 
     isRunning () {
         return this.goRun;
+    }
+
+    getTellCount () {
+        return (this.tellCount >= 1)? true : false;
     }
 
 /* ------------------------------ *
@@ -44,7 +50,7 @@ export default class LocalPlayer extends Player {
         }
 
         // Check if on the way to attack
-		if ((this.goAttack || this.goToNpc) && this.stepCount == 0) {
+		if ((this.goAttack || this.goToNpc) && this.stepCount === 0) {
 			// Face player towards enemy
 			if (this.path[this.path.length - 1][0] > this.path[this.path.length - 2][0]) {
 				this.finalDir = 1;
@@ -64,44 +70,38 @@ export default class LocalPlayer extends Player {
 /* ------------------------------ *
     FUNCIONES
 * ------------------------------ */
+    updateAbsPos () {
+        let posX = this.path[this.stepCount][0];
+        let posY = this.path[this.stepCount][1];
+        let lastPosX = this.path[this.stepCount - 1][0];
+        let lastPosY = this.path[this.stepCount - 1][1];
+
+        let deltaX = posX - lastPosX;
+        let deltaY = posY - lastPosY;
+
+        if (Math.abs(deltaX) > Math.abs(deltaY)) { // Left or Right
+            this.dir = (deltaX < 0) ? 3 : 1;
+            this.setAbsPos((deltaX < 0) ? -1 : 1, 0);
+        } else { // Up or Down
+            this.dir = (deltaY < 0) ? 0 : 2;
+            this.setAbsPos(0, (deltaY < 0) ? -1 : 1);
+        }
+    }
+
     playerWalking () {
         // Path length is 1 i.e. when clicked on player position
         if (this.path.length >= 1) {
-            if (this.stepCount != 0) {
 
-                let posX = this.path[this.stepCount][0],
-                    posY = this.path[this.stepCount][1],
-                    lastPosX = this.path[this.stepCount - 1][0],
-                    lastPosY = this.path[this.stepCount - 1][1];
-
-                if (posX < lastPosX) { // Left
-                    this.dir = 3;
-                    this.absPos.x = -1;
-                    this.absPos.y = 0;
-
-                } else if(posX > lastPosX) { // Right
-                    this.dir = 1;
-                    this.absPos.x = 1;
-                    this.absPos.y = 0;
-
-                } else if(posY < lastPosY) { // Up
-                    this.dir = 0;
-                    this.absPos.x = 0;
-                    this.absPos.y = -1;
-
-                } else if(posY > lastPosY) { // Down
-                    this.dir = 2;
-                    this.absPos.x = 0;
-                    this.absPos.y = 1;
-
-                }
+            if (this.stepCount !== 0 && this.getTellCount()) {                
+                this.updateAbsPos();
             } else {
-                this.absPos.x = 0;
-                this.absPos.y = 0;
+                this.setAbsPos(0, 0);
             }
 
-            if (this.stepCount < this.path.length - 1 && !this.moveInterrupt) {
-                this.stepCount++;
+            if (this.stepCount <= this.path.length - 1 && !this.moveInterrupt) {
+                if (this.getTellCount()) {
+                    this.stepCount++;
+                }
             } else { // End of path
                 if(this.goFight != null) {
                     this.fighting = this.goFight;
@@ -119,96 +119,7 @@ export default class LocalPlayer extends Player {
         }
     }
 
-    playerRunning () {
-        // Path length is 1 i.e. when clicked on player position
-        if (this.path.length >= 1) {
-            if (this.stepCount != 0) {
-
-                let lastCount;
-
-                if (this.stepCount - 1 == 0) {
-                    lastCount = this.stepCount - 1;
-                } else {
-                    lastCount = this.stepCount - 2;
-                }
-
-                let posX = this.path[this.stepCount][0],
-                    posY = this.path[this.stepCount][1],
-                    lastPosX = this.path[lastCount][0],
-                    lastPosY = this.path[lastCount][1];
-
-                if (posX < lastPosX) { // Left
-                    if (posY < lastPosY) {
-                        this.dir = 3;
-                        this.absPos.x = -1;
-                        this.absPos.y = -1;
-                    } else if (posY > lastPosY) {
-                        this.dir = 3;
-                        this.absPos.x = -1;
-                        this.absPos.y = 1;
-                    } else {
-                        this.dir = 3;
-                        this.absPos.x = -2;
-                        this.absPos.y = 0;
-                    }
-
-                } else if(posX > lastPosX) { // Right
-                    if (posY < lastPosY) {
-                        this.dir = 1;
-                        this.absPos.x = 1;
-                        this.absPos.y = -1;
-                    } else if (posY > lastPosY) {
-                        this.dir = 1;
-                        this.absPos.x = 1;
-                        this.absPos.y = 1;
-                    } else {
-                        this.dir = 1;
-                        this.absPos.x = 2;
-                        this.absPos.y = 0;
-                    }
-
-                } else if(posY < lastPosY) { // Up
-                    if (posY < lastPosY) {
-                        this.dir = 0;
-                        this.absPos.x = 1;
-                        this.absPos.y = -1;
-                    } else if (posY > lastPosY) {
-                        this.dir = 0;
-                        this.absPos.x = -1;
-                        this.absPos.y = -1;
-                    } else {
-                        this.dir = 0;
-                        this.absPos.x = 0;
-                        this.absPos.y = -2;
-                    }
-
-                } else if(posY > lastPosY) { // Down
-                    if (posY < lastPosY) {
-                        this.dir = 2;
-                        this.absPos.x = 1;
-                        this.absPos.y = 1;
-                    } else if (posY > lastPosY) {
-                        this.dir = 2;
-                        this.absPos.x = -1;
-                        this.absPos.y = 1;
-                    } else {
-                        this.dir = 2;
-                        this.absPos.x = 0;
-                        this.absPos.y = 2;
-                    }
-                }
-            } else {
-                this.absPos.x = 0;
-                this.absPos.y = 0;
-            }
-
-            if (this.stepCount < this.path.length - 1 && !this.moveInterrupt) {
-                this.stepCount += 2;
-            }
-        }
-    }
-
-    playerMove () {
+    playerMove (delta) {
         /*
         if(this.stepSnd.paused) {
             this.stepSnd.currentTime = 0;
@@ -221,13 +132,14 @@ export default class LocalPlayer extends Player {
 
         switch (this.mode) {
             case 1:
+                this.tellCount += this.speed * delta;
                 this.playerWalking();
                 break;
             case 2:
                 if (((this.path.length - 1) - this.stepCount) > 0) {
                     this.playerRunning();
                 } else {
-                    if (this.stepCount == this.path.length) {
+                    if (this.stepCount === this.path.length) {
                         this.path.splice(0, this.stepCount - 2);
                         this.stepCount = 0;
                         this.setRun(false);
@@ -243,7 +155,6 @@ export default class LocalPlayer extends Player {
 /* ------------------------------ *
     DRAW
 * ------------------------------ */
-
     draw (ctx, HUB, cXnull, cYnull) {
         const tileSize = 32;
         cXnull *= tileSize;

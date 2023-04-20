@@ -4,38 +4,52 @@ var customMapFormat = {
 
     write: function(map, fileName) {
         var m = {
-            width: map.width,
-            height: map.height,
-            layers: [],
-		    tilesets: []
+            width: 0,
+            height: 0,
+            layers: []
         };
 
+        // Size map
+        var layerOne = map.layers.filter(data => data.name == "1");
+        
+        m.width = parseInt(layerOne.map(data => data.width));
+        m.height = parseInt(layerOne.map(data => data.height));
+        
         for (var i = 0; i < map.layerCount; ++i) {
             var layer = map.layerAt(i);
             if (layer.isTileLayer) {
-                let row = [];
+                let capa = [[]];
+
                 for (y = 0; y < layer.height; ++y) {
-                    for (x = 0; x < layer.width; ++x){
-                        if (layer.name == "collision") {
-                            if (layer.cellAt(x, y).tileId != 0) {
-                                row.push(1);
-                            } else {
-                                row.push(0);
-                            }
+
+                    let lineCapa = [];
+                    capa[y] = [];
+
+                    for (x = 0; x <= layer.width; ++x){
+
+                        if (x == layer.width) {
+                            capa[y] = lineCapa;
                         } else {
-                            row.push(layer.cellAt(x, y).tileId);
+                            if (layer.name != "collision") {
+                                if (layer.tileAt(x, y) != null) {
+                                    lineCapa.push(layer.tileAt(x, y).id + 1);
+                                } else {
+                                    lineCapa.push(0);
+                                }
+                            } else {
+                                if (layer.tileAt(x, y) != null) {
+                                    lineCapa.push(1);
+                                } else {
+                                    lineCapa.push(0);
+                                }
+                            }
                         }
+
                     }
                 }
-                m.layers[i] = {name: layer.name, data: row};
-            }
-        }
 
-        let countTileSets = map.usedTilesets();
-        
-        for (var i = 0; i < countTileSets.length; i++) {
-            var tileset = countTileSets[i];
-            m.tilesets[i] = {name: tileset.name, tileCount: tileset.tileCount, imageWidth: tileset.imageWidth, imageHeight: tileset.imageHeight};
+                m.layers[i] = {name: layer.name, data: capa};
+            }
         }
 
         var file = new TextFile(fileName, TextFile.WriteOnly);

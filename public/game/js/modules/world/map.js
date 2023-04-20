@@ -10,6 +10,7 @@ export default class Map {
         this.capaThree;
         this.capaFour;
         this.capaFive;
+        this.capaSix;
         this.capaCollision = {now: 0, old: 0};
 
         // SIZE SCREEN
@@ -51,11 +52,11 @@ export default class Map {
         this.capaThree = data.capa3;
         this.capaFour = data.capa4;
         this.capaFive = data.capa5;
+        this.capaSix = data.capa6;
         this.capaCollision = {now: data.collisionMap, old: data.collisionMapOld};
     }
 
     setCollision (x, y, data) {
-
         if ( typeof(data)  == "object" ) {
             this.capaCollision.now[y][x] = data;
         } else {
@@ -84,6 +85,7 @@ export default class Map {
     drawMapUp (ctx, X, Y) {
         this.drawMap(this.capaFour, ctx, X, Y);
         this.drawMap(this.capaFive, ctx, X, Y);
+        this.drawMap(this.capaSix, ctx, X, Y);
     }
 
     // Dibuja Map - 100%

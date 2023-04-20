@@ -1,3 +1,88 @@
-<div id="createCharacter" class="Invisible" style="width: 100%; height: 100%; position: absolute;">
-
+<div id="createCharacter" class="row Invisible text-center">
+    <div class="col-12">
+        <fieldset>
+            <legend>Genero</legend>
+            <label>
+                <input type="radio" name="genero" value="m" required>Hombre
+            </label>
+            <label>
+                <input type="radio" name="genero" value="f" required>Mujer
+            </label>
+        </fieldset>
+    </div>
+    <div class="col-12">
+        <fieldset>
+            <legend>Clase</legend>
+            <label>
+                <input type="radio" name="clase" value="aire" required>Aire
+            </label>
+            <label>
+                <input type="radio" name="clase" value="agua" required>Agua
+            </label>
+            <label>
+                <input type="radio" name="clase" value="tierra" required>Tierra
+            </label>
+            <label>
+                <input type="radio" name="clase" value="fuego" required>Fuego
+            </label>
+        </fieldset>
+    </div>
+    <div class="col-12">
+        <fieldset>
+            <legend>Inicio</legend>
+            <label>
+                <input type="radio" name="inicio" value="1" required>Aire
+            </label>
+            <label>
+                <input type="radio" name="inicio" value="2" required>Agua
+            </label>
+            <label>
+                <input type="radio" name="inicio" value="3" required>Tierra
+            </label>
+            <label>
+                <input type="radio" name="inicio" value="4" required>Fuego
+            </label>
+        </fieldset>
+    </div>
+    <div class="col-12">
+        <fieldset>
+            <legend>Apariencia</legend>
+            <label>
+                <input type="radio" name="apariencia" value="1" required>Apariencia 1
+            </label>
+            <label>
+                <input type="radio" name="apariencia" value="2" required>Apariencia 2
+            </label>
+            <label>
+                <input type="radio" name="apariencia" value="3" required>Apariencia 3
+            </label>
+            <label>
+                <input type="radio" name="apariencia" value="4" required>Apariencia 1
+            </label>
+        </fieldset>
+    </div>
+    <div class="col-12">
+        <fieldset>
+            <legend>Cabello</legend>
+            <label>
+                <input type="radio" name="cabello" value="one" required>Cabello 1
+            </label>
+            <label>
+                <input type="radio" name="cabello" value="two" required>Cabello 2
+            </label>
+            <label>
+                <input type="radio" name="cabello" value="three" required>Cabello 3
+            </label>
+            <label>
+                <input type="radio" name="cabello" value="four" required>Cabello 1
+            </label>
+        </fieldset>
+    </div>
+    <div class="col-12">
+        <label>Nombre:</label>
+        <input type="text" name="name" required>
+    </div>
+    <div class="col-12">
+        <button type="button" id="player_BtnCreateCharacter" class="btn wood" onclick="createCharacter()">CREAR PERSONAJE</button>
+    </div>
 </div>

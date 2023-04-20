@@ -1,207 +1,38 @@
-const PLAYER = require('./modules/player.js').Player; // Player class
+const PLAYER = require('./modules/player.js').Player;
 const WORLD = require('./modules/world.js').World;
 const NPC = require('./modules/npc.js').Npc;
-const ORDER_MAPS = require('./modules/orderMap.js').getOrderMap;
-
-/* ------------------------------ *
-VARIABLES
-* ------------------------------ */
 let fs = require('fs');
 
-const World = new WORLD(ORDER_MAPS);
+const World = new WORLD();
+
+// LOGs
+const log4js = require('log4js');
+log4js.configure('./config/log4js.json');
+const logger = log4js.getLogger('app');
+const loggerPlayers = log4js.getLogger('players');
 
 class Engine {
     constructor () {
-        this.world; // Array del world
-        this.worldSize;
-        this.tileSize;
-        this.players = []; // Array de los jugadores conectados
-        this.npcs = []; // Array de los NPC        
-        this.posDefault = {IDMap: 1, x: 15, y: 16} // position for default
+        this.players = [];
+        this.npcs = [];    
+        this.posDefault = {IDMap: 1, x: 15, y: 16}
     }
-    // Inizializa
+    
     init () {
         this.loadWorld();
     }
 
     loadWorld () {
-        // INIIALIZAR EL WORLD
         World.initWorld();
 
-        // WORLD
-        this.world = World.getWorld();
-    
-        // SIZE OF WORLD AND TILESIZE
-        this.worldSize = World.getWorldSize();
-        this.tileSize = World.getTileSize();
-
-        console.log("Completado: Se han cargado el mundo...");        
-    }
-
-/* ------------------------------ *
-    FUNCIONES DE AYUDA
-* ------------------------------ */
-    playerById (ID) {
-        for (let player of this.players) {
-            if (player.getID() === ID) {
-                return player;
-            }
-        }
-        return false;
-    }
-
-    npcById (ID) {
-        for (let npc of this.npcs) {
-            if (npc.getID() === ID) {
-                return npc;
-            }
-        }
-        return false;
-    }
-
-    // BUSCAR IDMAPA EN EL MUNDO
-    searchIDMap (IDMap) {
-        let X;
-        let Y;
-
-        for(Y = 0; Y < this.worldSize.y; Y++) {
-            X = this.world[Y].indexOf(IDMap);
-            if(X != -1) {
-                return {x: X, y: Y};
-            }
-        }
-        return false;
-    }
-
-    // Actualiza la posicion
-    updatePos (IDMap, posX, posY) {
-        let idMap;
-        let posMap = this.searchIDMap(IDMap);
-
-        try {
-            if(posX < 0) {
-                posX = 31;
-                idMap = this.world[posMap.y][posMap.x - 1];
-            } else if(posX > 32) {
-                posX = 0;
-                idMap = this.world[posMap.y][posMap.x + 1];
-            } else if(posY < 0) {
-                posY = 31;
-                idMap = this.world[posMap.y - 1][posMap.x];
-            } else if(posY > 32) {
-                posY = 0;
-                idMap = this.world[posMap.y + 1][posMap.x];
-            } else {
-                idMap = this.world[posMap.y][posMap.x];
-            }
-        
-
-        } catch (error) {
-            console.log(`Error - updatePos : No se pudo encontrar el mapa ${IDMap} - ${err}`);
-            // POS DEFAULT
-            idMap = this.posDefault.IDMap;
-            posX = this.posDefault.x;
-            posY = this.posDefault.y;
-            
-        }
-
-        return {IDMap: idMap, x: posX, y: posY};
-    }
-
-    posWorld (IDMap, posX, posY) {
-        let posMap = this.searchIDMap(IDMap);
-
-        return {
-            x: Math.floor((posMap.x * this.tileSize) + posX),
-            y: Math.floor((posMap.y * this.tileSize) + posY)
-        };
-    }
-
-/* ------------------------------ *
-    FUNCIONES - NPC
-* ------------------------------ */
-    addNPC (dataNPC) {
-        let posWorld = this.posWorld(dataNPC.ID_Map, dataNPC.X, dataNPC.Y);
-        let skinNpc = fs.readFileSync(`./engine/sprite/npc/${dataNPC.Skin}.txt`, 'utf-8');
-
-        this.npcs.push(new NPC(dataNPC, posWorld.x, posWorld.y, skinNpc));
-    }
-
-    NPCNearby (player) {
-        let posMap = this.searchIDMap(player.getIDMap());
-        let maps = World.getMaps(posMap.x, posMap.y);
-        let NPCNearby = [];
-
-        for (let npc of this.npcs) {
-            for (let map of maps) {
-                if (npc.getIDMap()  == map) {
-                    NPCNearby.push(npc);
-                }
-            }
-        }
-
-        return NPCNearby;
-    }
-
-/* ------------------------------ *
-    FUNCIONES - PLAYER
-* ------------------------------ */
-    addPlayer (IDClient, dataPlayer) {
-        let posWorld = this.posWorld(dataPlayer.IDMap, dataPlayer.X, dataPlayer.Y);
-
-        // Sprite player
-        let skinBase = fs.readFileSync(`./engine/sprite/player/base/${dataPlayer.skinBase}.txt`, 'utf-8');
-
-        let player = new PLAYER(IDClient, dataPlayer, posWorld.x, posWorld.y, skinBase, "");
-
-        this.players.push(player);
-
-        return player;
-    }
-
-    playersNearby (player) {
-        let posMap = this.searchIDMap(player.getIDMap());
-        let maps = World.getMaps(posMap.x, posMap.y);
-        let IDplayer = player.getID();
-        let playersNearby = [];
-
-        for (let player of this.players) {
-            for (let map of maps) {
-                if (player.getIDMap() == map && player.getID() != IDplayer) {
-                    playersNearby.push(player);
-                }
-            }
-        }
-
-        return playersNearby;
-    }
-
-    movePlayer (player, data) {
-        let posPlayer = player.getPos();
-        let posWorld = player.getPosWorld();
-        let newPos = this.updatePos(player.getIDMap(), (posPlayer.x + data.x), (posPlayer.y + data.y));
-
-        player.setPos(newPos.x, newPos.y);
-        player.setDirection(data.dir);
-        player.setIDMap(newPos.IDMap);
-        player.setPosWorld((posWorld.x + data.x), (posWorld.y + data.y));
-    }
-
-    playerDisconnect (id) {
-        let player = this.playerById(id);
-
-        console.log("se desconecto "+ player.getName());
-
-        this.players.splice(this.players.indexOf(player), 1);
-        
-        return player;
+        logger.info("Completed: The world has been loaded...");        
     }
 
 /* ------------------------------ *
     GETTERS
 * ------------------------------ */
     getTileSize () {
-        return this.tileSize;
+        return World.getTileSize();
     }
 
     getSpriteWorld () {
@@ -209,15 +40,103 @@ class Engine {
     }
 
     getMap (player, width, height) {
-        let posMap = this.searchIDMap(player.getIDMap());
-        let posPlayer = player.getPos();
+        let posPlayer = player.getPosWorld();
+        let data = World.getMap(player.getIDMap(), width, height, posPlayer);
 
-        // Retorna las capas del mapa y las colisiones, ademas de el spriteSheets
-        return World.getMap(width, height, posPlayer.x, posPlayer.y, posMap.x, posMap.y);
+        if (!data) {
+            logger.warn('Error:', {file: 'engine.js', method:'getMap', message: `Id Map: ${player.getIDMap()} not found`});
+        }
+
+        return data;
     }
 
     getPlayers () {
         return this.players;
+    }
+
+/* ------------------------------ *
+    FUNCTIONS HELP
+* ------------------------------ */
+    playerById (ID) {
+        return this.players.find(player => player.getID() === ID);
+    }
+
+    npcById (ID) {
+        return this.npcs.find(npc => npc.getID() === ID);
+    }
+
+/* ------------------------------ *
+    FUNCTIONS - NPC
+* ------------------------------ */
+    addNPC (dataNPC) {
+        let skinNpc = fs.readFileSync(`./engine/sprite/npc/${dataNPC.skin}.txt`, 'utf-8');
+
+        this.npcs.push(new NPC(dataNPC, skinNpc));
+    }
+
+    NPCNearby (player) {
+        // TODOs: redesign code - NPCNearby
+        // let posMap = this.searchIDMap(player.getIDMap());
+        // let maps = World.getMaps(posMap.x, posMap.y);
+        // let NPCNearby = [];
+
+        // for (let npc of this.npcs) {
+        //     for (let map of maps) {
+        //         if (npc.getIDMap()  == map) {
+        //             NPCNearby.push(npc);
+        //         }
+        //     }
+        // }
+
+        //return NPCNearby;
+    }
+
+/* ------------------------------ *
+    FUNCTIONS - PLAYER
+* ------------------------------ */
+    addPlayer (IDClient, dataPlayer) {
+        // Sprite player
+        let skinBase = fs.readFileSync(`./engine/sprite/player/base/${dataPlayer.SKIN.base}.txt`, 'utf-8');
+
+        let player = new PLAYER(IDClient, dataPlayer, skinBase, "");
+
+        this.players.push(player);
+
+        return player;
+    }
+
+    playersNearby (player) {
+        // TODOs: redesign code - playersNearby
+        // let posMap = this.searchIDMap(player.getIDMap());
+        // let maps = World.getMaps(posMap.x, posMap.y);
+        // let IDplayer = player.getID();
+        // let playersNearby = [];
+
+        // for (let player of this.players) {
+        //     for (let map of maps) {
+        //         if (player.getIDMap() == map && player.getID() != IDplayer) {
+        //             playersNearby.push(player);
+        //         }
+        //     }
+        // }
+
+        // return playersNearby;
+    }
+
+    movePlayer (player, data) {
+        let posWorld = player.getPosWorld();
+
+        player.setPosWorld((posWorld.x + data.x), (posWorld.y + data.y));
+        player.setDirection(data.dir);
+        //player.setIDMap(newPos.IDMap);
+    }
+
+    playerDisconnect (id) {
+        let player = this.playerById(id);
+
+        this.players.splice(this.players.indexOf(player), 1);
+        
+        return player;
     }
 }
 

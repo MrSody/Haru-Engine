@@ -4,7 +4,8 @@
 *-------------------------------*/
 "use strict";
 // HUB
-import Interface from './modules/hub/interface.js';
+import Interface from './modules/hub/interface/interface.js';
+import InterfaceCharacter from './modules/hub/interface/interfaceCharacter.js';
 import Mouse from './modules/hub/mouse.js';
 import Keyboard from './modules/hub/keyboard.js';
 import Chat from './modules/hub/chat.js';
@@ -30,6 +31,7 @@ let canvasHUB,		// Canvas DOM elemento
     ctxCapaMapaArriba,
     // CLASSES
     clsInterface = new Interface(),
+    clsInterfaceCharacter = new InterfaceCharacter(),
     clsChat = new Chat(),
     clsKeyboard,
     clsMap,
@@ -61,6 +63,7 @@ window.onload = function() {
 let setEventHandlers = function() {
     // HUB - PERSONAJES
     document.querySelector('#characters_BtnGetInGame').addEventListener('click', getInGame);
+    document.querySelector('#player_BtnCreateCharacter').addEventListener('click', createNewCharacter);
     document.querySelector('#Pj_0').addEventListener('click', function(){ selCharacter(this.id); });    
     document.querySelector('#Pj_1').addEventListener('click', function(){ selCharacter(this.id); });
     document.querySelector('#Pj_2').addEventListener('click', function(){ selCharacter(this.id); });
@@ -74,14 +77,14 @@ let setEventHandlers = function() {
 	window.addEventListener("resize", onResize, false);
     window.addEventListener("load", onResize, false);
 
-    // Window salir
-    window.onbeforeunload = function (event) { event.returnValue = "Se va a desconectar"; }
-
 	// Socket connection successful
 	socket.on('connect', onSocketConnected);
 
     // Account characters - load the characters of the account on screen
-    socket.on('account:characters', onAccountCharacters);
+    socket.on('character:list', onAccountCharacters);
+
+    // Account character - Create
+    socket.on('character:create', onCreateCharacter);
 
     // Message
     socket.on('chat:newMessage', onReceiveMessage);
@@ -126,41 +129,44 @@ function onSocketConnected () {
     HUB - PERSONAJES
 *-------------------------------*/
 function onAccountCharacters (data) {
-    clsInterface.onAccountCharacters(data);
+    clsInterfaceCharacter.characterList(data);
+}
+
+function onCreateCharacter (data) {
+    clsInterfaceCharacter.createCharacter(data);
 }
 
 function getInGame () {
-    // Oculta los personajes y muestra la pantalla de carga
     clsInterface.loadScreen('#character', 'Invisible');
+    socket.emit('character:connected', {idCharacter: clsInterfaceCharacter.getIDPJ()});
+}
 
-    socket.emit('player:connected', {idPlayer: clsInterface.getIDPJ()});
+function createNewCharacter () {
+    let data = clsInterfaceCharacter.getDataCreateCharacter();
+    
+    clsInterface.loadScreen('#createCharacter', 'Invisible');
+
+    socket.emit('character:create', {
+        idAccount: data.idAccount, 
+        gender: data.genero, 
+        element: data.clase, 
+        village: data.inicio, 
+        appearance: data.apariencia, 
+        hair: data.cabello, 
+        name: data.name,
+    });
 }
 
 function selCharacter (IDElement) {
     let characters = clsInterface.getCharacters();
     let id = Math.round(IDElement.split('_').reverse().shift());
     
-    if (Math.round(id + 1) == characters.length) {
+    if (Math.round(id + 1) === characters.length) {
         let character = characters[id];
-        clsInterface.selCharacter(character.ID, character.skinBase, character.name);
+        clsInterfaceCharacter.selCharacter(character.ID, character.skinBase, character.name);
     } else {
-        createNewCharacter();
+        clsInterfaceCharacter.createCharacter();
     }
-}
-
-/*-------------------------------
-    HUB - CREAR PERSONAJE
-*-------------------------------*/
-function createNewCharacter () {
-    clsInterface.addClass('#character', 'Invisible');
-
-    clsInterface.removeClass('#createCharacter', 'Invisible');
-}
-
-function createCharacter (data) {
-    clsInterface.addClass('#character', 'Invisible');
-
-    alert("crear pj "+ data);
 }
 
 /*-------------------------------
@@ -189,7 +195,7 @@ function onInitMap (data) {
     onResize();
     
     // INICIA ANIMACION
-    animate();
+    window.requestAnimationFrame(animate);
     
     // Oculta la pantalla de carga
     clsInterface.removeOrAddByID('#loading', 'Invisible');
@@ -197,12 +203,13 @@ function onInitMap (data) {
 
 // CARGA LAS CAPAS DEL MAPA
 function onMapData (data) {
+    clsInterface.setShowLoadScreen(false);
     clsMap.setMap(data);
 }
 
 // Npc's
 function onNewNpc (data) {
-    if (npcs.length == data.count) {
+    if (npcs.length === data.count) {
         npcs.splice(0, npcs.length);
     }
     npcs.push(new Npc(data.npc));
@@ -214,7 +221,7 @@ function onNewNpc (data) {
 // Buscar el jugador remoto
 function findRemotePlayer (id) {
     for (let remotePlayer of remotePlayers) {
-        if (remotePlayer.getID() == id) {
+        if (remotePlayer.getID() === id) {
             return remotePlayer;
         }
     }
@@ -233,7 +240,7 @@ function findPlayer (id) {
 
 function findNpc (id) {
     for (let npc of npcs) {
-        if (npc.getID() == id) {
+        if (npc.getID() === id) {
             return npc;
         }
     }
@@ -275,7 +282,7 @@ function onMovePlayer (data) {
         player.setPosWorld(data.posWorld.x, data.posWorld.y);
         player.setDir(data.dir);
 
-        if (localPlayer.getID() != player.getID()) {
+        if (localPlayer.getID() !== player.getID()) {
             player.setMode(data.mode);
         } else {
             player.setAbsPos(0, 0);
@@ -312,13 +319,6 @@ function onMoveNpc (data) {
     } else {
         console.log("MoveNpc - Npc not found: "+ data.id);
     }
-}
-
-function logout() {
-	socket.emit("logout", {id: localPlayer.getID()});
-	console.log("Player "+localPlayer.getID()+" logged out");
-	socket.emit("disconnect");
-	window.location = "login.html";
 }
 
 /*-------------------------------
@@ -381,47 +381,38 @@ document.onkeyup = function (e) {
 /*-------------------------------
     GAME ANIMATION LOOP
 *-------------------------------*/
-let lastRender = Date.now();
-let lastFpsCycle = Date.now();
-
 function animate () {
+    let delta = clsInterface.calculateFPS();
 
-    setTimeout(function () {
-
-        // Request a new animation frame
-        window.requestAnimationFrame(animate);
-        
-        let dateNow = Date.now();
-        let delta = (dateNow - lastRender) / 1000;
-
+    if (delta !== undefined && !clsInterface.getShowLoadScreen()) {
         draw();
-        lastRender = dateNow;
-        update();
-
-        if(dateNow - lastFpsCycle > 1000){
-            lastFpsCycle = dateNow;
-            let fps = Math.round(1 / delta);
-            //$(".text").html("FPS: "+ fps +" DELTA: "+ delta);
-        }
-    }, 200);
+        update(delta);
+    }
+    // Request a new animation frame
+    window.requestAnimationFrame(animate);
 }
 
 /*-------------------------------
     GAME UPDATE
 *-------------------------------*/
-function update () {
+function update (delta) {
     // Mover el player
 	if (localPlayer.isMoving()) {
 		let absPos = localPlayer.getAbsPos();
         let width = $(window).width();
         let height = $(window).height();
+
+        localPlayer.playerMove(delta);
         
-        localPlayer.playerMove();
-        
-        socket.emit('player:move', {id: localPlayer.getID(), x: absPos.x, y: absPos.y, dir: localPlayer.getDir(), mode: localPlayer.getMode()});
-        
-        // Mover el MAPA
-        socket.emit('map:data', {width: width, height: height});
+        if (localPlayer.getTellCount()) {
+            
+            socket.emit('player:move', {id: localPlayer.getID(), x: absPos.x, y: absPos.y, dir: localPlayer.getDir(), mode: localPlayer.getMode()});
+            
+            // Mover el MAPA
+            socket.emit('map:data', {width: width, height: height});
+
+            localPlayer.tellCount = 0;
+        }
 	}
     
     // Npc movimiento
@@ -514,9 +505,10 @@ function draw () {
 
 // Browser window resize
 function onResize () {
-    // REDIMENZIONAR MAPA
     let width = $(window).width();
     let height = $(window).height();
+
+    clsInterface.setShowLoadScreen(true);
 
     socket.emit('map:data', {width: width, height: height});
 

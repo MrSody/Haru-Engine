@@ -9,16 +9,16 @@ DATA OF NPC
 */
 
 class Npc {
-    constructor (data, posWorldX, posWorldY, Skin) {
-        this.id = data.ID;
-        this.name = data.Name;
-        this.health = {now: data.Health, max: data.Health};
+    constructor (data, Skin) {
+        this.id = data.id;
+        this.name = data.name;
+        this.health = {now: data.health, max: data.health};
         this.skin = Skin;
-        this.IDMap = data.ID_Map;
-        this.posWorld = {x: posWorldX, y: posWorldY};
+        this.IDMap = data.idMap;
+        this.posWorld = {x: data.posWorldX, y: data.posWorldY};
         
-        this.visionDistance = data.Vision_Distance;
-        this.reaction = data.Reaction;
+        this.visionDistance = data.visionDistance;
+        this.reaction = data.reaction;
         
 		this.dir = 2;
 		this.frame = 0;
@@ -29,7 +29,6 @@ class Npc {
         this.stepCount = 0;
         
         this.posAttack = {x: 0, y: 0};
-        
     }
 
 /* ------------------------------ *
@@ -72,7 +71,7 @@ class Npc {
     }
 
 /* ------------------------------ *
-    FUNCIONES
+    FUNCTIONS
 * ------------------------------ */
 }
 
