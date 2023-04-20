@@ -11,7 +11,7 @@ const app = express();
 const socketIO = require('socket.io');
 
 // CONNECTION TO DB
-const { models } = require('./database');
+const { models, queryInterface } = require('./database');
 const characterController = require('./app/controllers/game/characterController');
 const locationController = require('./app/controllers/game/locationController');
 
@@ -71,16 +71,33 @@ const engine = new engineApi();
 async function init () {
     engine.init();
 
-    resetData();
-
     // Carga los NPCs
     loadNPCs();
+    resetData();
     setEventHandlers();
 }
 
 async function resetData () {
-    await models.account.update({ online: 0 }, { where: {}});
-    await models.character.update({ online: 0 }, { where: {}});
+
+    await queryInterface.tableExists('account').then(existTable => {
+        if (existTable) {
+            models.account.count().then(numAccount => {
+                if (numAccount > 0) {
+                    models.account.update({ online: 0 }, { where: {}});
+                }
+            });
+        }
+    });
+
+    await queryInterface.tableExists('character').then(existTable => {
+        if (existTable) {
+            models.character.count().then(numCharacter => {
+                if (numCharacter > 0) {
+                    models.character.update({ online: 0 }, { where: {}});
+                }
+            });
+        }
+    });
 }
 
 /* ------------------------------ *
