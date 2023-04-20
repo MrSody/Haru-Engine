@@ -20,6 +20,7 @@ const log4js = require('log4js');
 log4js.configure('./config/log4js.json');
 const logger = log4js.getLogger('app');
 const loggerPlayers = log4js.getLogger('players');
+const loggerMessages = log4js.getLogger('messages');
 
 // ROUTES
 const routes = require('./routes/routes');
@@ -282,7 +283,7 @@ function onNewMessage(data) {
     let toClient = this,
         player = engine.playerById(toClient.id);
 
-    loggerPlayers.trace('New message: ', {name: data.name, mode: '', text: data.text})
+    loggerMessages.trace('New message: ', {name: data.name, mode: '', text: data.text})
 
     io.emit('chat:newMessage', {name: data.name, mode: '', text: data.text});
 }

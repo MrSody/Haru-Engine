@@ -58,6 +58,24 @@ export default class Interface {
         this.documentSelect(element).setAttribute("style", `width: ${width}; height: ${height}`);
     }
 
+    calculateFPS() {
+        if (!this.lastCalledTime) {
+            this.lastCalledTime = performance.now();
+            this.fps = 0;
+            return;
+        }
+    
+        let delta = (performance.now() - this.lastCalledTime) / 1000;
+        this.lastCalledTime = performance.now();
+        this.fps = Math.round(1 / delta);
+
+        if ((performance.now() - this.lastCalledTime) > 0 ){
+            $("#FPS").html("FPS: "+ this.fps);// +" DELTA: "+ delta);
+        }
+
+        return delta;
+    }
+
 /*-------------------------------
     HUB - Pantalla de carga
 *-------------------------------*/
@@ -103,25 +121,12 @@ export default class Interface {
         spanMessage.style = "color: "+ chatTxtClr;
         spanMessage.innerHTML = data.name +": "+ data.text +"<br>";
         this.documentSelect("#Mensajes").appendChild(spanMessage);
-        
+        this.scrollBottom();
         this.documentSelect("#Mensaje").value = "";
     }
 
-    calculateFPS() {
-        if (!this.lastCalledTime) {
-            this.lastCalledTime = performance.now();
-            this.fps = 0;
-            return;
-        }
-    
-        let delta = (performance.now() - this.lastCalledTime) / 1000;
-        this.lastCalledTime = performance.now();
-        this.fps = Math.round(1 / delta);
-
-        if ((performance.now() - this.lastCalledTime) > 0 ){
-            $("#FPS").html("FPS: "+ this.fps);// +" DELTA: "+ delta);
-        }
-
-        return delta;
+    scrollBottom() {
+        let elementChat = this.documentSelect('#Chat');
+        elementChat.scrollTop = elementChat.scrollHeight;
     }
 }
