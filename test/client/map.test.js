@@ -2,13 +2,8 @@ import Map from '../../public/game/js/modules/world/map.js';
 import { response } from 'express';
 const WORLD = require('../../engine/modules/world').World;
 
-const orderMap = [
-    [1, 2, 3, 4, 5],
-    [6, 7, 8, 9, 10],
-    [11, 12, 13, 14, 15]
-];
 
-const World = new WORLD(orderMap);
+const World = new WORLD();
 const clsMap = new Map({tileSize: World.getTileSize(), spritesheet: World.getDataSpriteSheets()});
 /*
 test('desingSheet', () =>{
