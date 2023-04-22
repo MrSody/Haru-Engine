@@ -119,8 +119,9 @@ export default class Interface {
 
         let spanMessage = document.createElement("span");
         spanMessage.style = "color: "+ chatTxtClr;
-        spanMessage.innerHTML = data.name +": "+ data.text +"<br>";
+        spanMessage.textContent = `${data.name}: ${data.text}`;
         this.documentSelect("#Mensajes").appendChild(spanMessage);
+        this.documentSelect("#Mensajes").appendChild(document.createElement('br'));
         this.scrollBottom();
         this.documentSelect("#Mensaje").value = "";
     }
