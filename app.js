@@ -26,6 +26,9 @@ const loggerMessages = log4js.getLogger('messages');
 const routes = require('./routes/routes');
 const bodyParser = require('body-parser');
 
+// STRING RESOURCE
+const i18n = require('./config/i18n-config');
+
 /* ------------------------------ *
     CONFIGURATIONS
 * ------------------------------ */
@@ -39,6 +42,16 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // Bring public files - Trae los archivos publicos
 app.use(express.static(__dirname +'/public'));
+
+app.use(i18n.init);
+
+app.use(function(req, res, next) {
+    //let lang = req.query.lang || 'en';
+    let lang = 'es';
+    req.setLocale(lang);
+    res.locals.lang = lang;
+    next();
+});
 
 /* ------------------------------ *
     ROUTES
@@ -61,8 +74,6 @@ app.get("/game", (req, res) => {
 /* ------------------------------ *
     SERVER GAME
 * ------------------------------ */
-
-// CONSTANTES
 const io = socketIO(server);
 const engineApi = require("./engine/engine").Engine;
 
@@ -105,7 +116,7 @@ async function resetData () {
 * ------------------------------ */
 function setEventHandlers () {
     io.sockets.on('connection', onSocketConnection);
-};
+}
 
 function onSocketConnection (client) {
     // Listen for account connect

@@ -13,52 +13,51 @@
     <div class="contenido-tab">
         <!-- Iniciar Sesion -->
         <div id="iniciar-sesion">
-            <h1>Iniciar Sesión</h1>
+            <h1><%= __('LogIn') %></h1>
             <form action="/login" method="post">
                 <div class="contenedor-input">
                     <label>
-                        Email <span class="req">*</span>
+                        <%= __('Email') %> <span class="req">*</span>
                     </label>
                     <input id="usLogin" name="email" type="text" required>
                 </div>
 
                 <div class="contenedor-input">
                     <label>
-                        Contraseña <span class="req">*</span>
+                        <%= __('Password') %> <span class="req">*</span>
                     </label>
                     <input id="clave" name="password" type="password" required>
                 </div>
-                <p class="forgot"><a href="#">Se te olvidó la contraseña?</a></p>
-                <input type="submit" class="button button-block" value="Iniciar Sesión">
-                <!-- <input type="submit" class="button button-block" value="Iniciar Sesión" onclick="loginsesion()"> -->
+                <p class="forgot"><a href="#"><%= __('DidForgetPassword') %></a></p>
+                <input type="submit" class="button button-block" value="<%= __('LogIn') %>">
             </form>
         </div>
 
         <!-- Registrarse -->
         <div id="registrarse">
-            <h1>Registrarse</h1>
+            <h1><%= __('CreateAccount') %></h1>
             <form action="/registro" method="post">
                 <div class="contenedor-input">
                         <label>
-                            Email <span class="req">*</span>
+                            <%= __('Email') %> <span class="req">*</span>
                         </label>
                     <input type="email" name="email" required>
                 </div>
                 <div class="contenedor-input">
                     <label>
-                        Contraseña <span class="req">*</span>
+                        <%= __('Password') %> <span class="req">*</span>
                     </label>
                     <input type="password" name="password" required>
                 </div>
 
                 <div class="contenedor-input">
                     <label>
-                        Repetir Contraseña <span class="req">*</span>
+                        <%= __('RepeatPassword') %> <span class="req">*</span>
                     </label>
                     <input type="password" name="clave2" required>
                 </div>
 
-                <input type="submit" class="button button-block" value="Registrarse">
+                <input type="submit" class="button button-block" value="<%= __('CreateAccount') %>">
             </form>
         </div>
     </div>

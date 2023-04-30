@@ -1,0 +1,12 @@
+{
+	"%d apple": {
+		"one": "%d manzana",
+		"other": "%d manzanas"
+	},
+	"LogIn": "iniciar sesión",
+	"Email": "correo electronico",
+	"Password": "contraseña",
+	"DidForgetPassword": "se me olvidó la contraseña",
+	"CreateAccount": "Crear cuenta",
+	"RepeatPassword": "repetir contraseña"
+}
