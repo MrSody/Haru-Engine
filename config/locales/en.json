@@ -1,0 +1,12 @@
+{
+	"%d apple": {
+		"one": "%d apple",
+		"other": "%d apples"
+	},
+	"LogIn": "log in",
+	"Email": "email",
+	"Password": "password",
+	"DidForgetPassword": "i forgot the password",
+	"CreateAccount": "create account",
+	"RepeatPassword": "repeat password"
+}
