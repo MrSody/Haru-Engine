@@ -32,7 +32,7 @@ const i18n = require('./config/i18n-config');
 /* ------------------------------ *
     CONFIGURATIONS
 * ------------------------------ */
-app.set('appName', 'P-MS');
+app.set('appName', 'Haru-Engine');
 app.set('port', process.env.PORT || 3000);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
@@ -194,15 +194,15 @@ async function onClientDisconnect () {
     try {
         let character = engine.playerDisconnect(this.id);
 
-        loggerPlayers.info(`The player disconnected: ${character.getName()} - with ID ${character.getIDPJ()}`)
+        loggerPlayers.info(`The player disconnected: ${character.name} - with ID ${character.IDPj}`)
 
-        let characterDB = await models.character.findByPk(character.getID());
+        let characterDB = await models.character.findByPk(character.IDClient);
         await characterDB.update({ online: 0 });
 
-        let accountDB = await models.account.findByPk(character.getIDPJ());
+        let accountDB = await models.account.findByPk(character.IDPj);
         await accountDB.update({ online: 0 });
 
-        toClient.broadcast.emit('players:playerDisconnect', {id: character.getID()});
+        toClient.broadcast.emit('players:playerDisconnect', {id: character.IDClient});
     } catch (e) {
         logger.fatal('Error:', {file: 'app.js', method:'onClientDisconnect', message: e});
     }
@@ -215,7 +215,7 @@ function sendCharacterToClient (toClient, dataCharacter) {
     // Add new player
     let player = engine.addPlayer(toClient.id, dataCharacter);
 
-    loggerPlayers.info(`The player connected: ${player.getName()}`);
+    loggerPlayers.info(`The player connected: ${player.name}`);
 
     // Send information to client
     toClient.emit('players:localPlayer', player);
@@ -231,7 +231,7 @@ function sendCharacterToClient (toClient, dataCharacter) {
 
     // Send players connected to new player
     for (let playerRemote of engine.getPlayers()) {
-        if (playerRemote.getID() != toClient.id) {
+        if (playerRemote.IDClient !== toClient.id) {
             toClient.emit('players:remotePlayer', playerRemote);
         }
     }
@@ -293,7 +293,7 @@ function onMovePlayer (data) {
         engine.movePlayer(player, data);
 
         // Broadcast updated position to connected socket clients
-        io.emit('player:move', {id: player.getID(), posWorld: player.getPosWorld(), dir: player.getDir(), mode: data.mode});
+        io.emit('player:move', {id: player.IDClient, posWorld: player.posWorld, dir: player.direction, mode: data.mode});
 
         // Envia los Npc's del mapa al cliente - error
         // let NPCCercanos = engine.NPCNearby(player);

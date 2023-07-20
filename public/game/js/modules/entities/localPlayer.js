@@ -1,14 +1,38 @@
 import Player from './player.js';
 
 export default class LocalPlayer extends Player {
+    /**
+     * @constructor
+     * @param {{ 
+	 * 			IDPj: number; 
+     * 			name: string; 
+     * 			skinBase: string; 
+     *			skinHair: string; 
+     *			health: { now: number; max: number; }; 
+     *			level: string; 
+     *			experience: { now: number; max: number; }; 
+     *			money: number; 
+     *			posWorld: { X: number; Y: number; }; 
+     *			direction: number; }} datos
+     */
     constructor (datos) {
         super(datos);
+        /** @type {number} */
         this.money = datos.money;
 
+        /** @type {{ x: number; y: number; }} */
         this.absPos = {x: 0, y: 0};
+        
+        /** @type {boolean} */
         this.goRun = false;
+
+        /** @type {boolean} */
         this.path = [[]];
+
+        /** @type {number} */
         this.speed = 5;
+        
+        /** @type {number} */
         this.tellCount = 0;
     }
 

@@ -3,8 +3,6 @@ const WORLD = require('./modules/world.js').World;
 const NPC = require('./modules/npc.js').Npc;
 let fs = require('fs');
 
-const World = new WORLD();
-
 // LOGs
 const log4js = require('log4js');
 log4js.configure('./config/log4js.json');
@@ -12,55 +10,81 @@ const logger = log4js.getLogger('app');
 const loggerPlayers = log4js.getLogger('players');
 
 class Engine {
+    /** @type {{IDMa: number; x: number; y: number;}} */
+    #posDefault = {IDMap: 1, x: 15, y: 16};
+
+    /** @type {WORLD} */
+    #World = null;
+
+    /** @constructor */
     constructor () {
+        /** @type {Array.<PLAYER>} */
         this.players = [];
-        this.npcs = [];    
-        this.posDefault = {IDMap: 1, x: 15, y: 16}
+
+        /** @type {Array.<NPC>} */
+        this.npcs = [];
     }
     
     init () {
-        this.loadWorld();
-    }
-
-    loadWorld () {
-        World.initWorld();
-
-        logger.info("Completed: The world has been loaded...");        
+        this.#World = new WORLD();
+        logger.info("Completed: The world has been loaded...");
     }
 
 /* ------------------------------ *
     GETTERS
 * ------------------------------ */
+    /**
+     * @returns {number}
+     */
     getTileSize () {
-        return World.getTileSize();
+        return this.#World.tileSize;
     }
 
+    /**
+     * @returns {string}
+     */
     getSpriteWorld () {
-        return World.getDataSpriteSheets();
+        return this.#World.dataSpriteSheets;
     }
 
+    /**
+     * @param {PLAYER} player
+     * @param {number} width
+     * @param {number} height
+     * @returns {Any}
+     */
     getMap (player, width, height) {
-        let posPlayer = player.getPosWorld();
-        let data = World.getMap(player.getIDMap(), width, height, posPlayer);
+        let data = this.#World.getMap(player.IDMap, width, height, player.posWorld);
 
         if (!data) {
-            logger.warn('Error:', {file: 'engine.js', method:'getMap', message: `Id Map: ${player.getIDMap()} not found`});
+            logger.warn('Error:', {file: 'engine.js', method:'getMap', message: `Id Map: ${player.IDMap} not found`});
         }
 
         return data;
     }
 
+    /**
+     * @returns {Array.<PLAYER>}
+     */
     getPlayers () {
         return this.players;
     }
 
 /* ------------------------------ *
-    FUNCTIONS HELP
+    HELPERS FUNCTIONS
 * ------------------------------ */
+    /**
+     * @param {string} ID
+     * @returns {PLAYER}
+     */
     playerById (ID) {
-        return this.players.find(player => player.getID() === ID);
+        return this.players.find(player => player.IDClient === ID);
     }
 
+    /**
+     * @param {*string} ID
+     * @returns {NPC}
+     */
     npcById (ID) {
         return this.npcs.find(npc => npc.getID() === ID);
     }
@@ -94,6 +118,11 @@ class Engine {
 /* ------------------------------ *
     FUNCTIONS - PLAYER
 * ------------------------------ */
+    /**
+     * @param {string} IDClient
+     * @param {Any} dataPlayer
+     * @returns @returns {{ IDPj: number; name: string; skinBase: string; skinHair: string; health: { now: number; max: number; }; level: string; experience: { now: number; max: number; }; money: number; posWorld: { X: number; Y: number; }; direction: number; }}
+     */
     addPlayer (IDClient, dataPlayer) {
         // Sprite player
         let skinBase = fs.readFileSync(`./engine/sprite/player/base/${dataPlayer.SKIN.base}.txt`, 'utf-8');
@@ -102,7 +131,7 @@ class Engine {
 
         this.players.push(player);
 
-        return player;
+        return player.getDataSend();
     }
 
     playersNearby (player) {
@@ -123,14 +152,20 @@ class Engine {
         // return playersNearby;
     }
 
+    /**
+     * @param {PLAYER} player
+     * @param {} data
+     */
     movePlayer (player, data) {
-        let posWorld = player.getPosWorld();
-
-        player.setPosWorld((posWorld.x + data.x), (posWorld.y + data.y));
+        player.setPosWorld((player.posWorld.X + data.x), (player.posWorld.Y + data.y));
         player.setDirection(data.dir);
         //player.setIDMap(newPos.IDMap);
     }
 
+    /**
+     * @param {number} id
+     * @returns {PLAYER}
+     */
     playerDisconnect (id) {
         let player = this.playerById(id);
 

@@ -1,17 +1,46 @@
 export default class Player {
+	/**
+     * @constructor
+     * @param {{ 
+	 * 			IDPj: number; 
+	 * 			name: string; 
+	 * 			skinBase: string; 
+	 *			skinHair: string; 
+	 *			health: { now: number; max: number; }; 
+	 *			level: string; 
+	 *			experience: { now: number; max: number; }; 
+	 *			money: number; 
+	 *			posWorld: { X: number; Y: number; }; 
+	 *			direction: number; }} datos
+	 */
     constructor (datos) {
         console.log("datos pj"+ datos.name);
-        this.id = datos.id;
-        this.name = datos.name;
+		
+		/** @type {string} */
+        this.id = datos.IDPj;
+        
+		/** @type {string} */
+		this.name = datos.name;
+		
         this.skinBase = new Image();
+
+		/** @type {string} */
 		this.skinBase.src = datos.skinBase;
+
+		/** @type {{ x: number; y: number; }} */
+		this.posWorld = {x: datos.posWorld.X, y: datos.posWorld.Y};
 		
-		this.posWorld = {x: datos.posWorld.x, y: datos.posWorld.y};
-		
+		/** @type {number} direction player in the map */
 		this.dir = 2;
+
+		/** @type {number} frame */
 		this.frame = 0;
+
+		/** @type {boolean} */
 		this.moving = false;
-		this.mode = 0, // 0 = parado, 1 = caminando, 2 = corriendo, 3 = fighting;
+
+		/** @type {number}  0 = parado, 1 = caminando, 2 = corriendo, 3 = fighting */
+		this.mode = 0,
 
 		////////////////////////
 

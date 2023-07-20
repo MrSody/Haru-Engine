@@ -1,6 +1,20 @@
 import Player from './player.js';
 
 export default class RemotePlayer extends Player {
+    /**
+     * @constructor
+     * @param {{ 
+	 * 			IDPj: number; 
+     * 			name: string; 
+     * 			skinBase: string; 
+     *			skinHair: string; 
+     *			health: { now: number; max: number; }; 
+     *			level: string; 
+     *			experience: { now: number; max: number; }; 
+     *			money: number; 
+     *			posWorld: { X: number; Y: number; }; 
+     *			direction: number; }} datos
+     */
     constructor (datos) {
         super(datos);
     }

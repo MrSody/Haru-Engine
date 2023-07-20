@@ -17,36 +17,61 @@ import RemotePlayer from './modules/entities/remotePlayer.js';
 import Npc from './modules/entities/npc.js';
 // DEVELOPER
 import Developer from './developer/developer.js';
+
 /*-------------------------------
     Variables
 *-------------------------------*/
-let canvasHUB,		// Canvas DOM elemento
-    ctxHUB,		    // Canvas contexto de representación
-    // CAPAS
-    canvasCapaMapaAbajo,
-    ctxCapaMapaAbajo,
-    canvasPersonaje,
-    ctxPersonaje,
-    canvasCapaMapaArriba,
-    ctxCapaMapaArriba,
-    // CLASSES
-    clsInterface = new Interface(),
-    clsInterfaceCharacter = new InterfaceCharacter(),
-    clsChat = new Chat(),
-    clsKeyboard,
-    clsMap,
-    clsMouse,
-    clsDeveloper,
-    // ENTITIES
-    localPlayer,	// Clase jugador local
-    remotePlayers = [],	// Clase jugador remoto
-    npcs = [],
-    // DEVELOPER
-    modeDeveloper = false,
-    
-	lastMapUpdate = Date.now(),
-	socket,		// Socket connection
-	tellCounter = 0;
+
+let canvasHUB;		// Canvas DOM elemento
+let ctxHUB;		    // Canvas contexto de representación
+
+// CAPAS
+let canvasCapaMapaAbajo;
+let ctxCapaMapaAbajo;
+let canvasPersonaje;
+let ctxPersonaje;
+let canvasCapaMapaArriba;
+let ctxCapaMapaArriba;
+
+// CLASSES
+/** @type {Interface} */
+let clsInterface = new Interface();
+
+/** @type {InterfaceCharacter} */
+let clsInterfaceCharacter = new InterfaceCharacter();
+
+/** @type {Chat} */
+let clsChat = new Chat();
+
+/** @type {Keyboard} */
+let clsKeyboard;
+
+/** @type {Map} */
+let clsMap;
+
+/** @type {Mouse} */
+let clsMouse;
+
+/** @type {Developer} */
+let clsDeveloper;
+
+// ENTITIES
+/** @type {LocalPlayer} Class player local */
+let localPlayer;
+
+/** @type {RemotePlayer} Class player remote */
+let remotePlayers = [];
+
+/** @type {Npc} Class NPC */
+let npcs = [];
+
+// DEVELOPER
+let modeDeveloper = false;
+
+let lastMapUpdate = Date.now();
+let socket;		// Socket connection
+let tellCounter = 0;
+
     
 /* ------------------------------
     Iniciando el juego
