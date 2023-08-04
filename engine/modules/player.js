@@ -94,11 +94,11 @@ class Player {
 	}
 
     /**
-     * @returns {{ IDPj: number; name: string; skinBase: string; skinHair: string; health: { now: number; max: number; }; level: string; experience: { now: number; max: number; }; money: number; posWorld: { X: number; Y: number; }; direction: number; }}
+     * @returns {{ IDClient: string; name: string; skinBase: string; skinHair: string; health: { now: number; max: number; }; level: string; experience: { now: number; max: number; }; money: number; posWorld: { X: number; Y: number; }; direction: number; }}
      */
     getDataSend () {
         return {
-                IDPj : this.IDPj,
+                IDClient : this._IDClient,
                 name: this.name,
                 skinBase: this.skinBase,
                 skinHair: this.skinHair,

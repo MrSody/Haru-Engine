@@ -2,7 +2,7 @@ export default class Player {
 	/**
      * @constructor
      * @param {{ 
-	 * 			IDPj: number; 
+	 * 			IDClient: string; 
 	 * 			name: string; 
 	 * 			skinBase: string; 
 	 *			skinHair: string; 
@@ -17,7 +17,7 @@ export default class Player {
         console.log("datos pj"+ datos.name);
 		
 		/** @type {string} */
-        this.id = datos.IDPj;
+        this.id = datos.IDClient;
         
 		/** @type {string} */
 		this.name = datos.name;

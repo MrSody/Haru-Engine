@@ -4,7 +4,7 @@ export default class LocalPlayer extends Player {
     /**
      * @constructor
      * @param {{ 
-	 * 			IDPj: number; 
+	 * 			IDClient: string; 
      * 			name: string; 
      * 			skinBase: string; 
      *			skinHair: string; 

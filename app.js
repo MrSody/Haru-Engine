@@ -327,7 +327,9 @@ function onMap (data) {
 	if (player) {
         let map = engine.getMap(player, data.width, data.height);
 
-        toClient.emit('map:data', {capa1: map.capa1, capa2: map.capa2, capa3: map.capa3, capa4: map.capa4, capa5: map.capa5, capa6: map.capa6, collisionMap: map.collision, collisionMapOld: map.collision});
+        if (map) {
+            toClient.emit('map:data', map);
+        }
     } else {
         logger.warn('Error:', {file: 'app.js', method:'onMap', message: `Player not found: ${toClient.id}`});
 	}

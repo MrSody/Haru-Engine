@@ -51,7 +51,7 @@ class Engine {
      * @param {PLAYER} player
      * @param {number} width
      * @param {number} height
-     * @returns {Any}
+     * @returns {(false | { capa1: [[]]; capa2: [[]]; capa3: [[]]; capa4: [[]]; capa5: [[]]; capa6: [[]]; collision: [[]]; })}
      */
     getMap (player, width, height) {
         let data = this.#World.getMap(player.IDMap, width, height, player.posWorld);

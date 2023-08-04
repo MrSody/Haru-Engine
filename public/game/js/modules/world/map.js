@@ -1,21 +1,49 @@
+import { Npc } from "../../../../../engine/modules/npc";
+
 export default class Map {
+    /**
+     * @constructor
+     * @param {{spritesheet: string; tileSize: number; }} data
+    */
     constructor (data) {
-        this.tileSize = parseInt(data.tileSize); // TAMAÑO DE LOS TILES
+        /** @type {number} Size tiles */
+        this.tileSize = parseInt(data.tileSize);
+
         // sprite map
         this.spritesheet = new Image();
+        
+        /** @type {string} */
         this.spritesheet.src = data.spritesheet;
 
+        /** @type {string} */
         this.capaOne;
+
+        /** @type {string} */
         this.capaTwo;
+
+        /** @type {string} */
         this.capaThree;
+
+        /** @type {string} */
         this.capaFour;
+
+        /** @type {string} */
         this.capaFive;
+
+        /** @type {string} */
         this.capaSix;
+
+        /** @type {{ now: number; old: number; }} */
         this.capaCollision = {now: 0, old: 0};
 
         // SIZE SCREEN
+        /** @type {{ width: number; height: number; }} */
         this.sizeScreen = {width: 0, height: 0};
+        
+        /** @type {{ x: number; y: number; }} */
         this.middleTile = {x: 0, y: 0};
+        
+        /** @type {{ x: number; y: number; }} */
         this.maxTiles = {x: 0, y: 0};
     }
 
@@ -45,7 +73,11 @@ export default class Map {
 /* ------------------------------ *
     SETTERS
 * ------------------------------ */
-    // Ingresa los datos del servidor
+    /**
+     * set new data map
+     *
+     * @param {{ capa1: [[]]; capa2: [[]]; capa3: [[]]; capa4: [[]]; capa5: [[]]; capa6: [[]]; collision: [[]]; }} data
+     */
     setMap (data) {
         this.capaOne = data.capa1;
         this.capaTwo = data.capa2;
@@ -53,9 +85,14 @@ export default class Map {
         this.capaFour = data.capa4;
         this.capaFive = data.capa5;
         this.capaSix = data.capa6;
-        this.capaCollision = {now: data.collisionMap, old: data.collisionMapOld};
+        this.capaCollision = {now: data.collision, old: data.collision};
     }
 
+    /**
+     * @param {*} x
+     * @param {*} y
+     * @param {(number|Npc)} data
+     */
     setCollision (x, y, data) {
         if ( typeof(data)  == "object" ) {
             this.capaCollision.now[y][x] = data;

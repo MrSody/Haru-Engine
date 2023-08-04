@@ -35,7 +35,7 @@ class World {
      * @param {number} width
      * @param {number} height
      * @param {{X: number; Y: number;}} posPlayer
-     * @returns {(false | { capa1: {Array.<number>}, capa2: {Array.<number>}, capa3: {Array.<number>}, capa4: {Array.<number>}, capa5: {Array.<number>}, capa6: {Array.<number>}, collision: {Array.<number>}, })}
+     * @returns {(false | { capa1: [[]]; capa2: [[]]; capa3: [[]]; capa4: [[]]; capa5: [[]]; capa6: [[]]; collision: [[]]; })}
      */
     getMap (idMap, width, height, posPlayer) {
         let dataScreen = this.#desingScreen(width, height, posPlayer);
