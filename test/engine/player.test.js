@@ -4,7 +4,7 @@ const CONSTANT = require('./constants');
 test('getDataSend', () => {
     let player = new PLAYER('1', CONSTANT.DATA_DB_PLAYER, "imagen1\r\n", "");
     let response = { 
-                    IDPj: 1, 
+                    IDClient: '1', 
                     name: 'prueba',
                     skinBase: 'imagen1\r\n',
                     skinHair: '',
