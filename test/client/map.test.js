@@ -1,13 +1,14 @@
-//TODO: Revisar imports no estan funcionando
-//import Map from '../../public/game/js/modules/world/map.js';
-//const Map2 = require('../../public/game/js/modules/world/map.js').Map;
-//import { response } from 'express';
+/**
+ * @jest-environment jsdom
+ */
+
 const WORLD = require('../../engine/modules/world').World;
 
+import Map from '../../public/game/js/modules/world/map.js';
 
 const World = new WORLD();
-//const clsMap = new Map({tileSize: World.getTileSize(), spritesheet: World.getDataSpriteSheets()});
-/*
+const clsMap = new Map({spritesheet: World.dataSpriteSheets, tileSize: World.tileSize});
+
 test('desingSheet', () =>{
     let response = [{
             name: "tileset_konoha_naruto_by_zewiskaaz-d55puro",
@@ -16,12 +17,11 @@ test('desingSheet', () =>{
             tileEnd: 816,
             tileCount: 816,
             imageHeight: 3264,
-            imageWidth: 256
+            imageWidth: 256,
         }];
 
-    expect(clsMap.desingSheet(World.getDataSpriteSheets())).toStrictEqual(response);
+    //expect(clsMap.desingSheet(World.getDataSpriteSheets())).toStrictEqual(response);
 });
-*/
 
 // TODO: Revisar - posSprite - 
 test('posSprite', () => {
