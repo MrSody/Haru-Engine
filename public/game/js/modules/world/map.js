@@ -1,4 +1,5 @@
 import { Npc } from "../../../../../engine/modules/npc";
+import Helper from "../helper";
 
 export default class Map {
     /**
@@ -10,11 +11,9 @@ export default class Map {
         this.tileSize = parseInt(data.tileSize);
 
         // sprite map
-        this.spritesheet = new Image();
-        
         /** @type {string} */
-        this.spritesheet.src = data.spritesheet;
-
+        this.spritesheet = Helper.setLoadImage(data.spritesheet);
+        
         /** @type {string} */
         this.capaOne;
 
@@ -147,7 +146,7 @@ export default class Map {
                 X * this.tileSize,
                 Y * this.tileSize,
                 this.tileSize,
-                this.tileSize
+                this.tileSize,
             );
         }
     }
