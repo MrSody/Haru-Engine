@@ -283,6 +283,9 @@ async function onCharacterConnect (data) {
 }
 
 // Player has moved
+/**
+ * @param {{id: number; x: number; y: number; dir: number; mode: number;}} data
+ */
 function onMovePlayer (data) {
     let toClient = this,
         player = engine.playerById(this.id);

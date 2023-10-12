@@ -82,7 +82,7 @@ class Engine {
     }
 
     /**
-     * @param {*string} ID
+     * @param {string} ID
      * @returns {NPC}
      */
     npcById (ID) {
@@ -92,6 +92,9 @@ class Engine {
 /* ------------------------------ *
     FUNCTIONS - NPC
 * ------------------------------ */
+    /**
+     * @param {{id: string; name: string; health: number; skin: string; Level: number; idMap: number; posX: number; posY: number; visionDistance: number; reaction: number; }} dataNPC
+     */
     addNPC (dataNPC) {
         let skinNpc = fs.readFileSync(`./engine/sprite/npc/${dataNPC.skin}.txt`, 'utf-8');
 
@@ -121,7 +124,7 @@ class Engine {
     /**
      * @param {string} IDClient
      * @param {Any} dataPlayer
-     * @returns @returns {{ IDPj: number; name: string; skinBase: string; skinHair: string; health: { now: number; max: number; }; level: string; experience: { now: number; max: number; }; money: number; posWorld: { X: number; Y: number; }; direction: number; }}
+     * @returns {{ IDPj: number; name: string; skinBase: string; skinHair: string; health: { now: number; max: number; }; level: string; experience: { now: number; max: number; }; money: number; posWorld: { X: number; Y: number; }; direction: number; }}
      */
     addPlayer (IDClient, dataPlayer) {
         // Sprite player
@@ -154,7 +157,7 @@ class Engine {
 
     /**
      * @param {PLAYER} player
-     * @param {} data
+     * @param {{id: number; x: number; y: number; dir: number; mode: number;}} data
      */
     movePlayer (player, data) {
         player.setPosWorld((player.posWorld.X + data.x), (player.posWorld.Y + data.y));
