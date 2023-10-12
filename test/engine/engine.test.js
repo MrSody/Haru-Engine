@@ -28,7 +28,12 @@ test('getMap', () => {
 });
 
 test('getPlayers', () => {
-    //TODO: Falta implementacion - getPlayers
+    let idPlayer = '1';
+    let response = new PLAYER(idPlayer, CONSTANT.DATA_DB_PLAYER, "imagen1\r\n", "");
+
+    Engine.addPlayer(idPlayer, CONSTANT.DATA_DB_PLAYER);
+
+    expect(Engine.getPlayers()).toStrictEqual([response]);
 });
 
 /* ------------------------------ *
@@ -56,7 +61,11 @@ test('npcById', () => {
     FUNCTIONS - NPC
 * ------------------------------ */
 test('addNPC', () => {
-    //TODO: Falta implementacion - addNPC
+    let response = new NPC(CONSTANT.DATA_DB_NPC, "imagen1", "");
+
+    Engine.addNPC(CONSTANT.DATA_DB_NPC);
+
+    expect(Engine.npcById(CONSTANT.DATA_DB_NPC.id)).toStrictEqual(response);
 });
 
 // TODO: Falta implentacion en el engine - NPCNearby
@@ -94,16 +103,17 @@ test('playersNearby', () => {
     //expect(Engine.playersNearby(player)).toStrictEqual(response);
 });
 
-//movePlayer (player, X, Y, Dir)
-//TODO: REVISAR - movePlayer
 test('movePlayer', () => {
     let idPlayer = '1';
-    let data = { x: 1, y: 0, dir: 2 };
-    //let posWorldPlayer = Engine.posWorld(DATA_DB_PLAYER.IDMap, DATA_DB_PLAYER.X, DATA_DB_PLAYER.Y);
-    let player = Engine.addPlayer(idPlayer, CONSTANT.DATA_DB_PLAYER);
-    let response = true;
+    let data = { id: 1, x: 1, y: 0, dir: 2, mode: 2 };
+    let playerBefore = new PLAYER(idPlayer, CONSTANT.DATA_DB_PLAYER, "", "");
+    let response = { X: 6, Y: 4 };
 
-    //expect(Engine.movePlayer(player, data)).toBe(response);
+    playerBefore.setPosWorld(5, 4);
+
+    Engine.movePlayer(playerBefore, data);
+
+    expect(playerBefore.posWorld).toStrictEqual(response);
 });
 
 test('playerDisconnect', () => {

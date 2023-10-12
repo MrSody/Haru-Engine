@@ -1,6 +1,14 @@
 const PLAYER = require('../../engine/modules/player').Player;
 const CONSTANT = require('./constants');
 
+test('setPosWorld', () => {
+    let player = new PLAYER('1', CONSTANT.DATA_DB_PLAYER, "imagen1\r\n", "");
+    let response = { X: 5, Y: 4 };
+
+    player.setPosWorld(5, 4)            
+    expect(player.posWorld).toStrictEqual(response);
+});
+
 test('getDataSend', () => {
     let player = new PLAYER('1', CONSTANT.DATA_DB_PLAYER, "imagen1\r\n", "");
     let response = { 
@@ -8,11 +16,11 @@ test('getDataSend', () => {
                     name: 'prueba',
                     skinBase: 'imagen1\r\n',
                     skinHair: '',
-                    health: { now: 154, max: 154, },
+                    health: { now: 154, max: 154 },
                     level: 1,
-                    experience: { now: 0, max: 2400, },
+                    experience: { now: 0, max: 2400 },
                     money: 0,
-                    posWorld: { X: 4, Y: 2, },
+                    posWorld: { X: 4, Y: 2 },
                     direction: 2, 
                 };
 
