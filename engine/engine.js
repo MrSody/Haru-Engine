@@ -10,7 +10,7 @@ const logger = log4js.getLogger('app');
 const loggerPlayers = log4js.getLogger('players');
 
 class Engine {
-    /** @type {{IDMa: number; x: number; y: number;}} */
+    /** @type {{IDMap: number; x: number; y: number;}} */
     #posDefault = {IDMap: 1, x: 15, y: 16};
 
     /** @type {WORLD} */

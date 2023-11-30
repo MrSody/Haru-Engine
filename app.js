@@ -28,6 +28,7 @@ const bodyParser = require('body-parser');
 
 // STRING RESOURCE
 const i18n = require('./config/i18n-config');
+const { Model } = require('sequelize');
 
 /* ------------------------------ *
     CONFIGURATIONS
@@ -171,6 +172,9 @@ async function loadNPCs () {
 /* ------------------------------ *
     CONNECTIONS TO SERVER
 * ------------------------------ */
+/**
+* @param {{idAccount: string;}} data
+*/
 async function onAccountConnect (data) {
     let toClient = this;
 
@@ -187,14 +191,13 @@ async function onAccountConnect (data) {
     });
 }
 
-// Socket client has disconnected
 async function onClientDisconnect () {
     let toClient = this;
 
     try {
         let character = engine.playerDisconnect(this.id);
 
-        loggerPlayers.info(`The player disconnected: ${character.name} - with ID ${character.IDPj}`)
+        loggerPlayers.info(`The player disconnected: ${character.name} - with ID: ${character.IDPj}`);
 
         let characterDB = await models.character.findByPk(character.IDClient);
         await characterDB.update({ online: 0 });
@@ -211,6 +214,10 @@ async function onClientDisconnect () {
 /* ------------------------------ *
     CHARACTER
 * ------------------------------ */
+/**
+* @param {any} toClient
+* @param {Model<character>} dataCharacter
+*/
 function sendCharacterToClient (toClient, dataCharacter) {
     // Add new player
     let player = engine.addPlayer(toClient.id, dataCharacter);
@@ -244,6 +251,17 @@ function sendCharacterToClient (toClient, dataCharacter) {
     // });
 }
 
+/**
+* @param {{
+*    idAccount: string, 
+*    gender: string, 
+*    element: string, 
+*    village: string, 
+*    appearance: string, 
+*    hair: string, 
+*    name: string,
+*   }} data
+*/
 async function onCharacterCreate (data) {
     let toClient = this;
 
@@ -266,6 +284,9 @@ async function onCharacterCreate (data) {
     }
 }
 
+/**
+ * @param {{idCharacter: string;}} data 
+ */
 async function onCharacterConnect (data) {
     let toClient = this;
 
@@ -282,7 +303,6 @@ async function onCharacterConnect (data) {
     });
 }
 
-// Player has moved
 /**
  * @param {{id: number; x: number; y: number; dir: number; mode: number;}} data
  */
@@ -290,7 +310,6 @@ function onMovePlayer (data) {
     let toClient = this,
         player = engine.playerById(this.id);
 
-	// Player not found
 	if (player) {
         // Update player position
         engine.movePlayer(player, data);
@@ -309,10 +328,14 @@ function onMovePlayer (data) {
         logger.warn('Error:', {file: 'app.js', method:'onMovePlayer', message: `Player not found: ${this.id}`});
 	}
 }
-
+/* ------------------------------ *
+    CHAT
+* ------------------------------- */
+/**
+ * @param {{name: string, mode: string, text: string, chatTo: string;}} data 
+ */
 function onNewMessage(data) {
-    let toClient = this,
-        player = engine.playerById(toClient.id);
+    let toClient = this;
 
     loggerMessages.trace('New message: ', {name: data.name, mode: '', text: data.text})
 
@@ -320,13 +343,15 @@ function onNewMessage(data) {
 }
 
 /* ------------------------------ *
-    MAPA
+    MAP
 * ------------------------------ */
+/**
+ * @param {{width: number, height: number}} data
+ */
 function onMap (data) {
     let toClient = this,
         player = engine.playerById(toClient.id);
 
-	// Player found
 	if (player) {
         let map = engine.getMap(player, data.width, data.height);
 
@@ -341,11 +366,12 @@ function onMap (data) {
 /* ------------------------------ *
     NPC
 * ------------------------------ */
-//socket.emit('npc:move', {id: npc.getID(), x: absPos.absX, y: absPos.absY, dir: npc.getDir()});
+/**
+ * @param {{id: string, x: number, y: number, dir: number}} data 
+ */
 function onMoveNpc (data) {
     let npc = engine.npcById(data.id);
 
-	// Player not found
 	if (npc) {
         npc.setPosWorld(data.x, data.y);
         npc.setDirection(data.dir);
