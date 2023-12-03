@@ -48,7 +48,7 @@ export default class LocalPlayer extends Player {
     }
 
     getTellCount () {
-        return (this.tellCount >= 1)? true : false;
+        return (this.tellCount >= 1);
     }
 
 /* ------------------------------ *

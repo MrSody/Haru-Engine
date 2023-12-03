@@ -1,5 +1,5 @@
 /*-------------------------------
-        ProjectMMO
+        HARU-ENGINE
     VERSION:    Alpha
 *-------------------------------*/
 "use strict";
@@ -143,7 +143,6 @@ let setEventHandlers = function() {
     Socket connected
 *-------------------------------*/
 function onSocketConnected () {
-    // Carga la pantalla de carga
     clsInterface.loadScreen();
 
     // Tell game server client connected
@@ -213,8 +212,8 @@ function onCreateLocalPlayer (data) {
 // INICIALIZA EL MAPA
 function onInitMap (data) {
     clsMap = new Map(data);
-    clsMouse = new Mouse(clsMap.getTileSize());
-    clsDeveloper = new Developer(clsMap.getTileSize());
+    clsMouse = new Mouse(clsMap.tileSize);
+    clsDeveloper = new Developer(clsMap.tileSize);
         
     // REDIMENCIONA EL CANVAS
     onResize();
@@ -243,7 +242,10 @@ function onNewNpc (data) {
 /*-------------------------------
     Funciones de Ayuda
 *-------------------------------*/
-// Buscar el jugador remoto
+/**
+ * @param {string} id 
+ * @returns {RemotePlayer}
+ */
 function findRemotePlayer (id) {
     for (let remotePlayer of remotePlayers) {
         if (remotePlayer.getID() === id) {
@@ -254,7 +256,10 @@ function findRemotePlayer (id) {
     return false;
 }
 
-// Retornar player
+/**
+ * @param {string} id 
+ * @returns {LocalPlayer | RemotePlayer}
+ */
 function findPlayer (id) {
     if (localPlayer.getID() === id){
         return localPlayer;
@@ -263,6 +268,10 @@ function findPlayer (id) {
     }
 }
 
+/**
+ * @param {string} id 
+ * @returns {Npc}
+ */
 function findNpc (id) {
     for (let npc of npcs) {
         if (npc.getID() === id) {
@@ -466,9 +475,9 @@ function cleanScreen (width, height) {
 }
 
 function draw () {
-    let sizeScreen = clsMap.getSizeScreen();
-    let middleTile = clsMap.getMiddleTile();
-    let maxTiles = clsMap.getMaxTiles();
+    let sizeScreen = clsMap.sizeScreen;
+    let middleTile = clsMap.middleTile;
+    let maxTiles = clsMap.maxTiles;
     let posWorld = localPlayer.getPosWorld();
 
     // Wipe the canvas clean
