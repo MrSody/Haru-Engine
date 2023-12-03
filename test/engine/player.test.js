@@ -20,7 +20,7 @@ test('getDataSend', () => {
                     level: 1,
                     experience: { now: 0, max: 2400 },
                     money: 0,
-                    posWorld: { X: 4, Y: 2 },
+                    posWorld: { X: 9, Y: 11 },
                     direction: 2, 
                 };
 

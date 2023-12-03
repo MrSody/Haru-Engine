@@ -21,10 +21,10 @@ test('getSpriteWorld', () => {
 test('getMap', () => {
     let IDClient = '1';
     let player = new PLAYER(IDClient, CONSTANT.DATA_DB_PLAYER, "imagen1\r\n", "");
-    let width = 160;
-    let height = 96;
+    let width = 544;
+    let height = 352;
 
-    expect(Engine.getMap(player, width, height)).toStrictEqual(CONSTANT.responseMap6x4);
+    expect(Engine.getMap(player, width, height)).toStrictEqual(CONSTANT.responseMap);
 });
 
 test('getPlayers', () => {

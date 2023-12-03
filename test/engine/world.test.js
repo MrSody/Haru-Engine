@@ -9,12 +9,21 @@ test('getTileSize', () => {
 });
 
 test('getMap', () => {
-    let idMap = 'test',
-        width = 160,
-        height = 96,
-        posPlayer = {X: 4, Y: 2};
+    let idMap = 'test1',
+        width = 544,
+        height = 352,
+        posPlayer = {X: 9, Y: 11};
 
-    expect(World.getMap(idMap, width, height, posPlayer)).toStrictEqual(CONSTANT.responseMap6x4);
+    let capas = World.getMap(idMap, width, height, posPlayer);
+
+    expect(capas.capa1).toStrictEqual(CONSTANT.responseMap.capa1);
+    expect(capas.capa2).toStrictEqual(CONSTANT.responseMap.capa2);
+    expect(capas.capa3).toStrictEqual(CONSTANT.responseMap.capa3);
+    expect(capas.capa4).toStrictEqual(CONSTANT.responseMap.capa4);
+    expect(capas.capa5).toStrictEqual(CONSTANT.responseMap.capa5);
+    expect(capas.capa6).toStrictEqual(CONSTANT.responseMap.capa6);
+    expect(capas.collision).toStrictEqual(CONSTANT.responseMap.collision);
+    expect(World.getMap(idMap, width, height, posPlayer)).toStrictEqual(CONSTANT.responseMap);
 });
 
 test('getCoordinates', () => {
