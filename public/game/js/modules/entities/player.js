@@ -40,8 +40,7 @@ export default class Player {
 		this.moving = false;
 
 		/** @type {number}  0 = parado, 1 = caminando, 2 = corriendo, 3 = fighting */
-		this.mode = 0,
-
+		this.mode = 0;
 		////////////////////////
 
 		//this.sound = new SoundManager();

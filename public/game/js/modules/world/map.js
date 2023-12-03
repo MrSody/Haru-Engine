@@ -1,5 +1,5 @@
-import { Npc } from "../../../../../engine/modules/npc";
-import Helper from "../helper";
+import Npc from "../../modules/entities/npc.js";
+import Helper from "../helper.js";
 
 export default class Map {
     /**
