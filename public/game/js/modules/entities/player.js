@@ -14,8 +14,6 @@ export default class Player {
 	 *			direction: number; }} datos
 	 */
     constructor (datos) {
-        console.log("datos pj"+ datos.name);
-		
 		/** @type {string} */
         this.id = datos.IDClient;
         
@@ -46,7 +44,7 @@ export default class Player {
 		//this.sound = new SoundManager();
 		this.currhp = 0;
 		this.alive = true;
-		this.finalDir;
+		this.finalDirection;
 		this.fightFrame = 0;
 		this.convPos = 0;
 		this.movingDir;

@@ -21,7 +21,7 @@ export default class Npc {
         this.frame = 0;
         this.dir = 2;
         
-		this.finalDir;
+		this.finalDirection;
 		this.moving = false;
 		this.movingDir;
 		this.path = [[]];
@@ -97,13 +97,13 @@ export default class Npc {
 		if (this.goAttack && this.stepCount == (this.path.length - 1)) {
 			// Face player towards enemy
 			if (this.path[this.path.length-1][0] > this.path[this.path.length-2][0]) {
-				this.finalDir = 1;
+				this.finalDirection = 1;
 			} else if (this.path[this.path.length-1][0] < this.path[this.path.length-2][0]) {
-				this.finalDir = 3;
+				this.finalDirection = 3;
 			} else if (this.path[this.path.length-1][1] > this.path[this.path.length-2][1]) {
-				this.finalDir = 2;
+				this.finalDirection = 2;
 			} else if (this.path[this.path.length-1][1] < this.path[this.path.length-2][1]) {
-				this.finalDir = 0;
+				this.finalDirection = 0;
 			}
 
 			// Remove last path element so player doesn't step on enemy
@@ -173,7 +173,7 @@ export default class Npc {
                 
                 this.moving = false;
                 this.stepCount=0;
-                this.dir = this.finalDir;
+                this.dir = this.finalDirection;
             }
         }
 	}

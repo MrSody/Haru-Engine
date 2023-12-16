@@ -91,4 +91,26 @@ let responseMap = {
                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0]],
 };
 
+const DATA_PLAYER = {
+    IDClient: '1', 
+    name: 'prueba',
+    skinBase: 'imagen1\r\n',
+    skinHair: '',
+    health: { now: 154, max: 154 },
+    level: 1,
+    experience: { now: 0, max: 2400 },
+    money: 0,
+    posWorld: { X: 9, Y: 11 },
+    direction: 2, 
+};
+
+const Path = [[9, 11],
+            [9, 12],
+            [9, 13],
+            [10, 13],
+            [11, 13],
+            [11, 14]];
+
 exports.responseMap = responseMap;
+exports.DATA_PLAYER = DATA_PLAYER;
+exports.Path = Path;

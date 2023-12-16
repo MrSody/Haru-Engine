@@ -38,7 +38,7 @@ class Npc {
         
 		this.dir = 2;
 		this.frame = 0;
-		this.finalDir;
+		this.finalDirection;
 		this.moving = false;
 		this.movingDir;
 		this.path = [[]];

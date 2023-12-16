@@ -1,4 +1,5 @@
 import Player from './player.js';
+import Helper from "../helper.js";
 
 export default class LocalPlayer extends Player {
     /**
@@ -26,7 +27,7 @@ export default class LocalPlayer extends Player {
         /** @type {boolean} */
         this.goRun = false;
 
-        /** @type {boolean} */
+        /** @type {[[number]]} */
         this.path = [[]];
 
         /** @type {number} */
@@ -54,15 +55,18 @@ export default class LocalPlayer extends Player {
 /* ------------------------------ *
     SETTERS
 * ------------------------------ */
+    /**
+     * @param {number} x 
+     * @param {number} y 
+     */
     setAbsPos (x, y) {
         this.absPos.x = x;
         this.absPos.y = y;
     }
-
-    setRun (running) {
-        this.goRun = running;
-    }
-
+    
+    /**
+     * @param {[[number, number]]} path
+     */
     setPath (path) {
 		this.path = path;
         this.moving = true;
@@ -77,13 +81,13 @@ export default class LocalPlayer extends Player {
 		if ((this.goAttack || this.goToNpc) && this.stepCount === 0) {
 			// Face player towards enemy
 			if (this.path[this.path.length - 1][0] > this.path[this.path.length - 2][0]) {
-				this.finalDir = 1;
+				this.finalDirection = Helper.directions().Right;
 			} else if (this.path[this.path.length - 1][0] < this.path[this.path.length - 2][0]) {
-				this.finalDir = 3;
+				this.finalDirection = Helper.directions().Left;
 			} else if (this.path[this.path.length - 1][1] > this.path[this.path.length - 2][1]) {
-				this.finalDir = 2;
+				this.finalDirection = Helper.directions().Down;
 			} else if (this.path[this.path.length - 1][1] < this.path[this.path.length - 2][1]) {
-				this.finalDir = 0;
+				this.finalDirection = Helper.directions().Up;
 			}
 
 			// Remove last path element so player doesn't step on enemy
@@ -92,7 +96,7 @@ export default class LocalPlayer extends Player {
     }
 
 /* ------------------------------ *
-    FUNCIONES
+    FUNCTIONS
 * ------------------------------ */
     updateAbsPos () {
         let posX = this.path[this.stepCount][0];
@@ -104,16 +108,16 @@ export default class LocalPlayer extends Player {
         let deltaY = posY - lastPosY;
 
         if (Math.abs(deltaX) > Math.abs(deltaY)) { // Left or Right
-            this.dir = (deltaX < 0) ? 3 : 1;
+            this.dir = (deltaX < 0) ? Helper.directions().Left : Helper.directions().Right;
             this.setAbsPos((deltaX < 0) ? -1 : 1, 0);
         } else { // Up or Down
-            this.dir = (deltaY < 0) ? 0 : 2;
+            this.dir = (deltaY < 0) ? Helper.directions().Up : Helper.directions().Down;
             this.setAbsPos(0, (deltaY < 0) ? -1 : 1);
         }
     }
 
     playerWalking () {
-        // Path length is 1 i.e. when clicked on player position
+        // Path length is 1, when clicked on player position
         if (this.path.length >= 1) {
 
             if (this.stepCount !== 0 && this.getTellCount()) {                
@@ -138,13 +142,14 @@ export default class LocalPlayer extends Player {
                 this.path.splice(0, this.stepCount);
                 //this.stepSnd.pause();
                 this.stepCount = 0;
-                //this.dir = this.finalDir;
+                //this.dir = this.finalDirection;
             }
         }
     }
 
     playerMove (delta) {
         /*
+        sound walking
         if(this.stepSnd.paused) {
             this.stepSnd.currentTime = 0;
             this.stepSnd.play();
@@ -162,15 +167,13 @@ export default class LocalPlayer extends Player {
             case 2:
                 if (((this.path.length - 1) - this.stepCount) > 0) {
                     this.playerRunning();
+                } else if (this.stepCount === this.path.length) {
+                    this.path.splice(0, this.stepCount - 2);
+                    this.stepCount = 0;
+                    this.goRun = false;
+                    this.playerWalking();
                 } else {
-                    if (this.stepCount === this.path.length) {
-                        this.path.splice(0, this.stepCount - 2);
-                        this.stepCount = 0;
-                        this.setRun(false);
-                        this.playerWalking();
-                    } else {
-                        this.setRun(true);
-                    }
+                    this.goRun = true;
                 }
                 break;
         }  
