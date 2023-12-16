@@ -28,11 +28,12 @@ const bodyParser = require('body-parser');
 
 // STRING RESOURCE
 const i18n = require('./config/i18n-config');
+const { Model } = require('sequelize');
 
 /* ------------------------------ *
     CONFIGURATIONS
 * ------------------------------ */
-app.set('appName', 'P-MS');
+app.set('appName', 'Haru-Engine');
 app.set('port', process.env.PORT || 3000);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
@@ -171,6 +172,9 @@ async function loadNPCs () {
 /* ------------------------------ *
     CONNECTIONS TO SERVER
 * ------------------------------ */
+/**
+* @param {{idAccount: string;}} data
+*/
 async function onAccountConnect (data) {
     let toClient = this;
 
@@ -187,22 +191,21 @@ async function onAccountConnect (data) {
     });
 }
 
-// Socket client has disconnected
 async function onClientDisconnect () {
     let toClient = this;
 
     try {
         let character = engine.playerDisconnect(this.id);
 
-        loggerPlayers.info(`The player disconnected: ${character.getName()} - with ID ${character.getIDPJ()}`)
+        loggerPlayers.info(`The player disconnected: ${character.name} - with ID: ${character.IDPj}`);
 
-        let characterDB = await models.character.findByPk(character.getID());
+        let characterDB = await models.character.findByPk(character.IDClient);
         await characterDB.update({ online: 0 });
 
-        let accountDB = await models.account.findByPk(character.getIDPJ());
+        let accountDB = await models.account.findByPk(character.IDPj);
         await accountDB.update({ online: 0 });
 
-        toClient.broadcast.emit('players:playerDisconnect', {id: character.getID()});
+        toClient.broadcast.emit('players:playerDisconnect', {id: character.IDClient});
     } catch (e) {
         logger.fatal('Error:', {file: 'app.js', method:'onClientDisconnect', message: e});
     }
@@ -211,11 +214,15 @@ async function onClientDisconnect () {
 /* ------------------------------ *
     CHARACTER
 * ------------------------------ */
+/**
+* @param {any} toClient
+* @param {Model<character>} dataCharacter
+*/
 function sendCharacterToClient (toClient, dataCharacter) {
     // Add new player
     let player = engine.addPlayer(toClient.id, dataCharacter);
 
-    loggerPlayers.info(`The player connected: ${player.getName()}`);
+    loggerPlayers.info(`The player connected: ${player.name}`);
 
     // Send information to client
     toClient.emit('players:localPlayer', player);
@@ -231,7 +238,7 @@ function sendCharacterToClient (toClient, dataCharacter) {
 
     // Send players connected to new player
     for (let playerRemote of engine.getPlayers()) {
-        if (playerRemote.getID() != toClient.id) {
+        if (playerRemote.IDClient !== toClient.id) {
             toClient.emit('players:remotePlayer', playerRemote);
         }
     }
@@ -244,6 +251,17 @@ function sendCharacterToClient (toClient, dataCharacter) {
     // });
 }
 
+/**
+* @param {{
+*    idAccount: string, 
+*    gender: string, 
+*    element: string, 
+*    village: string, 
+*    appearance: string, 
+*    hair: string, 
+*    name: string,
+*   }} data
+*/
 async function onCharacterCreate (data) {
     let toClient = this;
 
@@ -266,6 +284,9 @@ async function onCharacterCreate (data) {
     }
 }
 
+/**
+ * @param {{idCharacter: string;}} data 
+ */
 async function onCharacterConnect (data) {
     let toClient = this;
 
@@ -282,18 +303,19 @@ async function onCharacterConnect (data) {
     });
 }
 
-// Player has moved
+/**
+ * @param {{id: number; x: number; y: number; dir: number; mode: number;}} data
+ */
 function onMovePlayer (data) {
     let toClient = this,
         player = engine.playerById(this.id);
 
-	// Player not found
 	if (player) {
         // Update player position
         engine.movePlayer(player, data);
 
         // Broadcast updated position to connected socket clients
-        io.emit('player:move', {id: player.getID(), posWorld: player.getPosWorld(), dir: player.getDir(), mode: data.mode});
+        io.emit('player:move', {id: player.IDClient, posWorld: player.posWorld, dir: player.direction, mode: data.mode});
 
         // Envia los Npc's del mapa al cliente - error
         // let NPCCercanos = engine.NPCNearby(player);
@@ -306,10 +328,14 @@ function onMovePlayer (data) {
         logger.warn('Error:', {file: 'app.js', method:'onMovePlayer', message: `Player not found: ${this.id}`});
 	}
 }
-
+/* ------------------------------ *
+    CHAT
+* ------------------------------- */
+/**
+ * @param {{name: string, mode: string, text: string, chatTo: string;}} data 
+ */
 function onNewMessage(data) {
-    let toClient = this,
-        player = engine.playerById(toClient.id);
+    let toClient = this;
 
     loggerMessages.trace('New message: ', {name: data.name, mode: '', text: data.text})
 
@@ -317,17 +343,21 @@ function onNewMessage(data) {
 }
 
 /* ------------------------------ *
-    MAPA
+    MAP
 * ------------------------------ */
+/**
+ * @param {{width: number, height: number}} data
+ */
 function onMap (data) {
     let toClient = this,
         player = engine.playerById(toClient.id);
 
-	// Player found
 	if (player) {
         let map = engine.getMap(player, data.width, data.height);
 
-        toClient.emit('map:data', {capa1: map.capa1, capa2: map.capa2, capa3: map.capa3, capa4: map.capa4, capa5: map.capa5, capa6: map.capa6, collisionMap: map.collision, collisionMapOld: map.collision});
+        if (map) {
+            toClient.emit('map:data', map);
+        }
     } else {
         logger.warn('Error:', {file: 'app.js', method:'onMap', message: `Player not found: ${toClient.id}`});
 	}
@@ -336,11 +366,12 @@ function onMap (data) {
 /* ------------------------------ *
     NPC
 * ------------------------------ */
-//socket.emit('npc:move', {id: npc.getID(), x: absPos.absX, y: absPos.absY, dir: npc.getDir()});
+/**
+ * @param {{id: string, x: number, y: number, dir: number}} data 
+ */
 function onMoveNpc (data) {
     let npc = engine.npcById(data.id);
 
-	// Player not found
 	if (npc) {
         npc.setPosWorld(data.x, data.y);
         npc.setDirection(data.dir);

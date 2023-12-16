@@ -9,6 +9,22 @@ DATA OF NPC
 */
 
 class Npc {
+    /**
+    * Checks whether or not the constraint is applicable for the notice subtype indicated by the current Context.
+    * 
+    * @constructor
+    * @param {{ 
+    *           id: string; 
+    *           name: string; 
+    *           health: number;
+    *           idMap: number;
+    *           posWorldX: number;
+    *           posWorldY: number;    
+    *           visionDistance: number; 
+    *           reaction: number;
+    *   }}  data
+    * @param {string} Skin
+    */
     constructor (data, Skin) {
         this.id = data.id;
         this.name = data.name;
@@ -22,7 +38,7 @@ class Npc {
         
 		this.dir = 2;
 		this.frame = 0;
-		this.finalDir;
+		this.finalDirection;
 		this.moving = false;
 		this.movingDir;
 		this.path = [[]];

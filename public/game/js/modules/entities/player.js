@@ -1,24 +1,50 @@
 export default class Player {
+	/**
+     * @constructor
+     * @param {{ 
+	 * 			IDClient: string; 
+	 * 			name: string; 
+	 * 			skinBase: string; 
+	 *			skinHair: string; 
+	 *			health: { now: number; max: number; }; 
+	 *			level: string; 
+	 *			experience: { now: number; max: number; }; 
+	 *			money: number; 
+	 *			posWorld: { X: number; Y: number; }; 
+	 *			direction: number; }} datos
+	 */
     constructor (datos) {
-        console.log("datos pj"+ datos.name);
-        this.id = datos.id;
-        this.name = datos.name;
+		/** @type {string} */
+        this.id = datos.IDClient;
+        
+		/** @type {string} */
+		this.name = datos.name;
+		
         this.skinBase = new Image();
-		this.skinBase.src = datos.skinBase;
-		
-		this.posWorld = {x: datos.posWorld.x, y: datos.posWorld.y};
-		
-		this.dir = 2;
-		this.frame = 0;
-		this.moving = false;
-		this.mode = 0, // 0 = parado, 1 = caminando, 2 = corriendo, 3 = fighting;
 
+		/** @type {string} */
+		this.skinBase.src = datos.skinBase;
+
+		/** @type {{ x: number; y: number; }} */
+		this.posWorld = {x: datos.posWorld.X, y: datos.posWorld.Y};
+		
+		/** @type {number} direction player in the map */
+		this.dir = 2;
+
+		/** @type {number} frame */
+		this.frame = 0;
+
+		/** @type {boolean} */
+		this.moving = false;
+
+		/** @type {number}  0 = parado, 1 = caminando, 2 = corriendo, 3 = fighting */
+		this.mode = 0;
 		////////////////////////
 
 		//this.sound = new SoundManager();
 		this.currhp = 0;
 		this.alive = true;
-		this.finalDir;
+		this.finalDirection;
 		this.fightFrame = 0;
 		this.convPos = 0;
 		this.movingDir;

@@ -8,7 +8,7 @@ export default  class Keyboard {
             if (!$("#Mensaje").is(":focus")) {
                 switch (keyCode) {
                     case 16: // Shift - Correr
-                        localPlayer.setRun(true);
+                        localPlayer.goRun = true;
                         break;
                 }
             }
@@ -26,7 +26,7 @@ export default  class Keyboard {
                         break;
 
                     case 16: // Shift - Deja de correr
-                        localPlayer.setRun(false);
+                        localPlayer.goRun = false;
                         break;
 
                     case 80: // P - Personaje

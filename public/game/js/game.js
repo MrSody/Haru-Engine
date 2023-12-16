@@ -1,5 +1,5 @@
 /*-------------------------------
-        ProjectMMO
+        HARU-ENGINE
     VERSION:    Alpha
 *-------------------------------*/
 "use strict";
@@ -17,36 +17,61 @@ import RemotePlayer from './modules/entities/remotePlayer.js';
 import Npc from './modules/entities/npc.js';
 // DEVELOPER
 import Developer from './developer/developer.js';
+
 /*-------------------------------
     Variables
 *-------------------------------*/
-let canvasHUB,		// Canvas DOM elemento
-    ctxHUB,		    // Canvas contexto de representación
-    // CAPAS
-    canvasCapaMapaAbajo,
-    ctxCapaMapaAbajo,
-    canvasPersonaje,
-    ctxPersonaje,
-    canvasCapaMapaArriba,
-    ctxCapaMapaArriba,
-    // CLASSES
-    clsInterface = new Interface(),
-    clsInterfaceCharacter = new InterfaceCharacter(),
-    clsChat = new Chat(),
-    clsKeyboard,
-    clsMap,
-    clsMouse,
-    clsDeveloper,
-    // ENTITIES
-    localPlayer,	// Clase jugador local
-    remotePlayers = [],	// Clase jugador remoto
-    npcs = [],
-    // DEVELOPER
-    modeDeveloper = false,
-    
-	lastMapUpdate = Date.now(),
-	socket,		// Socket connection
-	tellCounter = 0;
+
+let canvasHUB;		// Canvas DOM elemento
+let ctxHUB;		    // Canvas contexto de representación
+
+// CAPAS
+let canvasCapaMapaAbajo;
+let ctxCapaMapaAbajo;
+let canvasPersonaje;
+let ctxPersonaje;
+let canvasCapaMapaArriba;
+let ctxCapaMapaArriba;
+
+// CLASSES
+/** @type {Interface} */
+let clsInterface = new Interface();
+
+/** @type {InterfaceCharacter} */
+let clsInterfaceCharacter = new InterfaceCharacter();
+
+/** @type {Chat} */
+let clsChat = new Chat();
+
+/** @type {Keyboard} */
+let clsKeyboard;
+
+/** @type {Map} */
+let clsMap;
+
+/** @type {Mouse} */
+let clsMouse;
+
+/** @type {Developer} */
+let clsDeveloper;
+
+// ENTITIES
+/** @type {LocalPlayer} Class player local */
+let localPlayer;
+
+/** @type {RemotePlayer} Class player remote */
+let remotePlayers = [];
+
+/** @type {Npc} Class NPC */
+let npcs = [];
+
+// DEVELOPER
+let modeDeveloper = false;
+
+let lastMapUpdate = Date.now();
+let socket;		// Socket connection
+let tellCounter = 0;
+
     
 /* ------------------------------
     Iniciando el juego
@@ -118,7 +143,6 @@ let setEventHandlers = function() {
     Socket connected
 *-------------------------------*/
 function onSocketConnected () {
-    // Carga la pantalla de carga
     clsInterface.loadScreen();
 
     // Tell game server client connected
@@ -188,8 +212,8 @@ function onCreateLocalPlayer (data) {
 // INICIALIZA EL MAPA
 function onInitMap (data) {
     clsMap = new Map(data);
-    clsMouse = new Mouse(clsMap.getTileSize());
-    clsDeveloper = new Developer(clsMap.getTileSize());
+    clsMouse = new Mouse(clsMap.tileSize);
+    clsDeveloper = new Developer(clsMap.tileSize);
         
     // REDIMENCIONA EL CANVAS
     onResize();
@@ -218,7 +242,10 @@ function onNewNpc (data) {
 /*-------------------------------
     Funciones de Ayuda
 *-------------------------------*/
-// Buscar el jugador remoto
+/**
+ * @param {string} id 
+ * @returns {RemotePlayer}
+ */
 function findRemotePlayer (id) {
     for (let remotePlayer of remotePlayers) {
         if (remotePlayer.getID() === id) {
@@ -229,7 +256,10 @@ function findRemotePlayer (id) {
     return false;
 }
 
-// Retornar player
+/**
+ * @param {string} id 
+ * @returns {LocalPlayer | RemotePlayer}
+ */
 function findPlayer (id) {
     if (localPlayer.getID() === id){
         return localPlayer;
@@ -238,6 +268,10 @@ function findPlayer (id) {
     }
 }
 
+/**
+ * @param {string} id 
+ * @returns {Npc}
+ */
 function findNpc (id) {
     for (let npc of npcs) {
         if (npc.getID() === id) {
@@ -441,9 +475,9 @@ function cleanScreen (width, height) {
 }
 
 function draw () {
-    let sizeScreen = clsMap.getSizeScreen();
-    let middleTile = clsMap.getMiddleTile();
-    let maxTiles = clsMap.getMaxTiles();
+    let sizeScreen = clsMap.sizeScreen;
+    let middleTile = clsMap.middleTile;
+    let maxTiles = clsMap.maxTiles;
     let posWorld = localPlayer.getPosWorld();
 
     // Wipe the canvas clean
