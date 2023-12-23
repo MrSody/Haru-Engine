@@ -111,13 +111,14 @@ export default class Player {
 /* ------------------------------ *
     SETTERS
 * ------------------------------ */
+	
+	/**
+	 * @param {number} x
+	 * @param {number} y
+	 */
 	setPosWorld (x, y) {
 		this.posWorld.x = x;
 		this.posWorld.y = y;
-	}
-
-	setDir (dir) {
-		this.dir = dir;
 	}
 
 /* ------------------------------ *

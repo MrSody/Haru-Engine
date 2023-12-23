@@ -1,5 +1,5 @@
 import Player from './player.js';
-import Helper from "../helper.js";
+import Enums from "../enums.js";
 
 export default class LocalPlayer extends Player {
     /**
@@ -40,10 +40,6 @@ export default class LocalPlayer extends Player {
 /* ------------------------------ *
     GETTERS
 * ------------------------------ */
-    getAbsPos () {
-        return this.absPos;
-    }
-
     isRunning () {
         return this.goRun;
     }
@@ -81,13 +77,13 @@ export default class LocalPlayer extends Player {
 		if ((this.goAttack || this.goToNpc) && this.stepCount === 0) {
 			// Face player towards enemy
 			if (this.path[this.path.length - 1][0] > this.path[this.path.length - 2][0]) {
-				this.finalDirection = Helper.directions().Right;
+				this.finalDirection = Enums.directions().Right;
 			} else if (this.path[this.path.length - 1][0] < this.path[this.path.length - 2][0]) {
-				this.finalDirection = Helper.directions().Left;
+				this.finalDirection = Enums.directions().Left;
 			} else if (this.path[this.path.length - 1][1] > this.path[this.path.length - 2][1]) {
-				this.finalDirection = Helper.directions().Down;
+				this.finalDirection = Enums.directions().Down;
 			} else if (this.path[this.path.length - 1][1] < this.path[this.path.length - 2][1]) {
-				this.finalDirection = Helper.directions().Up;
+				this.finalDirection = Enums.directions().Up;
 			}
 
 			// Remove last path element so player doesn't step on enemy
@@ -108,10 +104,10 @@ export default class LocalPlayer extends Player {
         let deltaY = posY - lastPosY;
 
         if (Math.abs(deltaX) > Math.abs(deltaY)) { // Left or Right
-            this.dir = (deltaX < 0) ? Helper.directions().Left : Helper.directions().Right;
+            this.dir = (deltaX < 0) ? Enums.directions().Left : Enums.directions().Right;
             this.setAbsPos((deltaX < 0) ? -1 : 1, 0);
         } else { // Up or Down
-            this.dir = (deltaY < 0) ? Helper.directions().Up : Helper.directions().Down;
+            this.dir = (deltaY < 0) ? Enums.directions().Up : Enums.directions().Down;
             this.setAbsPos(0, (deltaY < 0) ? -1 : 1);
         }
     }
@@ -147,6 +143,9 @@ export default class LocalPlayer extends Player {
         }
     }
 
+    /**
+     * @param {number} delta 
+     */
     playerMove (delta) {
         /*
         sound walking
@@ -182,21 +181,28 @@ export default class LocalPlayer extends Player {
 /* ------------------------------ *
     DRAW
 * ------------------------------ */
-    draw (ctx, HUB, cXnull, cYnull) {
-        const tileSize = 32;
-        cXnull *= tileSize;
+    /**
+     * 
+     * @param {any} ctx 
+     * @param {any} HUB 
+     * @param {number} cX 
+     * @param {number} cY 
+     * @param {number} tileSize 
+     */
+    draw (ctx, HUB, cX, cY, tileSize) {
+        cX *= tileSize;
 
-        //cYnull = (cYnull - 0.5);
-        cYnull *= tileSize;
+        //cY = (cY - 0.5);
+        cY *= tileSize;
 
         this.updateFrame();
 
+        // Show player name
         HUB.fillStyle = "#FFF";
         HUB.font = "9pt Minecraftia";
-        // Muestra el nombre del player
-        HUB.fillText(this.name, cXnull, (cYnull - 35));
+        HUB.fillText(this.name, cX, (cY - 35));
 
-        this.drawMode(ctx, cXnull, cYnull);
+        this.drawMode(ctx, cX, cY);
         
         /*
         let hitDelta = Date.now() - this.lastHitPointUpdate;

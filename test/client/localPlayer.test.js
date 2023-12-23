@@ -3,10 +3,11 @@
  */
 
 const CONSTANT = require('./constants');
+const { createCanvas, loadImage } = require('canvas');
 
 import { response } from 'express';
 import LocalPlayer from '../../public/game/js/modules/entities/localPlayer';
-import Helper from "../../public/game/js/modules/helper";
+import Enums from "../../public/game/js/modules/enums";
 
 test('setAbsPos', () => {
     let player = new LocalPlayer(CONSTANT.DATA_PLAYER);
@@ -46,7 +47,7 @@ describe('setPath', () => {
         player.setPath(CONSTANT.Path);
 
         expect(player.path).toStrictEqual(responsePath);
-        expect(player.finalDirection).toStrictEqual(Helper.directions().Down);
+        expect(player.finalDirection).toStrictEqual(Enums.directions().Down);
     });
 
     test('setPath - goToNpc', () => {
@@ -62,7 +63,7 @@ describe('setPath', () => {
         player.setPath(CONSTANT.Path);
 
         expect(player.path).toStrictEqual(responsePath);
-        expect(player.finalDirection).toStrictEqual(Helper.directions().Down);
+        expect(player.finalDirection).toStrictEqual(Enums.directions().Down);
     });
 });
 
@@ -75,7 +76,7 @@ describe('updateAbsPos', () => {
 
         player.updateAbsPos();
 
-        expect(player.dir).toStrictEqual(Helper.directions().Down);
+        expect(player.dir).toStrictEqual(Enums.directions().Down);
         expect(player.absPos).toStrictEqual({x: 0, y: 1});
     });
 
@@ -87,7 +88,7 @@ describe('updateAbsPos', () => {
 
         player.updateAbsPos();
 
-        expect(player.dir).toStrictEqual(Helper.directions().Down);
+        expect(player.dir).toStrictEqual(Enums.directions().Down);
         expect(player.absPos).toStrictEqual({x: 0, y: 1});
     });
 
@@ -99,7 +100,7 @@ describe('updateAbsPos', () => {
 
         player.updateAbsPos();
 
-        expect(player.dir).toStrictEqual(Helper.directions().Right);
+        expect(player.dir).toStrictEqual(Enums.directions().Right);
         expect(player.absPos).toStrictEqual({x: 1, y: 0});
     });
 
@@ -111,7 +112,7 @@ describe('updateAbsPos', () => {
 
         player.updateAbsPos();
 
-        expect(player.dir).toStrictEqual(Helper.directions().Right);
+        expect(player.dir).toStrictEqual(Enums.directions().Right);
         expect(player.absPos).toStrictEqual({x: 1, y: 0});
     });
 
@@ -123,7 +124,7 @@ describe('updateAbsPos', () => {
 
         player.updateAbsPos();
 
-        expect(player.dir).toStrictEqual(Helper.directions().Down);
+        expect(player.dir).toStrictEqual(Enums.directions().Down);
         expect(player.absPos).toStrictEqual({x: 0, y: 1});
     });
 });
@@ -170,4 +171,28 @@ test('playerMove', () => {
     player.posWorld.y += player.absPos.y;
 
     expect(player.posWorld).toStrictEqual({x: 11, y: 14 });
+});
+
+test('draw', async () => {
+    const player = new LocalPlayer(CONSTANT.DATA_PLAYER);
+    const coordinateX = 5;
+    const coordinateY = 5;
+    const tileSize = 32;
+
+    const canvaCharacters = createCanvas(544, 352);
+    const ctxCharacters = canvaCharacters.getContext('2d');
+    const canvaHUB = createCanvas(544, 352);
+    const ctxHUB = canvaHUB.getContext('2d');
+
+    const image = await loadImage(`${__dirname}\\spritePlayer.png`);
+
+    player.skinBase = image;
+
+    player.draw(ctxCharacters, ctxHUB, coordinateX, coordinateY, tileSize);
+
+    const dataURLCharacters = canvaCharacters.toDataURL();
+    expect(dataURLCharacters).toMatchSnapshot();
+
+    const dataURLHUB = canvaHUB.toDataURL();
+    expect(dataURLHUB).toMatchSnapshot();
 });

@@ -314,7 +314,7 @@ function onMovePlayer (data) {
 
     if (player) {
         player.setPosWorld(data.posWorld.x, data.posWorld.y);
-        player.setDir(data.dir);
+        player.dir = data.dir;
 
         if (localPlayer.getID() !== player.getID()) {
             player.setMode(data.mode);
@@ -348,7 +348,7 @@ function onMoveNpc (data) {
 
     if (npc) {
         npc.setPosWorld(data.pos.x, data.pos.y);
-        npc.setDir(data.dir);
+        npc.dir = data.dir;
         npc.setAbsPos(0, 0);
     } else {
         console.log("MoveNpc - Npc not found: "+ data.id);
@@ -432,7 +432,7 @@ function animate () {
 function update (delta) {
     // Mover el player
 	if (localPlayer.isMoving()) {
-		let absPos = localPlayer.getAbsPos();
+		let absPos = localPlayer.absPos;
         let width = $(window).width();
         let height = $(window).height();
 
@@ -522,7 +522,7 @@ function draw () {
 
             // Draw local player
             if (middleTile.x == w && middleTile.y == h) {
-                localPlayer.draw(ctxPersonaje, ctxHUB, middleTile.x, (middleTile.y - 0.5));
+                localPlayer.draw(ctxPersonaje, ctxHUB, middleTile.x, (middleTile.y - 0.5), clsMap.tileSize);
             }
 
             // Dibuja las capas superiores

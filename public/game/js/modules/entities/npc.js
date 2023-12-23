@@ -80,10 +80,6 @@ export default class Npc {
         this.posWorld.y = posY;
     }
     
-    setDir (dir) {
-        this.dir = dir;
-    }
-    
     setAbsPos (absX, absY) {
 		this.absPos.absX = absX;
 		this.absPos.absY = absY;
