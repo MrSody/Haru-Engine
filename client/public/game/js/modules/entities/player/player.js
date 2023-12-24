@@ -1,5 +1,5 @@
-import ActionStateEnums from "../enums/actionState.js";
-import DirectionsEnums from "../enums/directions.js";
+import ActionStateEnums from "../../enums/actionState.js";
+import DirectionsEnums from "../../enums/directions.js";
 
 export default class Player {
 	/**

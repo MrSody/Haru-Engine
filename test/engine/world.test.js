@@ -1,5 +1,5 @@
 const { response } = require('express');
-const WORLD = require('../../engine/modules/world').World;
+const WORLD = require('../../server/core/engine/modules/entities/world/world').World;
 const CONSTANT = require('./constants');
 
 const World = new WORLD();

@@ -5,7 +5,7 @@ const express = require('express');
 const router = express.Router();
 
 // Controllers
-const accountController = require('../app/controllers/page/accountController');
+const accountController = require('../../server/app/controllers/page/accountController');
 
 //HOME - Game
 router.get('/', (req, res) => {

@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const { models } = require('../../../database');
 const bcrypt = require('bcrypt');
-const { config } = require("../../../config/config");
+const { config } = require("../../../../config/config");
 
 // LOGs
 const log4js = require('log4js');

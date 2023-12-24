@@ -1,5 +1,5 @@
 import Player from './player.js';
-import DirectionsEnums from "../enums/directions.js";
+import DirectionsEnums from "../../enums/directions.js";
 
 export default class LocalPlayer extends Player {
     /**

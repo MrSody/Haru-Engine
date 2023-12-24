@@ -6,8 +6,8 @@ const CONSTANT = require('./constants');
 const { createCanvas, loadImage } = require('canvas');
 
 import { response } from 'express';
-import Player from '../../public/game/js/modules/entities/player';
-import ActionStateEnums from "../../public/game/js/modules/enums/actionState";
+import Player from '../../client/public/game/js/modules/entities/player/player';
+import ActionStateEnums from "../../client/public/game/js/modules/enums/actionState";
 
 test('setPosWorld', () => {
     const player = new Player(CONSTANT.DATA_PLAYER);

@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "test.tmx",
+    "activeFile": "0.tmx",
     "expandedProjectPaths": [
         "."
     ],
@@ -13,8 +13,8 @@
             "scale": 0.141015625,
             "selectedLayer": 6,
             "viewCenter": {
-                "x": 2283.434903047091,
-                "y": 2038.781163434903
+                "x": 2279.8891966759006,
+                "y": 2035.2354570637117
             }
         },
         "0.tmx#pantilla": {
@@ -40,8 +40,8 @@
             "scale": 1.5,
             "selectedLayer": 3,
             "viewCenter": {
-                "x": 333.3333333333333,
-                "y": 330.33333333333326
+                "x": 333,
+                "y": 329.33333333333326
             }
         },
         "test.tmx#pantilla": {
@@ -62,8 +62,8 @@
     ],
     "project": "haru-engine.tiled-project",
     "recentFiles": [
-        "0.tmx",
         "test.tmx",
+        "0.tmx",
         "C:/Users/Sody/Documents/Maps/0.tmx",
         "pantilla.tsx"
     ],

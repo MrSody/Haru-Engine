@@ -1,6 +1,6 @@
-const PLAYER = require('./modules/player.js').Player;
-const WORLD = require('./modules/world.js').World;
-const NPC = require('./modules/npc.js').Npc;
+const PLAYER = require('./modules/entities/player/player.js').Player;
+const WORLD = require('./modules/entities/world/world.js').World;
+const NPC = require('./modules/entities/npc/npc.js').Npc;
 let fs = require('fs');
 
 // LOGs
@@ -96,7 +96,7 @@ class Engine {
      * @param {{id: string; name: string; health: number; skin: string; Level: number; idMap: number; posX: number; posY: number; visionDistance: number; reaction: number; }} dataNPC
      */
     addNPC (dataNPC) {
-        let skinNpc = fs.readFileSync(`./engine/sprite/npc/${dataNPC.skin}.txt`, 'utf-8');
+        let skinNpc = fs.readFileSync(`./server/core/engine/sprite/npc/${dataNPC.skin}.txt`, 'utf-8');
 
         this.npcs.push(new NPC(dataNPC, skinNpc));
     }
@@ -128,7 +128,7 @@ class Engine {
      */
     addPlayer (IDClient, dataPlayer) {
         // Sprite player
-        let skinBase = fs.readFileSync(`./engine/sprite/player/base/${dataPlayer.SKIN.base}.txt`, 'utf-8');
+        let skinBase = fs.readFileSync(`./server/core/engine/sprite/player/base/${dataPlayer.SKIN.base}.txt`, 'utf-8');
 
         let player = new PLAYER(IDClient, dataPlayer, skinBase, "");
 

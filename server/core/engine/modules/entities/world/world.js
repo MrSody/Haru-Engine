@@ -6,13 +6,13 @@ class World {
 
     constructor () {
         /** @type {Array.<number>} */
-        this.listMaps = fs.readdirSync(__dirname +'/maps/')
+        this.listMaps = fs.readdirSync(__dirname +'./../../maps/')
                         .map(file => {
                             return file.slice(0, -5);
                         });
 
         /** @type {string} */
-        this.dataSpriteSheets = fs.readFileSync("./engine/sprite/map/tilemap.txt", 'utf-8');
+        this.dataSpriteSheets = fs.readFileSync("./server/core/engine/sprite/map/tilemap.txt", 'utf-8');
     }
 
 /* ------------------------------ *
@@ -89,7 +89,7 @@ class World {
     #dataMap (idMap) {
         let files = require('fs');
 
-        return JSON.parse(files.readFileSync(`./engine/modules/maps/${idMap}.json`));
+        return JSON.parse(files.readFileSync(`./server/core/engine/modules/maps/${idMap}.json`));
     }
 
     /**

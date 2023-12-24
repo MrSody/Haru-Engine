@@ -6,8 +6,8 @@ const CONSTANT = require('./constants');
 const { createCanvas, loadImage } = require('canvas');
 
 import { response } from 'express';
-import LocalPlayer from '../../public/game/js/modules/entities/localPlayer';
-import DirectionsEnums from "../../public/game/js/modules/enums/directions";
+import LocalPlayer from '../../client/public/game/js/modules/entities/player/localPlayer';
+import DirectionsEnums from "../../client/public/game/js/modules/enums/directions";
 
 test('setAbsPos', () => {
     let player = new LocalPlayer(CONSTANT.DATA_PLAYER);

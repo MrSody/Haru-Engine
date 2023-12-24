@@ -1,6 +1,6 @@
-const ENGINE = require('../../engine/engine').Engine;
-const PLAYER = require('../../engine/modules/player').Player;
-const NPC = require('../../engine/modules/npc').Npc;
+const ENGINE = require('../../server/core/engine/engine').Engine;
+const PLAYER = require('../../server/core/engine/modules/entities/player/player').Player;
+const NPC = require('../../server/core/engine/modules/entities/npc/npc').Npc;
 const CONSTANT = require('./constants');
 
 const Engine = new ENGINE();

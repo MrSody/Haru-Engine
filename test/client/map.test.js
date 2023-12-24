@@ -4,11 +4,11 @@
 
 const { createCanvas, loadImage } = require('canvas')
 
-const WORLD = require('../../engine/modules/world').World;
+const WORLD = require('../../server/core/engine/modules/entities/world/world.js').World;
 const CONSTANT = require('./constants');
 
 import { response } from 'express';
-import Map from '../../public/game/js/modules/world/map.js';
+import Map from '../../client/public/game/js/modules/world/map.js';
 
 const World = new WORLD();
 

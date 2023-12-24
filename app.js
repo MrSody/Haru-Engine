@@ -11,9 +11,9 @@ const app = express();
 const socketIO = require('socket.io');
 
 // CONNECTION TO DB
-const { models, queryInterface } = require('./database');
-const characterController = require('./app/controllers/game/characterController');
-const locationController = require('./app/controllers/game/locationController');
+const { models, queryInterface } = require('./server/database');
+const characterController = require('./server/app/controllers/game/characterController');
+const locationController = require('./server/app/controllers/game/locationController');
 
 // LOGs
 const log4js = require('log4js');
@@ -23,7 +23,7 @@ const loggerPlayers = log4js.getLogger('players');
 const loggerMessages = log4js.getLogger('messages');
 
 // ROUTES
-const routes = require('./routes/routes');
+const routes = require('./server/routes/routes');
 const bodyParser = require('body-parser');
 
 // STRING RESOURCE
@@ -35,14 +35,14 @@ const { Model } = require('sequelize');
 * ------------------------------ */
 app.set('appName', 'Haru-Engine');
 app.set('port', process.env.PORT || 3000);
-app.set('views', __dirname + '/views');
+app.set('views', __dirname + '/client/views');
 app.set('view engine', 'ejs');
 
 //extended: false significa que parsea solo string (no archivos de imagenes por ejemplo)
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // Bring public files - Trae los archivos publicos
-app.use(express.static(__dirname +'/public'));
+app.use(express.static(__dirname +'/client/public'));
 
 app.use(i18n.init);
 
@@ -76,7 +76,7 @@ app.get("/game", (req, res) => {
     SERVER GAME
 * ------------------------------ */
 const io = socketIO(server);
-const engineApi = require("./engine/engine").Engine;
+const engineApi = require("./server/core/engine/engine").Engine;
 
 const engine = new engineApi();
 

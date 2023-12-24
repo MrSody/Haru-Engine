@@ -1,6 +1,6 @@
 module.exports =  {
-    'config': './database/index.js',
-    'models-path': './database/models/',
-    'migrations-path': './database/migrations/',
-    'seeders-path': './database/seeders/',
+    'config': './server/database/index.js',
+    'models-path': './server/database/models/',
+    'migrations-path': './server/database/migrations/',
+    'seeders-path': './server/database/seeders/',
 }

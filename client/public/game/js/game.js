@@ -12,9 +12,9 @@ import Chat from './modules/hub/chat.js';
 // MAP
 import Map from './modules/world/map.js';
 // ENTITIES
-import LocalPlayer from './modules/entities/localPlayer.js';
-import RemotePlayer from './modules/entities/remotePlayer.js';
-import Npc from './modules/entities/npc.js';
+import LocalPlayer from './modules/entities/player/localPlayer.js';
+import RemotePlayer from './modules/entities/player/remotePlayer.js';
+import Npc from './modules/entities/npc/npc.js';
 // DEVELOPER
 import Developer from './developer/developer.js';
 

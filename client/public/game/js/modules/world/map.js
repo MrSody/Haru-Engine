@@ -1,4 +1,4 @@
-import Npc from "../../modules/entities/npc.js";
+import Npc from "../entities/npc/npc.js";
 import Helper from "../helper.js";
 
 export default class Map {
