@@ -1,3 +1,6 @@
+import ActionStateEnums from "../enums/actionState.js";
+import DirectionsEnums from "../enums/directions.js";
+
 export default class Player {
 	/**
      * @constructor
@@ -28,16 +31,16 @@ export default class Player {
 		/** @type {{ x: number; y: number; }} */
 		this.posWorld = {x: datos.posWorld.X, y: datos.posWorld.Y};
 		
-		/** @type {number} direction player in the map */
-		this.dir = 2;
+		/** @type {DirectionsEnums} */
+		this.dir = DirectionsEnums.directions().Down;
 
-		/** @type {number} frame */
+		/** @type {number} */
 		this.frame = 0;
 
 		/** @type {boolean} */
 		this.moving = false;
 
-		/** @type {number}  0 = parado, 1 = caminando, 2 = corriendo, 3 = fighting */
+		/** @type {ActionStateEnums}  */
 		this.mode = 0;
 		////////////////////////
 
@@ -133,28 +136,31 @@ export default class Player {
 	}
 
 	updateFrame () {
-		if (this.mode == 0 && (Date.now() - this.lastFrameUpdate > 300)) {
-			this.lastFrameUpdate = Date.now();
-			this.nextFrame();
-		} else if (this.mode > 0 && (Date.now() - this.lastFrameUpdate > 150)) {
+		if (
+			(this.mode === ActionStateEnums.ActionState().Stand && (Date.now() - this.lastFrameUpdate > 300)) ||
+			(this.mode !== ActionStateEnums.ActionState().Stand && (Date.now() - this.lastFrameUpdate > 150))
+		) {
 			this.lastFrameUpdate = Date.now();
 			this.nextFrame();
 		}
 	}
 
-	drawMode (ctx, cXnull, cYnull) {
+	drawMode (ctx, cX, cY) {
 		const spriteWidth = 64, spriteHeight = 55;
 
 		switch (this.mode) {
-            case 0: //Parado
-				ctx.drawImage(this.skinBase, this.frame * spriteWidth, ((this.dir * spriteHeight) + ((spriteHeight * 4) * this.mode)), spriteWidth, spriteHeight, (cXnull - 16), (cYnull - 32), spriteWidth, spriteHeight);
+            case ActionStateEnums.ActionState().Stand:
+				ctx.drawImage(this.skinBase, this.frame * spriteWidth, ((this.dir * spriteHeight) + ((spriteHeight * 4) * this.mode)), spriteWidth, spriteHeight, (cX - 16), (cY - 32), spriteWidth, spriteHeight);
                 break;
-			case 1: //Caminado
-                ctx.drawImage(this.skinBase, this.frame * spriteWidth, ((this.dir * spriteHeight) + ((spriteHeight * 4) * this.mode)), spriteWidth, spriteHeight, (cXnull - 16), (cYnull - 32), spriteWidth, spriteHeight);
+			case ActionStateEnums.ActionState().Walking:
+                ctx.drawImage(this.skinBase, this.frame * spriteWidth, ((this.dir * spriteHeight) + ((spriteHeight * 4) * this.mode)), spriteWidth, spriteHeight, (cX - 16), (cY - 32), spriteWidth, spriteHeight);
                 break;
-            case 2: //Corriendo
-                ctx.drawImage(this.skinBase, this.frame * spriteWidth, ((this.dir * spriteHeight) + ((spriteHeight * 4) * this.mode)), spriteWidth, spriteHeight, (cXnull - 16), (cYnull - 32), spriteWidth, spriteHeight);
+            case ActionStateEnums.ActionState().Running:
+                ctx.drawImage(this.skinBase, this.frame * spriteWidth, ((this.dir * spriteHeight) + ((spriteHeight * 4) * this.mode)), spriteWidth, spriteHeight, (cX - 16), (cY - 32), spriteWidth, spriteHeight);
                 break;
+			case ActionStateEnums.ActionState().Fighting:
+				ctx.drawImage(this.skinBase, this.frame * spriteWidth, ((this.dir * spriteHeight) + ((spriteHeight * 4) * this.mode)), spriteWidth, spriteHeight, (cX - 16), (cY - 32), spriteWidth, spriteHeight);
+				break;
             default:
                 console.log("Error: No hay mode del personaje");
                 break;
