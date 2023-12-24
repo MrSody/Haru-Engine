@@ -1,4 +1,4 @@
-const PLAYER = require('../../engine/modules/player').Player;
+const PLAYER = require('../../server/core/engine/modules/entities/player/player').Player;
 const CONSTANT = require('./constants');
 
 test('setPosWorld', () => {
