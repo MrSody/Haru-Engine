@@ -7,7 +7,7 @@ const { createCanvas, loadImage } = require('canvas');
 
 import { response } from 'express';
 import LocalPlayer from '../../public/game/js/modules/entities/localPlayer';
-import Enums from "../../public/game/js/modules/enums";
+import DirectionsEnums from "../../public/game/js/modules/enums/directions";
 
 test('setAbsPos', () => {
     let player = new LocalPlayer(CONSTANT.DATA_PLAYER);
@@ -47,7 +47,7 @@ describe('setPath', () => {
         player.setPath(CONSTANT.Path);
 
         expect(player.path).toStrictEqual(responsePath);
-        expect(player.finalDirection).toStrictEqual(Enums.directions().Down);
+        expect(player.finalDirection).toStrictEqual(DirectionsEnums.directions().Down);
     });
 
     test('setPath - goToNpc', () => {
@@ -63,7 +63,7 @@ describe('setPath', () => {
         player.setPath(CONSTANT.Path);
 
         expect(player.path).toStrictEqual(responsePath);
-        expect(player.finalDirection).toStrictEqual(Enums.directions().Down);
+        expect(player.finalDirection).toStrictEqual(DirectionsEnums.directions().Down);
     });
 });
 
@@ -76,7 +76,7 @@ describe('updateAbsPos', () => {
 
         player.updateAbsPos();
 
-        expect(player.dir).toStrictEqual(Enums.directions().Down);
+        expect(player.dir).toStrictEqual(DirectionsEnums.directions().Down);
         expect(player.absPos).toStrictEqual({x: 0, y: 1});
     });
 
@@ -88,7 +88,7 @@ describe('updateAbsPos', () => {
 
         player.updateAbsPos();
 
-        expect(player.dir).toStrictEqual(Enums.directions().Down);
+        expect(player.dir).toStrictEqual(DirectionsEnums.directions().Down);
         expect(player.absPos).toStrictEqual({x: 0, y: 1});
     });
 
@@ -100,7 +100,7 @@ describe('updateAbsPos', () => {
 
         player.updateAbsPos();
 
-        expect(player.dir).toStrictEqual(Enums.directions().Right);
+        expect(player.dir).toStrictEqual(DirectionsEnums.directions().Right);
         expect(player.absPos).toStrictEqual({x: 1, y: 0});
     });
 
@@ -112,7 +112,7 @@ describe('updateAbsPos', () => {
 
         player.updateAbsPos();
 
-        expect(player.dir).toStrictEqual(Enums.directions().Right);
+        expect(player.dir).toStrictEqual(DirectionsEnums.directions().Right);
         expect(player.absPos).toStrictEqual({x: 1, y: 0});
     });
 
@@ -124,7 +124,7 @@ describe('updateAbsPos', () => {
 
         player.updateAbsPos();
 
-        expect(player.dir).toStrictEqual(Enums.directions().Down);
+        expect(player.dir).toStrictEqual(DirectionsEnums.directions().Down);
         expect(player.absPos).toStrictEqual({x: 0, y: 1});
     });
 });

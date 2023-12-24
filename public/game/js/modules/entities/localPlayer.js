@@ -1,5 +1,5 @@
 import Player from './player.js';
-import Enums from "../enums.js";
+import DirectionsEnums from "../enums/directions.js";
 
 export default class LocalPlayer extends Player {
     /**
@@ -77,13 +77,13 @@ export default class LocalPlayer extends Player {
 		if ((this.goAttack || this.goToNpc) && this.stepCount === 0) {
 			// Face player towards enemy
 			if (this.path[this.path.length - 1][0] > this.path[this.path.length - 2][0]) {
-				this.finalDirection = Enums.directions().Right;
+				this.finalDirection = DirectionsEnums.directions().Right;
 			} else if (this.path[this.path.length - 1][0] < this.path[this.path.length - 2][0]) {
-				this.finalDirection = Enums.directions().Left;
+				this.finalDirection = DirectionsEnums.directions().Left;
 			} else if (this.path[this.path.length - 1][1] > this.path[this.path.length - 2][1]) {
-				this.finalDirection = Enums.directions().Down;
+				this.finalDirection = DirectionsEnums.directions().Down;
 			} else if (this.path[this.path.length - 1][1] < this.path[this.path.length - 2][1]) {
-				this.finalDirection = Enums.directions().Up;
+				this.finalDirection = DirectionsEnums.directions().Up;
 			}
 
 			// Remove last path element so player doesn't step on enemy
@@ -104,10 +104,10 @@ export default class LocalPlayer extends Player {
         let deltaY = posY - lastPosY;
 
         if (Math.abs(deltaX) > Math.abs(deltaY)) { // Left or Right
-            this.dir = (deltaX < 0) ? Enums.directions().Left : Enums.directions().Right;
+            this.dir = (deltaX < 0) ? DirectionsEnums.directions().Left : DirectionsEnums.directions().Right;
             this.setAbsPos((deltaX < 0) ? -1 : 1, 0);
         } else { // Up or Down
-            this.dir = (deltaY < 0) ? Enums.directions().Up : Enums.directions().Down;
+            this.dir = (deltaY < 0) ? DirectionsEnums.directions().Up : DirectionsEnums.directions().Down;
             this.setAbsPos(0, (deltaY < 0) ? -1 : 1);
         }
     }

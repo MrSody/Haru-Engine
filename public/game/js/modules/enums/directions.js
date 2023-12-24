@@ -1,8 +1,4 @@
-export default class Enums {
-    /**
-     * 
-     * @return @enum {number}
-     */
+export default class DirectionsEnums {
     static directions () {
         return Object.freeze({
                     Up: 0,
