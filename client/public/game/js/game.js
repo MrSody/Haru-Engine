@@ -317,7 +317,7 @@ function onMovePlayer (data) {
         player.dir = data.dir;
 
         if (localPlayer.getID() !== player.getID()) {
-            player.setMode(data.mode);
+            player.mode = data.mode;
         } else {
             player.setAbsPos(0, 0);
         }
@@ -506,7 +506,7 @@ function draw () {
                 let posNow = npc.posNow(middleTile.x, middleTile.y, posWorld);
 
                 if (posNow.x == w && posNow.y == h) {
-                    npc.draw(ctxPersonaje, ctxHUB, posNow.x, (posNow.y - 0.5));
+                    npc.draw(ctxPersonaje, ctxHUB, posNow.x, (posNow.y - 0.5), clsMap.tileSize);
                     npc.eventVision(posNow, middleTile.x, middleTile.y, clsMap.getCollision());
 
                     // Save data Npc in map collision

@@ -24,48 +24,57 @@ export default class RemotePlayer extends Player {
 * ------------------------------ */
 
 /* ------------------------------ *
-SETTERS
+    SETTERS
 * ------------------------------ */
-
-    setMode (mode) {
-        this.mode = mode;
-    }
 
 /* ------------------------------ *
-    FUNCIONES
+    FUNCTIONS
 * ------------------------------ */
-
-    // Actualiza la posicion del jugador remoto
+    /**
+     * Update position the remote player
+     *
+     * @param {number} widthMap
+     * @param {number} heightMap
+     * @param {{ x: number; y: number; }} posWorld
+     * @returns {{ x: number; y: number; }}
+     */
     posNow (widthMap, heightMap, posWorld) {
         return {
             x: Math.floor(this.posWorld.x - posWorld.x) + widthMap,
-            y: Math.floor(this.posWorld.y - posWorld.y) + heightMap
+            y: Math.floor(this.posWorld.y - posWorld.y) + heightMap,
         };
     }
 
 /* ------------------------------ *
     DRAW
 * ------------------------------ */
-
-    draw (ctx, HUB, cXnull, cYnull) {
-        const tileSize = 32;
-        cXnull *= tileSize;
-        cYnull *= tileSize;
+    /**
+     * 
+     * @param {any} ctx 
+     * @param {any} HUB 
+     * @param {number} cX 
+     * @param {number} cY 
+     * @param {number} tileSize 
+     */
+    draw (ctx, HUB, cX, cY, tileSize) {
+        cX *= tileSize;
+        cY *= tileSize;
 
         this.updateFrame();
 
         HUB.fillStyle = "#FFF";
         HUB.font = "9pt Minecraftia";
-        // Muestra el nombre y el level
-        HUB.fillText(this.name +', '+ this.level, cXnull, cYnull - 32);
-        // Muestra la vida
+        // Show name and level
+        HUB.fillText(this.name +', '+ this.level, cX, cY - 32);
+        // Show health
         HUB.fillStyle="#000000";
-        HUB.fillRect(cXnull, cYnull - 30, 50, 2);
+        HUB.fillRect(cX, cY - 30, 50, 2);
         HUB.fillStyle="#FF0000";
-        HUB.fillRect(cXnull, cYnull - 30, 40, 2);
+        HUB.fillRect(cX, cY - 30, 40, 2);
 
-        this.drawMode(ctx, cXnull, cYnull);
+        this.drawMode(ctx, cX, cY);
 
+        /*
         let hitDelta = Date.now() - this.lastHitPointUpdate;
 
         if (this.hitArray.length > 0 && hitDelta > 50) {
@@ -90,6 +99,7 @@ SETTERS
                 ctx.fillText(this.hitArray[i][0], this.pos["x"]+12, this.pos["y"]-20);
             }
         }
+        */
     }
 
 }
