@@ -17,6 +17,8 @@ import RemotePlayer from './modules/entities/player/remotePlayer.js';
 import Npc from './modules/entities/npc/npc.js';
 // DEVELOPER
 import Developer from './developer/developer.js';
+//ENUMS
+import ChatModesEnums from "../enums/chatModes";
 
 /*-------------------------------
     Variables
@@ -369,13 +371,11 @@ function localMessage (e) {
             
             if (data.sendServer) {
                 socket.emit('chat:newMessage', {name: localPlayer.getName(), mode: data.mode, text: data.text, chatTo: data.chatTo});
+            } else if (data.mode === ChatModesEnums.ChatModes().Developer) {
+                modeDeveloper = !modeDeveloper;
+                clsInterface.showMessage({mode: data.mode, text: data.text +": "+ modeDeveloper, name: localPlayer.getName()});
             } else {
-                if (data.mode) {
-                    modeDeveloper = !modeDeveloper;
-                    clsInterface.showMessage({mode: data.mode, text: data.text +": "+ modeDeveloper, name: localPlayer.getName()});
-                } else {
-                    clsInterface.showMessage({mode: data.mode, text: data.text, name: localPlayer.getName()});
-                }
+                clsInterface.showMessage({mode: data.mode, text: data.text, name: localPlayer.getName()});
             }
         }
         clsInterface.blur('#Mensaje');
