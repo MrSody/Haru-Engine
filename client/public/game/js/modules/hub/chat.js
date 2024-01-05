@@ -1,5 +1,5 @@
-import LocalPlayer from "../entities/player/localPlayer";
-import ChatModesEnums from "../enums/chatModes";
+import LocalPlayer from "../../modules/entities/player/localPlayer.js";
+import ChatModesEnums from "../../modules/enums/chatModes.js";
 
 export default class Chat {
     constructor () {

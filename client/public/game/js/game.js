@@ -18,7 +18,7 @@ import Npc from './modules/entities/npc/npc.js';
 // DEVELOPER
 import Developer from './developer/developer.js';
 //ENUMS
-import ChatModesEnums from "../enums/chatModes";
+import ChatModesEnums from "./modules/enums/chatModes.js";
 
 /*-------------------------------
     Variables

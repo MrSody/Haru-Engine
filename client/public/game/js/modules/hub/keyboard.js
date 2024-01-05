@@ -1,5 +1,7 @@
 export default  class Keyboard {
-    constructor (player) {}
+    constructor (playerKeyboard) {
+        console.log(playerKeyboard);
+    }
 
     keyDown (keyCode, localPlayer, clsInteface) {
         if (!$('#hubPrincial').hasClass('Invisible')) {
