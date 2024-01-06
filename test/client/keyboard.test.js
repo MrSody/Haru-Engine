@@ -8,7 +8,7 @@ const { createCanvas, loadImage } = require('canvas');
 import { response } from 'express';
 import LocalPlayer from '../../client/public/game/js/modules/entities/player/localPlayer';
 import Keyboard from '../../client/public/game/js/modules/hub/keyboard';
-import Interface from '../../client/public/game/js/modules/hub/interface/interface';
+import InterfaceGame from '../../client/public/game/js/modules/hub/interface/interfaceGame';
 
 describe('keyDown', () => {
     test('keyDown - Running', () => {
@@ -25,11 +25,11 @@ describe('keyDown', () => {
 describe('keyUp', () => {
     test('keyUp - Running', () => {
         let player = new LocalPlayer(CONSTANT.DATA_PLAYER);
-        let clsInteface = new Interface();
+        let clsInterfaceGame = new InterfaceGame();
         let keyBoard = new Keyboard(CONSTANT.DATA_PLAYER.keyBoard);
         let key = CONSTANT.DATA_PLAYER.keyBoard.keyRunning;
         
-        keyBoard.keyUp(key, player, clsInteface);
+        keyBoard.keyUp(key, player, clsInterfaceGame);
 
         expect(player.goRun).toStrictEqual(false);
     });

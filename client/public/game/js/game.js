@@ -5,6 +5,7 @@
 "use strict";
 // HUB
 import Interface from './modules/hub/interface/interface.js';
+import InterfaceGame from './modules/hub/interface/interfaceGame.js';
 import InterfaceCharacter from './modules/hub/interface/interfaceCharacter.js';
 import Mouse from './modules/hub/mouse.js';
 import Keyboard from './modules/hub/keyboard.js';
@@ -38,6 +39,10 @@ let ctxCapaMapaArriba;
 // CLASSES
 /** @type {Interface} */
 let clsInterface = new Interface();
+
+
+/** @type {InterfaceGame} */
+let clsInterfaceGame = new InterfaceGame();
 
 /** @type {InterfaceCharacter} */
 let clsInterfaceCharacter = new InterfaceCharacter();
@@ -386,14 +391,14 @@ function localMessage (e) {
     Funciones mouse videojuego
 *-------------------------------*/
 game.onclick = function (e) {
-    if (!$('#hubPrincial').hasClass('Invisible')) {
+    if (!clsInterfaceGame.chatIsActive()) {
         clsMouse.click(e, clsMap.getCollision(), canvasHUB, localPlayer);
     }
 }
 
 game.onmousemove = function (e) {
-    if (!$('#hubPrincial').hasClass('Invisible')) {
-        clsMouse.move(e, clsMap.getCollision());
+    if (!clsInterfaceGame.chatIsActive()) {
+        clsMouse.move(e, clsMap.getCollision(), clsInterfaceGame);
     }
 }
 
@@ -401,14 +406,14 @@ game.onmousemove = function (e) {
     Funciones Teclado videojuego
 *-------------------------------*/
 document.onkeydown = function (e) {
-    if (!clsInterface.chatIsActive()) {
-        clsKeyboard.keyDown(e.keyCode, localPlayer, clsInterface);
+    if (!clsInterfaceGame.chatIsActive()) {
+        clsKeyboard.keyDown(e.keyCode, localPlayer);
     }
 }
 
 document.onkeyup = function (e) {
-    if (!clsInterface.chatIsActive()) {
-        clsKeyboard.keyUp(e.keyCode, localPlayer, clsInterface);
+    if (!clsInterfaceGame.chatIsActive()) {
+        clsKeyboard.keyUp(e.keyCode, localPlayer, clsInterfaceGame);
     }
 }
 

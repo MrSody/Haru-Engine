@@ -1,5 +1,5 @@
 import LocalPlayer from "../../modules/entities/player/localPlayer.js";
-import Interface from "../../modules/hub/interface/interface.js";
+import InterfaceGame from "../../modules/hub/interface/interfaceGame.js";
 
 export default  class Keyboard {
     /**
@@ -40,12 +40,12 @@ export default  class Keyboard {
     /**
      * @param {number} keyCode
      * @param {LocalPlayer} localPlayer
-     * @param {Interface} clsInteface
+     * @param {InterfaceGame} clsInteface
      */
-    keyUp (keyCode, localPlayer, clsInteface) {
+    keyUp (keyCode, localPlayer, clsInterfaceGame) {
         switch (keyCode) {
             case this.keyBoard["keyEnter"]:
-                clsInteface.focusChat();
+                clsInterfaceGame.focusChat();
                 break;
 
             case this.keyBoard["keyRunning"]:

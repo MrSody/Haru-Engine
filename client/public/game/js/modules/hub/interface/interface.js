@@ -130,12 +130,4 @@ export default class Interface {
         let elementChat = this.documentSelect('#Chat');
         elementChat.scrollTop = elementChat.scrollHeight;
     }
-
-    chatIsActive () {
-        return !!(!$('#hubPrincial').hasClass('Invisible') && $("#Mensaje").is(":focus"));
-    }
-
-    focusChat () {
-        this.focus('#Mensaje');
-    }
 }
