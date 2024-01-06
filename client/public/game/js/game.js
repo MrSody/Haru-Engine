@@ -401,13 +401,13 @@ game.onmousemove = function (e) {
     Funciones Teclado videojuego
 *-------------------------------*/
 document.onkeydown = function (e) {
-    if (!$('#hubPrincial').hasClass('Invisible')) {
+    if (!clsInterface.chatIsActive()) {
         clsKeyboard.keyDown(e.keyCode, localPlayer, clsInterface);
     }
 }
 
 document.onkeyup = function (e) {
-    if (!$('#hubPrincial').hasClass('Invisible')) {
+    if (!clsInterface.chatIsActive()) {
         clsKeyboard.keyUp(e.keyCode, localPlayer, clsInterface);
     }
 }
