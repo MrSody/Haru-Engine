@@ -21,7 +21,22 @@ test('getDataSend', () => {
                     experience: { now: 0, max: 2400 },
                     money: 0,
                     posWorld: { X: 9, Y: 11 },
-                    direction: 2, 
+                    direction: 2,
+                    keyBoard: {
+                        keyAction1: 81,
+                        keyAction2: 87,
+                        keyAction3: 69,
+                        keyAction4: 82,
+                        keyAction5: 84,
+                        keyAction6: 65,
+                        keyCharacter: 80,
+                        keyBook: 76,
+                        keyMenu: 27,
+                        keyMap: 77,
+                        keySkills: 74,
+                        keyRunning: 16,
+                        keyEnter: 13,
+                    },
                 };
 
     expect(player.getDataSend()).toStrictEqual(response);

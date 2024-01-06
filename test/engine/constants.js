@@ -30,6 +30,8 @@ const DATA_DB_PLAYER = {
         keyMenu: 27,
         keyMap: 77,
         keySkills: 74,
+        keyRunning: 16,
+        keyEnter: 13,
     },
 };
 
