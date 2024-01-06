@@ -77,6 +77,18 @@ const schema = {
         field: 'Skills',
         defaultValue: '74',
     },
+    keyRunning: {
+        allowNull: false,
+        type: DataTypes.INTEGER,
+        field: 'Running',
+        defaultValue: '16',
+    },
+    keyEnter: {
+        allowNull: false,
+        type: DataTypes.INTEGER,
+        field: 'keyEnter',
+        defaultValue: '13',
+    },
 }
 
 class keyboard extends Model {
@@ -89,7 +101,7 @@ class keyboard extends Model {
             sequelize,
             tableName: NAME_TABLE,
             modelName: NAME_MODEL,
-            timestamps: false
+            timestamps: false,
         }
     }
 }

@@ -67,7 +67,7 @@ async function getCharacterByIdCharacter(idCharacter) {
                                 },
                                 {
                                     association: 'KEYBOARD',
-                                    attributes: ['keyAction1', 'keyAction2', 'keyAction3', 'keyAction4', 'keyAction5', 'keyAction6', 'keyCharacter', 'keyBook', 'keyMenu', 'keyMap', 'keySkills'],
+                                    attributes: ['keyAction1', 'keyAction2', 'keyAction3', 'keyAction4', 'keyAction5', 'keyAction6', 'keyCharacter', 'keyBook', 'keyMenu', 'keyMap', 'keySkills', 'keyRunning', 'keyEnter' ],
                                 },
                             ],
                             attributes: ['id', 'name', 'gender', 'health', 'level', 'experience', 'money' ],
