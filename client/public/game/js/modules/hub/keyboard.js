@@ -1,47 +1,67 @@
+import LocalPlayer from "../../modules/entities/player/localPlayer.js";
+import Interface from "../../modules/hub/interface/interface.js";
+
 export default  class Keyboard {
+    /**
+     * @constructor
+     * @param {{
+     *      keyAction1: number,
+     *      keyAction2: number,
+     *      keyAction3: number,
+     *      keyAction4: number,
+     *      keyAction5: number,
+     *      keyAction6: number,
+     *      keyCharacter: number,
+     *      keyBook: number,
+     *      keyMenu: number,
+     *      keyMap: number,
+     *      keySkills: number,
+     *      keyRunning: number,
+     *      keyEnter: number,
+     *      }} playerKeyboard
+     */
     constructor (playerKeyboard) {
-        console.log(playerKeyboard);
+        /**
+         * @type {{ keyAction1: number; keyAction2: number; keyAction3: number; keyAction4: number; keyAction5: number; keyAction6: number; keyCharacter: number; keyBook: number; keyMenu: number; keyMap: number; keySkills: number; keyRunning: number; keyEnter: number; }}
+         */
+        this.keyBoard = playerKeyboard;
     }
 
-    keyDown (keyCode, localPlayer, clsInteface) {
-        if (!$('#hubPrincial').hasClass('Invisible')) {
-            //alert("tecla "+ keyCode);
-    
-            if (!$("#Mensaje").is(":focus")) {
-                switch (keyCode) {
-                    case 16: // Shift - Correr
-                        localPlayer.goRun = true;
-                        break;
-                }
-            }
+    /**
+     * @param {number} keyCode 
+     * @param {LocalPlayer} localPlayer 
+     */
+    keyDown (keyCode, localPlayer) {
+        if (keyCode === this.keyBoard["keyRunning"]) {
+            localPlayer.goRun = true;
         }
     }
 
+    /**
+     * @param {number} keyCode
+     * @param {LocalPlayer} localPlayer
+     * @param {Interface} clsInteface
+     */
     keyUp (keyCode, localPlayer, clsInteface) {
-        if (!$('#hubPrincial').hasClass('Invisible')) {
-            //alert("tecla "+ keyCode);
-    
-            if (!$("#Mensaje").is(":focus")) {
-                switch (keyCode) {
-                    case 13: // Enter - Activa el chat
-                        clsInteface.focus('#Mensaje');
-                        break;
+        switch (keyCode) {
+            case this.keyBoard["keyEnter"]:
+                clsInteface.focusChat();
+                break;
 
-                    case 16: // Shift - Deja de correr
-                        localPlayer.goRun = false;
-                        break;
+            case this.keyBoard["keyRunning"]:
+                localPlayer.goRun = false;
+                break;
 
-                    case 80: // P - Personaje
-                        let contenedorPersonaje_Active = document.querySelector('#draggable_contenedorPersonaje').classList.contains("invisible");
-                    
-                        if (contenedorPersonaje_Active) {
-                            document.querySelector('#draggable_contenedorPersonaje').classList.remove("invisible");
-                        } else {
-                            document.querySelector('#draggable_contenedorPersonaje').classList.add("invisible");
-                        }
-                        break;
-                }
-            }
+            // CODE OBSOLETE
+            // case this.keyBoard["keyCharacter"]:
+            //     let contenedorPersonaje_Active = document.querySelector('#draggable_contenedorPersonaje').classList.contains("invisible");
+            
+            //     if (contenedorPersonaje_Active) {
+            //         document.querySelector('#draggable_contenedorPersonaje').classList.remove("invisible");
+            //     } else {
+            //         document.querySelector('#draggable_contenedorPersonaje').classList.add("invisible");
+            //     }
+            //     break;
         }
     }
 }

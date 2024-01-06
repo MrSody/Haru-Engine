@@ -57,6 +57,25 @@ class Player {
 
         /** @type {number} direction player in the map */
 		this.direction = 2;
+
+        /**
+        * @type {{
+        *      keyAction1: number,
+        *      keyAction2: number,
+        *      keyAction3: number,
+        *      keyAction4: number,
+        *      keyAction5: number,
+        *      keyAction6: number,
+        *      keyCharacter: number,
+        *      keyBook: number,
+        *      keyMenu: number,
+        *      keyMap: number,
+        *      keySkills: number,
+        *      keyRunning: number,
+        *      keyEnter: number,
+        *      }}
+        */
+        this.keyBoard = datos.KEYBOARD;
     }
 
 /* ------------------------------ *
@@ -94,7 +113,7 @@ class Player {
 	}
 
     /**
-     * @returns {{ IDClient: string; name: string; skinBase: string; skinHair: string; health: { now: number; max: number; }; level: string; experience: { now: number; max: number; }; money: number; posWorld: { X: number; Y: number; }; direction: number; }}
+     * @returns {{ IDClient: string; name: string; skinBase: string; skinHair: string; health: { now: number; max: number; }; level: string; experience: { now: number; max: number; }; money: number; posWorld: { X: number; Y: number; }; direction: number; keyBoard: {string: string} }}
      */
     getDataSend () {
         return {
@@ -108,6 +127,7 @@ class Player {
                 money: this.money,
                 posWorld: this.posWorld,
 		        direction: this.direction,
+                keyBoard: this.keyBoard,
         }
     }
 
