@@ -99,35 +99,4 @@ export default class Interface {
 
         this.innerHTML('#loading', html);
     }
-
-/*-------------------------------
-    HUB - GAME
-*-------------------------------*/
-    showMessage (data) {
-        let chatTxtClr;
-
-        switch (data.mode) {
-            case 's':
-                chatTxtClr = "yellow";
-                break;
-            case 'w':
-                chatTxtClr = "red";
-                break;
-            default:
-                chatTxtClr = "white";
-        }
-
-        let spanMessage = document.createElement("span");
-        spanMessage.style = "color: "+ chatTxtClr;
-        spanMessage.textContent = `${data.name}: ${data.text}`;
-        this.documentSelect("#Mensajes").appendChild(spanMessage);
-        this.documentSelect("#Mensajes").appendChild(document.createElement('br'));
-        this.scrollBottom();
-        this.documentSelect("#Mensaje").value = "";
-    }
-
-    scrollBottom() {
-        let elementChat = this.documentSelect('#Chat');
-        elementChat.scrollTop = elementChat.scrollHeight;
-    }
 }
