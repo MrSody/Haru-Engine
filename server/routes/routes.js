@@ -31,4 +31,8 @@ router.post('/registro', (req, res) => {
     accountController.createAccount(res, email, password);  
 });
 
+router.get("*", (req, res) => {
+    res.end("Archivo no encontrado")
+});
+
 module.exports = router;

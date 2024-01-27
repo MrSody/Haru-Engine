@@ -59,9 +59,6 @@ app.use(function(req, res, next) {
 * ------------------------------ */
 app.use(routes);
 
-app.get("*", (req, res) => {
-    res.end("Archivo no encontrado")
-});
 
 const server = app.listen(app.get('port'), () => {
     console.log(`Application is working: http://localhost:${app.get('port')}`);
