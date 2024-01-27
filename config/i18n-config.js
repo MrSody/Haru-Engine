@@ -8,6 +8,11 @@ i18n.configure({
     defaultLocale: 'es',
     cookie: 'lang',
     
+    // will return translation from defaultLocale in case current locale doesn't provide it
+    retryInDefaultLocale: false,
+
+    // sets a custom header name to read the language preference from - accept-language header by default
+    header: 'accept-language',
 
     // watch for changes in JSON files to reload locale on updates - defaults to false
     autoReload: true,

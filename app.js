@@ -47,8 +47,7 @@ app.use(express.static(__dirname +'/client/public'));
 app.use(i18n.init);
 
 app.use(function(req, res, next) {
-    //let lang = req.query.lang || 'en';
-    let lang = 'es';
+    let lang = req.acceptsLanguages(i18n.getLocales()) || i18n.getLocale();
     req.setLocale(lang);
     res.locals.lang = lang;
     next();
