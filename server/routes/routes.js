@@ -5,7 +5,7 @@ const express = require('express');
 const router = express.Router();
 
 // Controllers
-const accountController = require('../../server/app/controllers/page/accountController');
+const accountRepository = require('../../server/app/repositories/page/accountRepository');
 
 //HOME - Game
 router.get('/', (req, res) => {
@@ -21,14 +21,14 @@ router.post('/login', (req, res) => {
     let email = req.body.email;
     let password = req.body.password;
 
-    accountController.getAccountByEmailAndPassword(res, email, password);
+    accountRepository.getAccountByEmailAndPassword(res, email, password);
 });
 
 router.post('/registro', (req, res) => {
     let email = req.body.email;
     let password = req.body.password;
 
-    accountController.createAccount(res, email, password);  
+    accountRepository.createAccount(res, email, password);  
 });
 
 router.get("*", (req, res) => {

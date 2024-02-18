@@ -12,8 +12,8 @@ const socketIO = require('socket.io');
 
 // CONNECTION TO DB
 const { models, queryInterface } = require('./server/database');
-const characterController = require('./server/app/controllers/game/characterController');
-const locationController = require('./server/app/controllers/game/locationController');
+const characterRepository = require('./server/app/repositories/game/characterRepository');
+const locationRepository = require('./server/app/repositories/game/locationRepository');
 
 // LOGs
 const log4js = require('log4js');
@@ -174,7 +174,7 @@ async function loadNPCs () {
 async function onAccountConnect (data) {
     let toClient = this;
 
-    await characterController.getCharactersSearchAccount(data.idAccount)
+    await characterRepository.getCharactersSearchAccount(data.idAccount)
     .then(result => {
         if (result.length > 0) {
             toClient.emit('character:list', result);
@@ -268,11 +268,11 @@ async function onCharacterCreate (data) {
         
         let setting = await models.setting.create();
     
-        let location = await locationController.createLocation(data.village);
+        let location = await locationRepository.createLocation(data.village);
         
         let skin = await models.skin.create({ base: data.appearance, hair: data.hair });
     
-        let character = await characterController.createCharacter(data, skin, location, setting, attributes, keyboard);
+        let character = await characterRepository.createCharacter(data, skin, location, setting, attributes, keyboard);
 
         sendCharacterToClient(toClient, character);
     } catch (e) {
@@ -286,7 +286,7 @@ async function onCharacterCreate (data) {
 async function onCharacterConnect (data) {
     let toClient = this;
 
-    await characterController.getCharacterByIdCharacter(data.idCharacter)
+    await characterRepository.getCharacterByIdCharacter(data.idCharacter)
     .then(dataCharacter => {
         if (dataCharacter != null) {
             sendCharacterToClient(toClient, dataCharacter);
