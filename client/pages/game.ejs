@@ -49,14 +49,14 @@
         <%- include('game/Loading'); -%>
 
         <!------------------------------ *
-            PERSONAJES
+            CHARACTER
         * ------------------------------>
         <%- include('game/Character'); -%>
         <%- include('game/createCharacter'); -%>
 
 
         <!------------------------------ *
-            HUB Principal
+            HUB Main
         * ------------------------------>
         <%- include('game/hubPrincipal'); -%>
 
@@ -65,16 +65,12 @@
         * ------------------------------>
 
     </div>
-
-    <!-- DROP -->
-    <link rel="stylesheet" href="../web/jquery-ui.css">
-    <script src="../web/jquery-1.10.2.js"></script>
-    <script src="../web/jquery-ui.js"></script>
     
-    <script src="../game/js/modules/ia/pathfinder.js"></script>
-    <!-- MODULOS -->
+    <!-- MODULES -->
     <script type="module" src="../game/js/game.js"></script>
     <script src="/socket.io/socket.io.js"></script>
+    
+    <script src="../game/js/modules/ia/pathfinder.js"></script>
 
 </body>
 </html>
