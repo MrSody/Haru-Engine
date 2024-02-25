@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
     <head>
-        <title>Haru-Engine</title>
+        <title><%= __('nameGame') %></title>
         
         <%- include('partials/head.ejs'); -%>
     </head>
@@ -14,7 +14,7 @@
             </form>
         <% } %>
 
-        <%- include('partials/login'); -%>
+        <%- include('partials/navigation'); -%>
 
         
         <p><%= __n('%d apple', '%d apples', 1) %></p>

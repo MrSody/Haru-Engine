@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="es">
     <head>
-        <title>Haru-Engine - <%= __('LogIn') %></title>
+        <title><%= __('nameGame') %> - <%= __('LogIn') %></title>
 
         <%- include('partials/head.ejs'); -%>
     </head>
 <body>
     <div class="container">
+
+        <%- include('partials/navigation'); -%>
+
         <h1><%= __('LogIn') %></h1>
         <form action="/login" method="post">
             <div class="mb-3">

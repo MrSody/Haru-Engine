@@ -1,25 +1,28 @@
 <!DOCTYPE html>
 <html lang="es">
     <head>
-        <title>Haru-Engine - <%= __('CreateAccount') %></title>
+        <title><%= __('nameGame') %> - <%= __('CreateAccount') %></title>
 
         <%- include('partials/head.ejs'); -%>
     </head>
 <body>
-    <div id="container">
+    <div class="container">
+
+        <%- include('partials/navigation'); -%>
+
         <h1><%= __('CreateAccount') %></h1>
         <form action="/register" method="post">
             <div class="mb-3">
                 <label class="form-label" for="email">
                     <%= __('Email') %> <span class="req">*</span>
                 </label>
-                <input id="email" type="email" name="email" required>
+                <input id="email" class="form-control" type="email" name="email" required>
             </div>
             <div class="mb-3">
                 <label class="form-label" for="password">
                     <%= __('Password') %> <span class="req">*</span>
                 </label>
-                <input id="password" type="password" name="password" required>
+                <input id="password" class="form-control" type="password" name="password" required>
             </div>
 
             <input type="submit" class="button button-block" value="<%= __('CreateAccount') %>">
