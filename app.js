@@ -44,6 +44,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // Bring public files - Trae los archivos publicos
 app.use(express.static(__dirname +'/client/public'));
 
+app.use('/css', express.static(__dirname + '/node_modules/bootstrap/dist/css'));
+app.use('/js', express.static(__dirname + '/node_modules/bootstrap/dist/js'));
+
 app.use(i18n.init);
 
 app.use(function(req, res, next) {
