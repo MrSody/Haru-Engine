@@ -35,7 +35,7 @@ const { Model } = require('sequelize');
 * ------------------------------ */
 app.set('appName', 'Haru-Engine');
 app.set('port', process.env.PORT || 3000);
-app.set('views', __dirname + '/client/views');
+app.set('views', __dirname + '/client/pages');
 app.set('view engine', 'ejs');
 
 //extended: false significa que parsea solo string (no archivos de imagenes por ejemplo)
