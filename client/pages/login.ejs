@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <title>Haru-Engine - <%= __('LogIn') %></title>
+
+        <%- include('partials/head.ejs'); -%>
+    </head>
+<body>
+    <div class="container">
+        <h1><%= __('LogIn') %></h1>
+        <form action="/login" method="post">
+            <div class="mb-3">
+                <label class="form-label" for="email">
+                    <%= __('Email') %> <span class="req">*</span>
+                </label>
+                <input id="email" class="form-control" name="email" type="text" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label" for="password">
+                    <%= __('Password') %> <span class="req">*</span>
+                </label>
+                <input id="password" class="form-control" name="password" type="password" required>
+            </div>
+            <p class="forgot"><a href="#"><%= __('DidForgetPassword') %></a></p>
+            <input type="submit" class="button button-block" value="<%= __('LogIn') %>">
+        </form>
+    </div>
+
+</body>
+</html>
