@@ -29,7 +29,11 @@ router.post('/login', (req, res) => {
 });
 
 // Register
-router.post('/registro', (req, res) => {
+router.get('/register', (req, res) => {
+    res.render('register.ejs');
+});
+
+router.post('/register', (req, res) => {
     let email = req.body.email;
     let password = req.body.password;
 
