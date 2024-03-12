@@ -15,13 +15,14 @@ const World = new WORLD();
 
 test('drawGrid', async () =>{
     const clsDeveloper = new Developer(World.tileSize);
-    const canvas = createCanvas(544, 352);
+    const canvas = createCanvas(576, 352);
     const ctx = canvas.getContext('2d');
 
-    let X = 3;
-    let Y = 6;
-
-    clsDeveloper.drawGrid(ctx, X, Y)
+    for (let countY = 0; countY < CONSTANT.responseMap.collision.length; countY++) {
+        for (let countX = 0; countX < CONSTANT.responseMap.collision[countY].length; countX++) {
+            clsDeveloper.drawGrid(ctx, countX, countY);
+        }
+    }
 
     const dataURL = canvas.toDataURL();
     expect(dataURL).toMatchSnapshot();
@@ -29,13 +30,15 @@ test('drawGrid', async () =>{
 
 test('drawCollision', async () =>{
     const clsDeveloper = new Developer(World.tileSize);
-    const canvas = createCanvas(544, 352);
+    const canvas = createCanvas(576, 352);
     const ctx = canvas.getContext('2d');
 
-    let X = 7;
-    let Y = 4;
-
-    clsDeveloper.drawCollision(ctx, X, Y, CONSTANT.responseMap.collision);
+    for (let countY = 0; countY < CONSTANT.responseMap.collision.length; countY++) {
+        for (let countX = 0; countX < CONSTANT.responseMap.collision[countY].length; countX++) {
+            clsDeveloper.drawGrid(ctx, countX, countY);
+            clsDeveloper.drawCollision(ctx, countX, countY, CONSTANT.responseMap.collision);
+        }
+    }
 
     const dataURL = canvas.toDataURL();
     expect(dataURL).toMatchSnapshot();
@@ -43,13 +46,19 @@ test('drawCollision', async () =>{
 
 test('drawVisionNpc', async () =>{
     const clsDeveloper = new Developer(World.tileSize);
-    const canvas = createCanvas(544, 352);
+    const canvas = createCanvas(576, 352);
     const ctx = canvas.getContext('2d');
 
-    let visionDistance = 5;
-    let pos = {x: 10, y: 15};
+    let visionDistance = 2;
+    let pos = {x: 12, y: 8};
 
     clsDeveloper.drawVisionNpc(ctx, visionDistance, pos);
+
+    for (let countY = 0; countY < CONSTANT.responseMap.collision.length; countY++) {
+        for (let countX = 0; countX < CONSTANT.responseMap.collision[countY].length; countX++) {
+            clsDeveloper.drawGrid(ctx, countX, countY);
+        }
+    }
 
     const dataURL = canvas.toDataURL();
     expect(dataURL).toMatchSnapshot();
