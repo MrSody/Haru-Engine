@@ -28,9 +28,9 @@ test('draw', async () => {
     const canvaHUB = createCanvas(544, 352);
     const ctxHUB = canvaHUB.getContext('2d');
 
-    const image = await loadImage(`${__dirname}\\spritePlayer.png`);
-
-    player.skinBase = image;
+    const image = await loadImage(CONSTANT.CONSTANTSKIN.CHARACTER_SKIN);
+    
+    player.skinCharacter = image;
 
     player.draw(ctxCharacters, ctxHUB, coordinateX, coordinateY, tileSize);
 
