@@ -80,7 +80,7 @@ export default class InterfaceGame extends Interface {
     }
 
     chatIsActive () {
-        return !!(!$('#hubPrincial').hasClass('Invisible') && $("#Mensaje").is(":focus"));
+        return !!(this.hasClass('#hubPrincial', 'Invisible') && this.focus('#Mensaje'));
     }
 
     focusChat () {

@@ -38,6 +38,10 @@ export default class Interface {
         this.documentSelect(element).classList.add(style);
     }
 
+    hasClass(element, style) {
+        return this.documentSelect(element).classList.contains(style);
+    }
+
     removeOrAddByID (element, style) {
         this.documentSelect(element).classList.toggle(style);
     }
@@ -70,7 +74,7 @@ export default class Interface {
         this.fps = Math.round(1 / delta);
 
         if ((performance.now() - this.lastCalledTime) > 0 ){
-            $("#FPS").html("FPS: "+ this.fps);// +" DELTA: "+ delta);
+            this.innerHTML("#FPS", "FPS: "+ this.fps);// +" DELTA: "+ delta);
         }
 
         return delta;

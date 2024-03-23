@@ -383,8 +383,8 @@ function update (delta) {
     // Mover el player
 	if (localPlayer.isMoving()) {
 		let absPos = localPlayer.absPos;
-        let width = $(window).width();
-        let height = $(window).height();
+        let width = window.innerWidth;
+        let height = window.innerHeight;
 
         localPlayer.playerMove(delta);
         
@@ -482,8 +482,8 @@ function draw () {
 
 // Browser window resize
 function onResize () {
-    let width = $(window).width();
-    let height = $(window).height();
+    let width = window.innerWidth;
+    let height = window.innerHeight;
 
     clsInterface.setShowLoadScreen(true);
 
