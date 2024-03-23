@@ -8,8 +8,7 @@ export default class LocalPlayer extends Player {
      * @param {{ 
 	 * 			IDClient: string; 
      * 			name: string; 
-     * 			skinBase: string; 
-     *			skinHair: string; 
+     * 			skinCharacter: string;
      *			health: { now: number; max: number; }; 
      *			level: string; 
      *			experience: { now: number; max: number; }; 

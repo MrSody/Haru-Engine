@@ -217,9 +217,9 @@ async function onClientDisconnect () {
 * @param {any} toClient
 * @param {Model<character>} dataCharacter
 */
-function sendCharacterToClient (toClient, dataCharacter) {
+async function sendCharacterToClient (toClient, dataCharacter) {
     // Add new player
-    let player = engine.addPlayer(toClient.id, dataCharacter);
+    let player = await engine.addPlayer(toClient.id, dataCharacter);
 
     loggerPlayers.info(`The player connected: ${player.name}`);
 

@@ -28,7 +28,7 @@ export default class interfaceCharacter extends Interface {
         let character = this.characters[count];
 
         let html =  `<div class="col">
-                        <img src="../sprites/Player/Base/${character.SKIN.base}.png">
+                        <img src="${character.skinCharacter}">
                     </div>
                     <div class="col">
                         <div>${character.name}</div>

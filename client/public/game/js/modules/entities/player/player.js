@@ -7,8 +7,7 @@ export default class Player {
      * @param {{ 
 	 * 			IDClient: string; 
 	 * 			name: string; 
-	 * 			skinBase: string; 
-	 *			skinHair: string; 
+	 * 			skinCharacter: string;
 	 *			health: { now: number; max: number; }; 
 	 *			level: string; 
 	 *			experience: { now: number; max: number; }; 
@@ -23,10 +22,10 @@ export default class Player {
 		/** @type {string} */
 		this.name = datos.name;
 		
-        this.skinBase = new Image();
+        this.skinCharacter = new Image();
 
 		/** @type {string} */
-		this.skinBase.src = datos.skinBase;
+		this.skinCharacter.src = datos.skinCharacter;
 
 		/** @type {{ x: number; y: number; }} */
 		this.posWorld = {x: datos.posWorld.X, y: datos.posWorld.Y};
@@ -151,6 +150,6 @@ export default class Player {
 	drawMode (ctx, cX, cY) {
 		const spriteWidth = 64, spriteHeight = 55;
 		
-		ctx.drawImage(this.skinBase, this.frame * spriteWidth, ((this.dir * spriteHeight) + ((spriteHeight * 4) * this.mode)), spriteWidth, spriteHeight, (cX - 16), (cY - 32), spriteWidth, spriteHeight);
+		ctx.drawImage(this.skinCharacter, this.frame * spriteWidth, ((this.dir * spriteHeight) + ((spriteHeight * 4) * this.mode)), spriteWidth, spriteHeight, (cX - 16), (cY - 32), spriteWidth, spriteHeight);
 	}
 }
