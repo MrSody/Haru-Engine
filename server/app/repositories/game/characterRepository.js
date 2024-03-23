@@ -23,7 +23,7 @@ async function getCharactersSearchAccount(idAccount) {
         return characters;
 
     } catch(e) {
-        logger.error('Error:', {file: 'characterController.js', method:'getCharacterSearchAccount', message: e});
+        logger.error('Error:', {file: 'characterRepository.js', method:'getCharacterSearchAccount', message: e});
         return null;
     }
 }
@@ -44,7 +44,7 @@ async function createCharacter(data, skin, location, setting, attributes, keyboa
         return getCharacterByIdCharacter(character.id);
 
     } catch(e) {
-        logger.error('Error:', {file: 'characterController.js', method:'createCharacter', message: e});
+        logger.error('Error:', {file: 'characterRepository.js', method:'createCharacter', message: e});
         return null;
     }
 }
@@ -67,7 +67,7 @@ async function getCharacterByIdCharacter(idCharacter) {
                                 },
                                 {
                                     association: 'KEYBOARD',
-                                    attributes: ['keyAction1', 'keyAction2', 'keyAction3', 'keyAction4', 'keyAction5', 'keyAction6', 'keyCharacter', 'keyBook', 'keyMenu', 'keyMap', 'keySkills'],
+                                    attributes: ['keyAction1', 'keyAction2', 'keyAction3', 'keyAction4', 'keyAction5', 'keyAction6', 'keyCharacter', 'keyBook', 'keyMenu', 'keyMap', 'keySkills', 'keyRunning', 'keyEnter' ],
                                 },
                             ],
                             attributes: ['id', 'name', 'gender', 'health', 'level', 'experience', 'money' ],
@@ -82,7 +82,7 @@ async function getCharacterByIdCharacter(idCharacter) {
         return character;
 
     } catch(e) {
-        logger.error('Error:', {file: 'characterController.js', method:'getCharacterByIdCharacter', message: e});
+        logger.error('Error:', {file: 'characterRepository.js', method:'getCharacterByIdCharacter', message: e});
         return null;
     }
 }

@@ -23,7 +23,7 @@ async function createAccount (res, email, password) {
         }
     } catch(e) {
         console.log(e);
-        logger.error('Error:', {file: 'accountController.js', method:'createAccount', message: e});
+        logger.error('Error:', {file: 'accountRepository.js', method:'createAccount', message: e});
     }
 }
 
@@ -48,7 +48,7 @@ async function getAccountByEmailAndPassword (res, email, password) {
             res.render('index.ejs', {ID: 0});
         }
     } catch(e) {
-        logger.error('Error:', {file: 'accountController.js', method:'getAccountByEmailAndPassword', message: e});
+        logger.error('Error:', {file: 'accountRepository.js', method:'getAccountByEmailAndPassword', message: e});
     }
 }
 

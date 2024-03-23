@@ -30,7 +30,7 @@ async function createLocation(idAldea) {
         return location;
 
     } catch(e) {
-        logger.error('Error:', {file: 'locationController.js', method:'createLocation', message: e});
+        logger.error('Error:', {file: 'locationRepository.js', method:'createLocation', message: e});
         return null;
     }
 }

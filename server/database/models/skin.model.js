@@ -13,12 +13,12 @@ const schema = {
     },
     base: {
         allowNull: false,
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         field: 'Base',
     },
     hair: {
         allowNull: false,
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         field: 'Hair',
     },
 }

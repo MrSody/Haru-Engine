@@ -12,8 +12,8 @@ const socketIO = require('socket.io');
 
 // CONNECTION TO DB
 const { models, queryInterface } = require('./server/database');
-const characterController = require('./server/app/controllers/game/characterController');
-const locationController = require('./server/app/controllers/game/locationController');
+const characterRepository = require('./server/app/repositories/game/characterRepository');
+const locationRepository = require('./server/app/repositories/game/locationRepository');
 
 // LOGs
 const log4js = require('log4js');
@@ -35,7 +35,7 @@ const { Model } = require('sequelize');
 * ------------------------------ */
 app.set('appName', 'Haru-Engine');
 app.set('port', process.env.PORT || 3000);
-app.set('views', __dirname + '/client/views');
+app.set('views', __dirname + '/client/pages');
 app.set('view engine', 'ejs');
 
 //extended: false significa que parsea solo string (no archivos de imagenes por ejemplo)
@@ -44,11 +44,13 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // Bring public files - Trae los archivos publicos
 app.use(express.static(__dirname +'/client/public'));
 
+app.use('/css', express.static(__dirname + '/node_modules/bootstrap/dist/css'));
+app.use('/js', express.static(__dirname + '/node_modules/bootstrap/dist/js'));
+
 app.use(i18n.init);
 
 app.use(function(req, res, next) {
-    //let lang = req.query.lang || 'en';
-    let lang = 'es';
+    let lang = req.acceptsLanguages(i18n.getLocales()) || i18n.getLocale();
     req.setLocale(lang);
     res.locals.lang = lang;
     next();
@@ -59,9 +61,6 @@ app.use(function(req, res, next) {
 * ------------------------------ */
 app.use(routes);
 
-app.get("*", (req, res) => {
-    res.end("Archivo no encontrado")
-});
 
 const server = app.listen(app.get('port'), () => {
     console.log(`Application is working: http://localhost:${app.get('port')}`);
@@ -178,7 +177,7 @@ async function loadNPCs () {
 async function onAccountConnect (data) {
     let toClient = this;
 
-    await characterController.getCharactersSearchAccount(data.idAccount)
+    await characterRepository.getCharactersSearchAccount(data.idAccount)
     .then(result => {
         if (result.length > 0) {
             toClient.emit('character:list', result);
@@ -218,9 +217,9 @@ async function onClientDisconnect () {
 * @param {any} toClient
 * @param {Model<character>} dataCharacter
 */
-function sendCharacterToClient (toClient, dataCharacter) {
+async function sendCharacterToClient (toClient, dataCharacter) {
     // Add new player
-    let player = engine.addPlayer(toClient.id, dataCharacter);
+    let player = await engine.addPlayer(toClient.id, dataCharacter);
 
     loggerPlayers.info(`The player connected: ${player.name}`);
 
@@ -272,11 +271,11 @@ async function onCharacterCreate (data) {
         
         let setting = await models.setting.create();
     
-        let location = await locationController.createLocation(data.village);
+        let location = await locationRepository.createLocation(data.village);
         
         let skin = await models.skin.create({ base: data.appearance, hair: data.hair });
     
-        let character = await characterController.createCharacter(data, skin, location, setting, attributes, keyboard);
+        let character = await characterRepository.createCharacter(data, skin, location, setting, attributes, keyboard);
 
         sendCharacterToClient(toClient, character);
     } catch (e) {
@@ -290,7 +289,7 @@ async function onCharacterCreate (data) {
 async function onCharacterConnect (data) {
     let toClient = this;
 
-    await characterController.getCharacterByIdCharacter(data.idCharacter)
+    await characterRepository.getCharacterByIdCharacter(data.idCharacter)
     .then(dataCharacter => {
         if (dataCharacter != null) {
             sendCharacterToClient(toClient, dataCharacter);

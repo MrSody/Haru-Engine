@@ -38,6 +38,10 @@ export default class Interface {
         this.documentSelect(element).classList.add(style);
     }
 
+    hasClass(element, style) {
+        return this.documentSelect(element).classList.contains(style);
+    }
+
     removeOrAddByID (element, style) {
         this.documentSelect(element).classList.toggle(style);
     }
@@ -70,7 +74,7 @@ export default class Interface {
         this.fps = Math.round(1 / delta);
 
         if ((performance.now() - this.lastCalledTime) > 0 ){
-            $("#FPS").html("FPS: "+ this.fps);// +" DELTA: "+ delta);
+            this.innerHTML("#FPS", "FPS: "+ this.fps);// +" DELTA: "+ delta);
         }
 
         return delta;
@@ -98,36 +102,5 @@ export default class Interface {
         this.removeClass('#loading', 'Invisible');
 
         this.innerHTML('#loading', html);
-    }
-
-/*-------------------------------
-    HUB - GAME
-*-------------------------------*/
-    showMessage (data) {
-        let chatTxtClr;
-
-        switch (data.mode) {
-            case 's':
-                chatTxtClr = "yellow";
-                break;
-            case 'w':
-                chatTxtClr = "red";
-                break;
-            default:
-                chatTxtClr = "white";
-        }
-
-        let spanMessage = document.createElement("span");
-        spanMessage.style = "color: "+ chatTxtClr;
-        spanMessage.textContent = `${data.name}: ${data.text}`;
-        this.documentSelect("#Mensajes").appendChild(spanMessage);
-        this.documentSelect("#Mensajes").appendChild(document.createElement('br'));
-        this.scrollBottom();
-        this.documentSelect("#Mensaje").value = "";
-    }
-
-    scrollBottom() {
-        let elementChat = this.documentSelect('#Chat');
-        elementChat.scrollTop = elementChat.scrollHeight;
     }
 }

@@ -66,9 +66,9 @@ describe('drawMode', () => {
         const canvaCharacters = createCanvas(544, 352);
         const ctxCharacters = canvaCharacters.getContext('2d');
     
-        const image = await loadImage(`${__dirname}\\spritePlayer.png`);
+        const image = await loadImage(CONSTANT.CONSTANTSKIN.CHARACTER_SKIN);
     
-        player.skinBase = image;
+        player.skinCharacter = image;
 
         player.mode = ActionStateEnums.ActionState().Stand;
         
@@ -86,9 +86,9 @@ describe('drawMode', () => {
         const canvaCharacters = createCanvas(544, 352);
         const ctxCharacters = canvaCharacters.getContext('2d');
     
-        const image = await loadImage(`${__dirname}\\spritePlayer.png`);
+        const image = await loadImage(CONSTANT.CONSTANTSKIN.CHARACTER_SKIN);
     
-        player.skinBase = image;
+        player.skinCharacter = image;
 
         player.mode = ActionStateEnums.ActionState().Walking;
         
@@ -106,9 +106,9 @@ describe('drawMode', () => {
         const canvaCharacters = createCanvas(544, 352);
         const ctxCharacters = canvaCharacters.getContext('2d');
     
-        const image = await loadImage(`${__dirname}\\spritePlayer.png`);
+        const image = await loadImage(CONSTANT.CONSTANTSKIN.CHARACTER_SKIN);
     
-        player.skinBase = image;
+        player.skinCharacter = image;
 
         player.mode = ActionStateEnums.ActionState().Running;
         
@@ -126,9 +126,9 @@ describe('drawMode', () => {
         const canvaCharacters = createCanvas(544, 352);
         const ctxCharacters = canvaCharacters.getContext('2d');
     
-        const image = await loadImage(`${__dirname}\\spritePlayer.png`);
+        const image = await loadImage(CONSTANT.CONSTANTSKIN.CHARACTER_SKIN);
     
-        player.skinBase = image;
+        player.skinCharacter = image;
 
         player.mode = ActionStateEnums.ActionState().Fighting;
         

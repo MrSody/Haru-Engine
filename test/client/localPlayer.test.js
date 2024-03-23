@@ -179,14 +179,14 @@ test('draw', async () => {
     const coordinateY = 5;
     const tileSize = 32;
 
-    const canvaCharacters = createCanvas(544, 352);
+    const canvaCharacters = createCanvas(576, 352);
     const ctxCharacters = canvaCharacters.getContext('2d');
-    const canvaHUB = createCanvas(544, 352);
+    const canvaHUB = createCanvas(576, 352);
     const ctxHUB = canvaHUB.getContext('2d');
-
-    const image = await loadImage(`${__dirname}\\spritePlayer.png`);
-
-    player.skinBase = image;
+    
+    const image = await loadImage(CONSTANT.CONSTANTSKIN.CHARACTER_SKIN);
+    
+    player.skinCharacter = image;
 
     player.draw(ctxCharacters, ctxHUB, coordinateX, coordinateY, tileSize);
 

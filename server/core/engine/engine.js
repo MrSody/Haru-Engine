@@ -1,4 +1,5 @@
 const PLAYER = require('./modules/entities/player/player.js').Player;
+const PlayerBuilder = require('./modules/entities/player/playerBuilder.js').PlayerBuilder;
 const WORLD = require('./modules/entities/world/world.js').World;
 const NPC = require('./modules/entities/npc/npc.js').Npc;
 let fs = require('fs');
@@ -124,13 +125,10 @@ class Engine {
     /**
      * @param {string} IDClient
      * @param {Any} dataPlayer
-     * @returns {{ IDPj: number; name: string; skinBase: string; skinHair: string; health: { now: number; max: number; }; level: string; experience: { now: number; max: number; }; money: number; posWorld: { X: number; Y: number; }; direction: number; }}
+     * @returns {{ IDPj: number; name: string; skinCharacter: string; health: { now: number; max: number; }; level: string; experience: { now: number; max: number; }; money: number; posWorld: { X: number; Y: number; }; direction: number; }}
      */
-    addPlayer (IDClient, dataPlayer) {
-        // Sprite player
-        let skinBase = fs.readFileSync(`./server/core/engine/sprite/player/base/${dataPlayer.SKIN.base}.txt`, 'utf-8');
-
-        let player = new PLAYER(IDClient, dataPlayer, skinBase, "");
+    async addPlayer (IDClient, dataPlayer) {
+        let player = await new PlayerBuilder().createCharacter(IDClient, dataPlayer);
 
         this.players.push(player);
 

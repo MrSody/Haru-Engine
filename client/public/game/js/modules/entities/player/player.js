@@ -7,8 +7,7 @@ export default class Player {
      * @param {{ 
 	 * 			IDClient: string; 
 	 * 			name: string; 
-	 * 			skinBase: string; 
-	 *			skinHair: string; 
+	 * 			skinCharacter: string;
 	 *			health: { now: number; max: number; }; 
 	 *			level: string; 
 	 *			experience: { now: number; max: number; }; 
@@ -23,15 +22,15 @@ export default class Player {
 		/** @type {string} */
 		this.name = datos.name;
 		
-        this.skinBase = new Image();
+        this.skinCharacter = new Image();
 
 		/** @type {string} */
-		this.skinBase.src = datos.skinBase;
+		this.skinCharacter.src = datos.skinCharacter;
 
 		/** @type {{ x: number; y: number; }} */
 		this.posWorld = {x: datos.posWorld.X, y: datos.posWorld.Y};
 		
-		/** @type {DirectionsEnums} */
+		/** @type {DirectionsEnums.directions()} */
 		this.dir = DirectionsEnums.directions().Down;
 
 		/** @type {number} */
@@ -40,8 +39,8 @@ export default class Player {
 		/** @type {boolean} */
 		this.moving = false;
 
-		/** @type {ActionStateEnums}  */
-		this.mode = 0;
+		/** @type {ActionStateEnums.ActionState()}  */
+		this.mode = ActionStateEnums.ActionState().Stand;
 		////////////////////////
 
 		//this.sound = new SoundManager();
@@ -145,25 +144,12 @@ export default class Player {
 		}
 	}
 
+/* ------------------------------ *
+    DRAW
+* ------------------------------ */
 	drawMode (ctx, cX, cY) {
 		const spriteWidth = 64, spriteHeight = 55;
-
-		switch (this.mode) {
-            case ActionStateEnums.ActionState().Stand:
-				ctx.drawImage(this.skinBase, this.frame * spriteWidth, ((this.dir * spriteHeight) + ((spriteHeight * 4) * this.mode)), spriteWidth, spriteHeight, (cX - 16), (cY - 32), spriteWidth, spriteHeight);
-                break;
-			case ActionStateEnums.ActionState().Walking:
-                ctx.drawImage(this.skinBase, this.frame * spriteWidth, ((this.dir * spriteHeight) + ((spriteHeight * 4) * this.mode)), spriteWidth, spriteHeight, (cX - 16), (cY - 32), spriteWidth, spriteHeight);
-                break;
-            case ActionStateEnums.ActionState().Running:
-                ctx.drawImage(this.skinBase, this.frame * spriteWidth, ((this.dir * spriteHeight) + ((spriteHeight * 4) * this.mode)), spriteWidth, spriteHeight, (cX - 16), (cY - 32), spriteWidth, spriteHeight);
-                break;
-			case ActionStateEnums.ActionState().Fighting:
-				ctx.drawImage(this.skinBase, this.frame * spriteWidth, ((this.dir * spriteHeight) + ((spriteHeight * 4) * this.mode)), spriteWidth, spriteHeight, (cX - 16), (cY - 32), spriteWidth, spriteHeight);
-				break;
-            default:
-                console.log("Error: No hay mode del personaje");
-                break;
-        }
+		
+		ctx.drawImage(this.skinCharacter, this.frame * spriteWidth, ((this.dir * spriteHeight) + ((spriteHeight * 4) * this.mode)), spriteWidth, spriteHeight, (cX - 16), (cY - 32), spriteWidth, spriteHeight);
 	}
 }

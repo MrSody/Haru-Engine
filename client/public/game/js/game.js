@@ -5,6 +5,7 @@
 "use strict";
 // HUB
 import Interface from './modules/hub/interface/interface.js';
+import InterfaceGame from './modules/hub/interface/interfaceGame.js';
 import InterfaceCharacter from './modules/hub/interface/interfaceCharacter.js';
 import Mouse from './modules/hub/mouse.js';
 import Keyboard from './modules/hub/keyboard.js';
@@ -17,25 +18,17 @@ import RemotePlayer from './modules/entities/player/remotePlayer.js';
 import Npc from './modules/entities/npc/npc.js';
 // DEVELOPER
 import Developer from './developer/developer.js';
+//ENUMS
+import ChatModesEnums from "./modules/enums/chatModes.js";
 
 /*-------------------------------
-    Variables
+    CLASSES
 *-------------------------------*/
-
-let canvasHUB;		// Canvas DOM elemento
-let ctxHUB;		    // Canvas contexto de representación
-
-// CAPAS
-let canvasCapaMapaAbajo;
-let ctxCapaMapaAbajo;
-let canvasPersonaje;
-let ctxPersonaje;
-let canvasCapaMapaArriba;
-let ctxCapaMapaArriba;
-
-// CLASSES
 /** @type {Interface} */
 let clsInterface = new Interface();
+
+/** @type {InterfaceGame} */
+let clsInterfaceGame = new InterfaceGame();
 
 /** @type {InterfaceCharacter} */
 let clsInterfaceCharacter = new InterfaceCharacter();
@@ -86,21 +79,10 @@ window.onload = function() {
 
 // GAME EVENT HANDLERS
 let setEventHandlers = function() {
-    // HUB - PERSONAJES
-    document.querySelector('#characters_BtnGetInGame').addEventListener('click', getInGame);
-    document.querySelector('#player_BtnCreateCharacter').addEventListener('click', createNewCharacter);
-    document.querySelector('#Pj_0').addEventListener('click', function(){ selCharacter(this.id); });    
-    document.querySelector('#Pj_1').addEventListener('click', function(){ selCharacter(this.id); });
-    document.querySelector('#Pj_2').addEventListener('click', function(){ selCharacter(this.id); });
-    document.querySelector('#Pj_3').addEventListener('click', function(){ selCharacter(this.id); });
-    document.querySelector('#Pj_4').addEventListener('click', function(){ selCharacter(this.id); });
+    // CONFIGURE - HUBs
+    clsInterfaceCharacter.configureCharacterSelection(getInGame, createNewCharacter, selCharacter);
     
-    // Keyboard
-	document.getElementById("Mensaje").addEventListener("keydown", localMessage, false);
-
-    // Window resize
-	window.addEventListener("resize", onResize, false);
-    window.addEventListener("load", onResize, false);
+    clsInterfaceGame.configureHUBGame(localMessage, onResize);
 
 	// Socket connection successful
 	socket.on('connect', onSocketConnected);
@@ -194,22 +176,19 @@ function selCharacter (IDElement) {
 }
 
 /*-------------------------------
-    Iniciar videojuego
+    INITIATE GAME
 *-------------------------------*/
-// Initialise new remote player
 function onNewRemotePlayer (data) {
 	remotePlayers.push(new RemotePlayer(data));
 }
 
-// Initialise new local player
 function onCreateLocalPlayer (data) {
     localPlayer = new LocalPlayer(data);
     clsKeyboard = new Keyboard(data.keyBoard);
 
-    renderingGame();
+    clsInterfaceGame.configureCanvasGame();
 }
 
-// INICIALIZA EL MAPA
 function onInitMap (data) {
     clsMap = new Map(data);
     clsMouse = new Mouse(clsMap.tileSize);
@@ -231,7 +210,6 @@ function onMapData (data) {
     clsMap.setMap(data);
 }
 
-// Npc's
 function onNewNpc (data) {
     if (npcs.length === data.count) {
         npcs.splice(0, npcs.length);
@@ -282,33 +260,8 @@ function findNpc (id) {
     return false;
 }
 /*-------------------------------
-    Videojuego cargado
+    GAME IS ALREADY LOADED
 *-------------------------------*/
-function renderingGame () {
-    // Muestra la interfaz principal
-    clsInterface.removeClass('#hubPrincial', 'Invisible');
-
-    // Canvas Mapa Abajo
-    canvasCapaMapaAbajo = document.getElementById('capasMapaAbajo');
-    ctxCapaMapaAbajo = canvasCapaMapaAbajo.getContext('2d');
-    ctxCapaMapaAbajo.globalAlpha = 0.1;
-
-    // Canvas Personaje
-    canvasPersonaje = document.getElementById('capaPersonaje');
-    ctxPersonaje = canvasPersonaje.getContext('2d');
-    ctxPersonaje.globalAlpha = 0.1;
-
-    // Canvas Mapa Arriba
-    canvasCapaMapaArriba = document.getElementById('capasMapaArriba');
-    ctxCapaMapaArriba = canvasCapaMapaArriba.getContext('2d');
-    ctxCapaMapaArriba.globalAlpha = 0.1;
-
-    // Canvas HUB
-	canvasHUB = document.getElementById("game");
-	ctxHUB = canvasHUB.getContext("2d");
-	ctxHUB.globalAlpha = 0.1;
-}
-
 function onMovePlayer (data) {
     let player = findPlayer(data.id);
 
@@ -317,7 +270,7 @@ function onMovePlayer (data) {
         player.dir = data.dir;
 
         if (localPlayer.getID() !== player.getID()) {
-            player.setMode(data.mode);
+            player.mode = data.mode;
         } else {
             player.setAbsPos(0, 0);
         }
@@ -333,7 +286,6 @@ function onMovePlayer (data) {
 function onRemovePlayer (data) {
 	let player = findPlayer(data.id);
 
-	// Player not found
 	if (!player) {
 		console.log("RemovePlayer - Player not found: "+data.id);
 		return;
@@ -359,7 +311,7 @@ function onMoveNpc (data) {
     Mensajes
 *-------------------------------*/
 function onReceiveMessage (data) {
-    clsInterface.showMessage(data);
+    clsInterfaceGame.showMessage(data);
 }
 
 function localMessage (e) {
@@ -369,13 +321,11 @@ function localMessage (e) {
             
             if (data.sendServer) {
                 socket.emit('chat:newMessage', {name: localPlayer.getName(), mode: data.mode, text: data.text, chatTo: data.chatTo});
+            } else if (data.mode === ChatModesEnums.ChatModes().Developer) {
+                modeDeveloper = !modeDeveloper;
+                clsInterfaceGame.showMessage({mode: data.mode, text: data.text +": "+ modeDeveloper, name: localPlayer.getName()});
             } else {
-                if (data.mode) {
-                    modeDeveloper = !modeDeveloper;
-                    clsInterface.showMessage({mode: data.mode, text: data.text +": "+ modeDeveloper, name: localPlayer.getName()});
-                } else {
-                    clsInterface.showMessage({mode: data.mode, text: data.text, name: localPlayer.getName()});
-                }
+                clsInterfaceGame.showMessage({mode: data.mode, text: data.text, name: localPlayer.getName()});
             }
         }
         clsInterface.blur('#Mensaje');
@@ -386,14 +336,14 @@ function localMessage (e) {
     Funciones mouse videojuego
 *-------------------------------*/
 game.onclick = function (e) {
-    if (!$('#hubPrincial').hasClass('Invisible')) {
-        clsMouse.click(e, clsMap.getCollision(), canvasHUB, localPlayer);
+    if (!clsInterfaceGame.chatIsActive()) {
+        clsMouse.click(e, clsMap.getCollision(), clsInterfaceGame.canvasHUB, localPlayer);
     }
 }
 
 game.onmousemove = function (e) {
-    if (!$('#hubPrincial').hasClass('Invisible')) {
-        clsMouse.move(e, clsMap.getCollision());
+    if (!clsInterfaceGame.chatIsActive()) {
+        clsMouse.move(e, clsMap.getCollision(), clsInterfaceGame);
     }
 }
 
@@ -401,14 +351,14 @@ game.onmousemove = function (e) {
     Funciones Teclado videojuego
 *-------------------------------*/
 document.onkeydown = function (e) {
-    if (!$('#hubPrincial').hasClass('Invisible')) {
-        clsKeyboard.keyDown(e.keyCode, localPlayer, clsInterface);
+    if (!clsInterfaceGame.chatIsActive()) {
+        clsKeyboard.keyDown(e.keyCode, localPlayer);
     }
 }
 
 document.onkeyup = function (e) {
-    if (!$('#hubPrincial').hasClass('Invisible')) {
-        clsKeyboard.keyUp(e.keyCode, localPlayer, clsInterface);
+    if (!clsInterfaceGame.chatIsActive()) {
+        clsKeyboard.keyUp(e.keyCode, localPlayer, clsInterfaceGame);
     }
 }
 
@@ -433,8 +383,8 @@ function update (delta) {
     // Mover el player
 	if (localPlayer.isMoving()) {
 		let absPos = localPlayer.absPos;
-        let width = $(window).width();
-        let height = $(window).height();
+        let width = window.innerWidth;
+        let height = window.innerHeight;
 
         localPlayer.playerMove(delta);
         
@@ -467,13 +417,6 @@ function update (delta) {
 /*-------------------------------
     GAME DRAW
 *-------------------------------*/
-function cleanScreen (width, height) {
-    ctxHUB.clearRect(0, 0, width, height);
-    ctxCapaMapaAbajo.clearRect(0, 0, width, height);
-    ctxPersonaje.clearRect(0, 0, width, height);
-    ctxCapaMapaArriba.clearRect(0, 0, width, height);
-}
-
 function draw () {
     let sizeScreen = clsMap.sizeScreen;
     let middleTile = clsMap.middleTile;
@@ -481,7 +424,7 @@ function draw () {
     let posWorld = localPlayer.getPosWorld();
 
     // Wipe the canvas clean
-    cleanScreen(sizeScreen.width, sizeScreen.height);
+    clsInterfaceGame.cleanScreen(sizeScreen.width, sizeScreen.height);
 
     for (let h = 0; h < maxTiles.y; h++) {
         for (let w = 0; w < maxTiles.x; w++) {
@@ -490,14 +433,14 @@ function draw () {
             clsMap.setCollision(w, h, 0);
 
             // Dibuja capas inferiores
-            clsMap.drawMapDown(ctxCapaMapaAbajo, w, h);
+            clsMap.drawMapDown(clsInterfaceGame.ctxCapaMapaAbajo, w, h);
 
             // Draw remote players
             for (let remotePlayer of remotePlayers) {
                 let posNow = remotePlayer.posNow(middleTile.x, middleTile.y, posWorld);
                 
                 if (posNow.x == w && posNow.y == h) {
-                    remotePlayer.draw(ctxPersonaje, ctxHUB, posNow.x, (posNow.y - 0.5));
+                    remotePlayer.draw(clsInterfaceGame.ctxPersonaje, clsInterfaceGame.ctxHUB, posNow.x, (posNow.y - 0.5));
                 }
             }
 
@@ -506,7 +449,7 @@ function draw () {
                 let posNow = npc.posNow(middleTile.x, middleTile.y, posWorld);
 
                 if (posNow.x == w && posNow.y == h) {
-                    npc.draw(ctxPersonaje, ctxHUB, posNow.x, (posNow.y - 0.5));
+                    npc.draw(clsInterfaceGame.ctxPersonaje, clsInterfaceGame.ctxHUB, posNow.x, (posNow.y - 0.5), clsMap.tileSize);
                     npc.eventVision(posNow, middleTile.x, middleTile.y, clsMap.getCollision());
 
                     // Save data Npc in map collision
@@ -514,7 +457,7 @@ function draw () {
 
                     if (modeDeveloper) {
                         if (npc.isAggressive()) {
-                            clsDeveloper.drawVisionNpc(ctxHUB, npc.getVisionDistance(), posNow);
+                            clsDeveloper.drawVisionNpc(clsInterfaceGame.ctxHUB, npc.getVisionDistance(), posNow);
                         }
                     }
                 }
@@ -522,16 +465,16 @@ function draw () {
 
             // Draw local player
             if (middleTile.x == w && middleTile.y == h) {
-                localPlayer.draw(ctxPersonaje, ctxHUB, middleTile.x, (middleTile.y - 0.5), clsMap.tileSize);
+                localPlayer.draw(clsInterfaceGame.ctxPersonaje, clsInterfaceGame.ctxHUB, middleTile.x, (middleTile.y - 0.5), clsMap.tileSize);
             }
 
             // Dibuja las capas superiores
-            clsMap.drawMapUp(ctxCapaMapaArriba, w, h);
+            clsMap.drawMapUp(clsInterfaceGame.ctxCapaMapaArriba, w, h);
 
             // DEVELOPER
             if (modeDeveloper) {
-                clsDeveloper.drawGrid(ctxHUB, w, h);
-                clsDeveloper.drawCollision(ctxHUB, w, h, clsMap.getCollision());
+                clsDeveloper.drawGrid(clsInterfaceGame.ctxHUB, w, h);
+                clsDeveloper.drawCollision(clsInterfaceGame.ctxHUB, w, h, clsMap.getCollision());
             }
         }
     }
@@ -539,8 +482,8 @@ function draw () {
 
 // Browser window resize
 function onResize () {
-    let width = $(window).width();
-    let height = $(window).height();
+    let width = window.innerWidth;
+    let height = window.innerHeight;
 
     clsInterface.setShowLoadScreen(true);
 
@@ -549,15 +492,5 @@ function onResize () {
     clsMap.setSizeScreen(width, height);
 
 	// Maximise the canvas
-	canvasHUB.width = window.innerWidth;
-    canvasHUB.height = window.innerHeight;
-
-    canvasCapaMapaAbajo.width = window.innerWidth;
-    canvasCapaMapaAbajo.height = window.innerHeight;
-
-    canvasPersonaje.width = window.innerWidth;
-    canvasPersonaje.height = window.innerHeight;
-
-    canvasCapaMapaArriba.width = window.innerWidth;
-    canvasCapaMapaArriba.height = window.innerHeight;
+    clsInterfaceGame.resizeCanvas(width, height);
 }

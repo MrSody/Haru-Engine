@@ -1,19 +1,21 @@
+import TileTypesEnums from "../../modules/enums/tileTypes.js";
+import CursorTypesEnums from "../../modules/enums/cursorTypes.js";
+import InterfaceGame from "../../modules/hub/interface/interfaceGame.js";
+
 export default class Mouse {
+    
+    /**
+     * @constructor
+     * @param {number} tileSize
+     */
     constructor (tileSize) {
         this.tileSize = tileSize;
-
-        this.tileWalking = 0;
-        this.tileNOWalking = 1;
-        // Reation NPC
-        this.tileTalkToNPC = 1;
-        this.tileAttackEnemy = 2;
-
-        this.cursorWalking = "url('../game/img/icons/mouse_walk.png') 16 16, auto";
-        this.cursorNOWalking = "url('../game/img/icons/mouse_noWalk.png') 16 16, auto";
-        this.cursorTalkToNPC = "url('../game/img/icons/mouse_talk.png') 16 16, auto";
-        this.cursorAttackEnemy = "url('../game/img/icons/mouse_attack.png') 16 16, auto";
     }
 
+    /**
+     * @param {{pageX: number; pageY: number;}} e
+     * @returns {{ x: number; y: number; }}
+     */
     getClickedTile (e) {
         return {
             x: Math.floor(e.pageX / this.tileSize),
@@ -21,7 +23,16 @@ export default class Mouse {
         };
     }
 
-    move (e, collisionMap) {
+    
+    /**
+     * Description placeholder
+     * @date 1/6/2024 - 4:33:54 PM
+     *
+     * @param {number} e
+     * @param {*} collisionMap
+     * @param {InterfaceGame} clsInterfaceGame
+     */
+    move (e, collisionMap, clsInterfaceGame) {
         let tile = this.getClickedTile(e);
 
         if (tile.x >= 0 && tile.y >= 0) {
@@ -29,12 +40,12 @@ export default class Mouse {
             if ( typeof( collisionMap[tile.y][tile.x] ) == "number" ) {
                 
                 switch ( collisionMap[tile.y][tile.x] ) {
-                    case this.tileNOWalking:
-                        document.documentElement.style.cursor = this.cursorNOWalking;
+                    case TileTypesEnums.tileTypes().NOWalking:
+                        clsInterfaceGame.styleCursor(CursorTypesEnums.cursorTypes().NOWalking);
                     break;
 
                     default:
-                        document.documentElement.style.cursor = this.cursorWalking;
+                        clsInterfaceGame.styleCursor(CursorTypesEnums.cursorTypes().Walking);
                     break;
                 }
 
@@ -43,17 +54,17 @@ export default class Mouse {
                 let npc = collisionMap[tile.y][tile.x];
 
                 switch ( npc.getReaction() ) {
-                    case this.tileTalkToNPC: 
-                        document.documentElement.style.cursor = this.cursorTalkToNPC;
+                    case TileTypesEnums.tileTypes().TalkToNPC:
+                        clsInterfaceGame.styleCursor(CursorTypesEnums.cursorTypes().TalkToNPC);
                     break;
 
-                    case this.tileAttackEnemy:
-                        document.documentElement.style.cursor = this.cursorAttackEnemy;
+                    case TileTypesEnums.tileTypes().AttackEnemy:
+                        clsInterfaceGame.styleCursor(CursorTypesEnums.cursorTypes().AttackEnemy);
                     break;
                 }
 
             } else {
-                document.documentElement.style.cursor = this.cursorWalking;
+                clsInterfaceGame.styleCursor(CursorTypesEnums.cursorTypes().Walking);
             }
         }
     }
@@ -64,7 +75,7 @@ export default class Mouse {
         let playerPosY = Math.round((canvasHUB.height / 2) / this.tileSize);
         
         // To avoid a bug, where player wouldn't walk anymore, when clicked twice on the same tile
-        if (!(tile.x === playerPosX && tile.y === playerPosY) && collisionMap[tile.y][tile.x] !== this.tileNOWalking) {
+        if (!(tile.x === playerPosX && tile.y === playerPosY) && collisionMap[tile.y][tile.x] !== TileTypesEnums.tileTypes().NOWalking) {
     
             //$("#conversation, #confirmation").addClass("hidden");
     
@@ -74,7 +85,7 @@ export default class Mouse {
                 let npc = collisionMap[tile.y][tile.x];
 
                 switch ( npc.getReaction() ) {
-                    case this.tileTalkToNPC: // Going to talk to NPC
+                    case TileTypesEnums.tileTypes().TalkToNPC: // Going to talk to NPC
                         console.log("Habla con npc");
                         /*
                         var npc = getNpcAt(tile.x * 32, tile.y * 32);
@@ -88,7 +99,7 @@ export default class Mouse {
                         */
                     break;
 
-                    case this.tileAttackEnemy: // Going to attack enemy
+                    case TileTypesEnums.tileTypes().AttackEnemy: // Going to attack enemy
                         console.log("ataca al enemigo "+ tile.x +" - "+ tile.y );
                         //localPlayer.setGoFight(i);
                     break;

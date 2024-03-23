@@ -5,30 +5,49 @@ const express = require('express');
 const router = express.Router();
 
 // Controllers
-const accountController = require('../../server/app/controllers/page/accountController');
+const accountRepository = require('../../server/app/repositories/page/accountRepository');
 
-//HOME - Game
+/* ------------------------------ *
+    PAGES
+* ------------------------------ */
+
+// HOME
 router.get('/', (req, res) => {
     res.render('index.ejs', {ID: 0});
 });
 
-router.post('/game', (req, res) => {
-    let ID = req.body.id;
-    res.render('game.ejs', {ID: ID});
+// Login
+router.get('/login', (req, res) => {
+    res.render('login.ejs');
 });
 
 router.post('/login', (req, res) => {
     let email = req.body.email;
     let password = req.body.password;
 
-    accountController.getAccountByEmailAndPassword(res, email, password);
+    accountRepository.getAccountByEmailAndPassword(res, email, password);
 });
 
-router.post('/registro', (req, res) => {
+// Register
+router.get('/register', (req, res) => {
+    res.render('register.ejs');
+});
+
+router.post('/register', (req, res) => {
     let email = req.body.email;
     let password = req.body.password;
 
-    accountController.createAccount(res, email, password);  
+    accountRepository.createAccount(res, email, password);  
+});
+
+// GAME
+router.post('/game', (req, res) => {
+    let ID = req.body.id;
+    res.render('game.ejs', {ID: ID});
+});
+
+router.get("*", (req, res) => {
+    res.end("Archivo no encontrado")
 });
 
 module.exports = router;

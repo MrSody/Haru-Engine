@@ -1,3 +1,5 @@
+const CONSTANTSKIN = require('../constantsSkinCharacter');
+
 const DATA_DB_PLAYER = {
     id: 1,
     name: 'prueba',
@@ -7,8 +9,8 @@ const DATA_DB_PLAYER = {
     experience: 0,
     money: 0,
     SKIN: {
-        base: 'testBase',
-        hair: 'H-1',
+        base: '1',
+        hair: 'hairTest',
     },
     LOCATION: {
         idMap: 'test1',
@@ -30,6 +32,8 @@ const DATA_DB_PLAYER = {
         keyMenu: 27,
         keyMap: 77,
         keySkills: 74,
+        keyRunning: 16,
+        keyEnter: 13,
     },
 };
 
@@ -42,8 +46,8 @@ const DATA_DB_PLAYER2 = {
     experience: 0,
     money: 0,
     SKIN: {
-        base: 'testBase',
-        hair: 'H-1',
+        base: '1',
+        hair: 'hairTest',
     },
     LOCATION: {
         idMap: 1,
@@ -174,10 +178,36 @@ let responseMap = {
                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0]],
 };
 
+const RESPONSE_DATASEND = {
+    IDClient: '1', 
+    name: 'prueba',
+    skinCharacter: CONSTANTSKIN.CHARACTER_SKIN,
+    health: { now: 154, max: 154 },
+    level: 1,
+    experience: { now: 0, max: 2400 },
+    money: 0,
+    posWorld: { X: 9, Y: 11 },
+    direction: 2,
+    keyBoard: {
+        keyAction1: 81,
+        keyAction2: 87,
+        keyAction3: 69,
+        keyAction4: 82,
+        keyAction5: 84,
+        keyAction6: 65,
+        keyCharacter: 80,
+        keyBook: 76,
+        keyMenu: 27,
+        keyMap: 77,
+        keySkills: 74,
+        keyRunning: 16,
+        keyEnter: 13,
+    },
+}
+
 exports.DATA_DB_PLAYER = DATA_DB_PLAYER;
-
 exports.DATA_DB_PLAYER2 = DATA_DB_PLAYER2;
-
 exports.DATA_DB_NPC = DATA_DB_NPC;
-
 exports.responseMap = responseMap;
+exports.CONSTANTSKIN = CONSTANTSKIN;
+exports.RESPONSE_DATASEND = RESPONSE_DATASEND;

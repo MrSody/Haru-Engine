@@ -1,5 +1,6 @@
 import Player from './player.js';
 import DirectionsEnums from "../../enums/directions.js";
+import ActionStateEnums from "../../enums/actionState.js";
 
 export default class LocalPlayer extends Player {
     /**
@@ -7,8 +8,7 @@ export default class LocalPlayer extends Player {
      * @param {{ 
 	 * 			IDClient: string; 
      * 			name: string; 
-     * 			skinBase: string; 
-     *			skinHair: string; 
+     * 			skinCharacter: string;
      *			health: { now: number; max: number; }; 
      *			level: string; 
      *			experience: { now: number; max: number; }; 
@@ -68,9 +68,9 @@ export default class LocalPlayer extends Player {
         this.moving = true;
         
         if (this.goRun) {
-            this.mode = 2;
+            this.mode = ActionStateEnums.ActionState().Running;
         } else {
-            this.mode = 1;
+            this.mode = ActionStateEnums.ActionState().Walking;
         }
 
         // Check if on the way to attack
@@ -129,12 +129,12 @@ export default class LocalPlayer extends Player {
             } else { // End of path
                 if(this.goFight != null) {
                     this.fighting = this.goFight;
-                    this.mode = 3;
+                    this.mode = ActionStateEnums.ActionState().Fighting;
                 } else if(this.goToNpc != null) {
                     this.talkingTo = this.goToNpc;
                 }
                 this.moving = false;
-                this.mode = 0;
+                this.mode = ActionStateEnums.ActionState().Stand;
                 this.path.splice(0, this.stepCount);
                 //this.stepSnd.pause();
                 this.stepCount = 0;
@@ -159,11 +159,11 @@ export default class LocalPlayer extends Player {
         this.setPath(this.path);
 
         switch (this.mode) {
-            case 1:
+            case ActionStateEnums.ActionState().Walking:
                 this.tellCount += this.speed * delta;
                 this.playerWalking();
                 break;
-            case 2:
+            case ActionStateEnums.ActionState().Running:
                 if (((this.path.length - 1) - this.stepCount) > 0) {
                     this.playerRunning();
                 } else if (this.stepCount === this.path.length) {

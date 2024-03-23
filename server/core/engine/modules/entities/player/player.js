@@ -1,3 +1,5 @@
+let sharp = require('sharp');
+
 class Player {
     /**
      * Checks whether or not the constraint is applicable for the notice subtype indicated by the current Context.
@@ -12,51 +14,75 @@ class Player {
      *           experience: number; 
      *           money: number; 
      *           LOCATION: {
-     *                       idMap: number; 
-     *                       posX: number; 
-     *                       posY: number;
-     *                   } 
-     *   }}  datos
-     * @param {string} skinBase
-     * @param {string} skinHair
+     *              idMap: number; 
+     *              posX: number; 
+     *              posY: number;
+     *           }
+     *           SKIN: {
+     *              base: string;
+     *              hair: string;       
+     *           }
+     *   }}  data
      */
-    constructor (IDClient, datos, skinBase, skinHair) {
+    constructor (IDClient, data) {
         /** @type {string} */
         this._IDClient = IDClient;
 
 		// Datos Basicos
         /** @type {number} */
-        this.IDPj = datos.id;
+        this.IDPj = data.id;
 
         /** @type {string} */
-        this.name = datos.name;
+        this.name = data.name;
 
         /** @type {string} */
-        this.skinBase = skinBase;
+        this.skinBase = data.SKIN.base;
         
         /** @type {string} */
-        this.skinHair = skinHair;
-
-        /** @type {{ now: number; max: number; }} */
-        this.health = {now: datos.health, max: datos.health};
+        this.skinHair = data.SKIN.hair;
 
         /** @type {string} */
-        this.level = datos.level;
+        this.skinCharacter = "";
 
         /** @type {{ now: number; max: number; }} */
-        this.experience = {now: datos.experience, max: 800 * (this.level + 2)};
+        this.health = {now: data.health, max: data.health};
+
+        /** @type {string} */
+        this.level = data.level;
+
+        /** @type {{ now: number; max: number; }} */
+        this.experience = {now: data.experience, max: 800 * (this.level + 2)};
 
         /** @type {number} */
-        this.money = datos.money;
+        this.money = data.money;
 
         /** @type {string} Id map*/
-        this.IDMap = datos.LOCATION.idMap;
+        this.IDMap = data.LOCATION.idMap;
 
         /** @type {{ X: number; Y: number; }} */
-        this.posWorld = {X: datos.LOCATION.posX, Y: datos.LOCATION.posY};
+        this.posWorld = {X: data.LOCATION.posX, Y: data.LOCATION.posY};
 
         /** @type {number} direction player in the map */
 		this.direction = 2;
+
+        /**
+        * @type {{
+        *      keyAction1: number,
+        *      keyAction2: number,
+        *      keyAction3: number,
+        *      keyAction4: number,
+        *      keyAction5: number,
+        *      keyAction6: number,
+        *      keyCharacter: number,
+        *      keyBook: number,
+        *      keyMenu: number,
+        *      keyMap: number,
+        *      keySkills: number,
+        *      keyRunning: number,
+        *      keyEnter: number,
+        *      }}
+        */
+        this.keyBoard = data.KEYBOARD;
     }
 
 /* ------------------------------ *
@@ -89,31 +115,54 @@ class Player {
 /* ------------------------------ *
     GETTERS
 * ------------------------------ */
+    
+    
+    /**
+     * @readonly
+     * @type {string}
+     */
     get IDClient () {
 		return this._IDClient;
 	}
 
     /**
-     * @returns {{ IDClient: string; name: string; skinBase: string; skinHair: string; health: { now: number; max: number; }; level: string; experience: { now: number; max: number; }; money: number; posWorld: { X: number; Y: number; }; direction: number; }}
+     * @returns {{ IDClient: string; name: string; skinCharacter: string; health: { now: number; max: number; }; level: string; experience: { now: number; max: number; }; money: number; posWorld: { X: number; Y: number; }; direction: number; keyBoard: {string: string} }}
      */
     getDataSend () {
         return {
                 IDClient : this._IDClient,
                 name: this.name,
-                skinBase: this.skinBase,
-                skinHair: this.skinHair,
+                skinCharacter: this.skinCharacter,
                 health: this.health,
                 level: this.level,
                 experience: this.experience,
                 money: this.money,
                 posWorld: this.posWorld,
 		        direction: this.direction,
+                keyBoard: this.keyBoard,
         }
     }
 
 /* ------------------------------ *
     FUNCTIONS
 * ------------------------------ */
+
+    async updateSkinCharacter () {
+
+        const images = await Promise.all([
+            sharp(`./server/core/engine/sprite/character/base/${this.skinBase}.png`).toBuffer(),
+            sharp(`./server/core/engine/sprite/character/hair/${this.skinHair}.png`).toBuffer(),
+        ]);
+
+        const combinedImage = await sharp(Buffer.concat(images))
+        .composite([
+            { input: images[0], top: 0, left: 0 },
+            { input: images[1], top: 0, left: 0 },
+        ])
+        .toBuffer();
+        
+        this.skinCharacter = `data:image/png;base64,${combinedImage.toString('base64')}`;
+    }
 }
 
 exports.Player = Player;

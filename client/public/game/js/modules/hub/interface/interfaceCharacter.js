@@ -28,7 +28,7 @@ export default class interfaceCharacter extends Interface {
         let character = this.characters[count];
 
         let html =  `<div class="col">
-                        <img src="../sprites/Player/Base/${character.SKIN.base}.png">
+                        <img src="${character.skinCharacter}">
                     </div>
                     <div class="col">
                         <div>${character.name}</div>
@@ -44,8 +44,6 @@ export default class interfaceCharacter extends Interface {
         this.innerHTML('#characters_Skin', `<div id="characters_Skin" style="margin-top: 15%; margin-left: 40%;"><img src="../sprites/Player/Base/${Skin_Base}.png" style="width: 150px;"></div>`);
         this.innerHTML('#characters_Name', `Nombre: ${Name}`);
     }
-
-
 
     getDataCreateCharacter () {
         let genero = document.querySelector('input[name="genero"]:checked').value;
@@ -99,5 +97,15 @@ export default class interfaceCharacter extends Interface {
         this.removeClass('#createCharacter', 'Invisible');
 
         console.log("Crear personaje");
+    }
+
+    configureCharacterSelection(getInGame, createNewCharacter, selCharacter) {
+        document.querySelector('#characters_BtnGetInGame').addEventListener('click', getInGame);
+        document.querySelector('#player_BtnCreateCharacter').addEventListener('click', createNewCharacter);
+        document.querySelector('#Pj_0').addEventListener('click', function(){ selCharacter(this.id); });    
+        document.querySelector('#Pj_1').addEventListener('click', function(){ selCharacter(this.id); });
+        document.querySelector('#Pj_2').addEventListener('click', function(){ selCharacter(this.id); });
+        document.querySelector('#Pj_3').addEventListener('click', function(){ selCharacter(this.id); });
+        document.querySelector('#Pj_4').addEventListener('click', function(){ selCharacter(this.id); });
     }
 }
