@@ -22,6 +22,8 @@ i18n.configure({
 
     // sync locale information across all files - defaults to false
     syncFiles: true,
+
+    objectNotation: true,
     
     logErrorFn: function (msg) {
         logger.error('i18n', {message: msg});

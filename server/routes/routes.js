@@ -18,7 +18,7 @@ router.get('/', (req, res) => {
 
 // Login
 router.get('/login', (req, res) => {
-    res.render('login.ejs');
+    res.render('login.ejs', {ID: 0, codeError: null});
 });
 
 router.post('/login', (req, res) => {
@@ -30,7 +30,7 @@ router.post('/login', (req, res) => {
 
 // Register
 router.get('/register', (req, res) => {
-    res.render('register.ejs');
+    res.render('register.ejs', {ID: 0, codeError: null});
 });
 
 router.post('/register', (req, res) => {

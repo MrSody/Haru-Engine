@@ -1,21 +1,20 @@
 <!DOCTYPE html>
 <html lang="es">
     <head>
-        <title><%= __('nameGame') %></title>
+        <title><%= __('NameGame') %></title>
         
         <%- include('partials/head.ejs'); -%>
     </head>
     <body>
+        <%- include('partials/navigation'); -%>
+        
         <% if (ID > 0) { %>
             <h2><%= ID %></h2>
             <form action="/game" method="POST">
                 <input type="hidden" name="id" value="<%= ID %>">
-                <input type="submit">
+                <input type="submit" value="<%= __('EnterGame') %>">
             </form>
         <% } %>
-
-        <%- include('partials/navigation'); -%>
-
         
         <p><%= __n('%d apple', '%d apples', 1) %></p>
     </body>

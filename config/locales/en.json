@@ -1,5 +1,5 @@
 {
-	"nameGame": "Haru-Engine",
+	"NameGame": "Haru-Engine",
 	"%d apple": {
 		"one": "%d apple",
 		"other": "%d apples"
@@ -9,5 +9,15 @@
 	"Password": "password",
 	"DidForgetPassword": "i forgot the password",
 	"CreateAccount": "create account",
-	"RepeatPassword": "repeat password"
+	"RepeatPassword": "repeat password",
+	"NeedAccount": "need an account?",
+	"AlreadyAccount": "already a account?",
+	"EnterGame": "enter the game",
+	"CodeError": {
+		"Unknown": "unknown error",
+		"EmailIncorrect": "the email is incorrect",
+		"EmailPasswordIncorrect": "the email or password is incorrect",
+		"CreateAccountIncorrect": "can't create account try again later",
+		"EmailAlreadyRegistered": "email is already registered"
+	}
 }
